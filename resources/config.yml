@@ -1,0 +1,19 @@
+database:
+  type: mysql
+
+  sqlite:
+    file: qoia_wob.sqlite
+  mysql:
+    host: gamesnj44.bisecthosting.com
+    port: 3306
+    username: u567075_tVBWvXQeRe
+    password: "sQnTHaXucsbZ4OnjLXfp9yWI"
+    schema: s567075_qoia
+  worker-limit: 1
+
+inventories:
+  choose-kingdom:
+    name: "§r§l§6Choose Your Destiny"
+    size: 27
+    targetIndexes: [11, 15]
+    contents: []

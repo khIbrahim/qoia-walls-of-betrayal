@@ -1,0 +1,12 @@
+kingdoms:
+  onJoin:
+    gorvok:
+      message: "{RED}Welcome to the Gor'Vok Clan!\n§7Honor, strength, and loyalty await you."
+      type: "title"
+    thragmar:
+      message: "§9You joined Thrag'Mar Legion!\n§7Shadow, magic, and betrayal are your path."
+      type: "title"
+
+unstable: "{RED}Your connection is unstable, please reconnect"
+alreadyInKingdom: "{RED}You are already in a kingdom!"
+unknownKingdom: "{RED}Unknown Kingdom: {KINGDOM}"

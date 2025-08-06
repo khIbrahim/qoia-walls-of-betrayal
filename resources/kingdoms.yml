@@ -1,0 +1,49 @@
+gorvok:
+  display_name: "§cGor'Vok Clan"
+  color: "red"
+  icon: "iron_sword"  # pour menu GUI
+  description:
+    - "§r§7Theme: §cBrutal strength, honor, and lava-forged warriors"
+    - "§r§7Focus: §cStronghold building, deadly traps, frontal raids"
+    - "§r§7Culture: §cLoyalty until betrayal strikes"
+    - "§r§7Environment: §cUnderground mines and blazing forges"
+    - "§r§7"
+    - "§r§6Abilities:"
+    - "§r§c• Blood Rage §8– §7Strength boost after killing an enemy"
+    - "§r§c• Lavaborn §8– §7Immune to fire & lava for 10 seconds"
+  spawn:
+    world: "world"
+    x: 100
+    y: 64
+    z: 100
+  abilities:
+    - blood_rage
+    - lavaborn
+  kits:
+    - brute_force
+    - earth_breaker
+
+thragmar:
+  display_name: "§9Thrag'Mar Legion"
+  color: "blue"
+  icon: "bow"
+  description:
+    - "§r§7Theme: §9Dark magic, stealth, and shadow warfare"
+    - "§r§7Focus: §9Sabotage, speed, and deadly ambushes"
+    - "§r§7Culture: §9Cunning tactics and strategic betrayal"
+    - "§r§7Environment: §9Forest hideouts and lurking traps"
+    - "§r§7"
+    - "§r§6Abilities:"
+    - "§r§9• Shadow Step §8– §7Teleport 10 blocks forward"
+    - "§r§9• Night Veil §8– §7Gain invisibility at night (10s)"
+  spawn:
+    world: "world"
+    x: -100
+    y: 64
+    z: -100
+  abilities:
+    - shadow_step
+    - night_veil
+  kits:
+    - shadow_raid
+    - cursed_blade
