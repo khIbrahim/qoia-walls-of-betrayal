@@ -3,3 +3,7 @@ main: fenomeno\WallsOfBetrayal\Main
 api: 5.0.0
 version: 1.0.0
 author: fenomeno
+
+permissions:
+  command.choose:
+    default: true

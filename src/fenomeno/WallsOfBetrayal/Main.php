@@ -1,6 +1,7 @@
 <?php
 namespace fenomeno\WallsOfBetrayal;
 
+use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
@@ -34,6 +35,10 @@ class Main extends PluginBase
 
         $this->kingdomManager  = new KingdomManager($this);
         $this->databaseManager = new DatabaseManager($this);
+
+        $this->getServer()->getCommandMap()->registerAll('wob', [
+            new ChooseCommand($this)
+        ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new KingdomListener(), $this);

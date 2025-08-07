@@ -1,0 +1,7 @@
+choose:
+  name: "choose"
+  description: "§7§oSelect your kingdom to begin your destiny"
+  usage: "§e/choose <kingdom> §8– §7Available: §cgorvok§7, §9thragmar"
+  aliases:
+    - "wobchoose"
+    - "kingdom"

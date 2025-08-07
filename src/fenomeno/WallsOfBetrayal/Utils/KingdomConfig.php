@@ -13,6 +13,7 @@ class KingdomConfig
     public static function init(Main $main): void
     {
         $config = $main->getConfig()->getAll();
+        CommandsConfig::init($main);
 
         self::$chooseInventoryDTO = Utils::loadInventory($config['inventories']['choose-kingdom'] ?? []);
     }
