@@ -26,3 +26,10 @@ cantCloseChooseInventory:
 
 kits:
   unknown: "{RED}Unknown Kit Id: {KIT}"
+  requirementAchieved: "§7⚔ §f{PLAYER} §7made progress on §4{KIT}"
+  achieved:
+    message: "§6⚔ §f{PLAYER} §7has completed all tasks for §4{KIT} §7!"
+    type: "title"
+  onProgress:
+    message: "§6+1 progress on §4{KIT}"
+    type: "popup"

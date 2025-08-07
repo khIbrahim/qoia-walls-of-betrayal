@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
 use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
+use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Utils\WobConfig;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
@@ -52,6 +53,7 @@ class Main extends PluginBase
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new KingdomListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new ScoreboardUpdateListener($this), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new KitsListener($this), $this);
     }
 
     public function getDatabaseManager(): DatabaseManager

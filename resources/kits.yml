@@ -3,7 +3,7 @@ brute_force:
   kingdom: "gorvok"
   displayName: "§r§4Brute Force Kit"
   description: "A ruthless combat kit for those who live and die by the sword."
-  unlock_day: 7
+  unlock_day: 0
   icon: "paper"
   contents:
     inv:
@@ -48,8 +48,79 @@ brute_force:
           protection: 4
           unbreaking: 3
   requirements:
-    items:
-      wheat: 15000
-      carrot: 10000
-    entity:
-      cow: 1750
+    - type: "break"
+      target: "wheat_block"
+      amount: 10
+    - type: "break"
+      target: "carrot_block"
+      amount: 10
+#    - type: "kill"
+#      target: "minecraft:cow"
+#      amount: 1750
+
+cursed_blade:
+  id: "cursed_blade"
+  kingdom: "thragmar"
+  displayName: "§r§4Cursed Blade Kit"
+  description: "A dark warrior’s kit forged in the shadows of blood and betrayal."
+  unlock_day: 12
+  icon: "netherite_sword"
+  contents:
+    inv:
+      0:
+        item: "netherite_sword"
+        display-name: "§r§4Cursed Blade"
+        description: "§7Feeds on suffering.\n§7Empowered by betrayal."
+        enchantments:
+          sharpness: 6
+          fire_aspect: 2
+          unbreaking: 3
+      1:
+        item: "totem"
+        display-name: "§r§6Relic of Thrag'mar"
+        description: "§7A last breath bound by legion oaths."
+      2:
+        item: "ender_pearl"
+        count: 4
+        description: "§7For tactical retreats."
+      3:
+        item: "splash_potion"
+        display-name: "§r§5Vile Healing"
+        description: "§7Dark alchemy for the wounded."
+      4:
+        item: "arrow"
+        count: 48
+    armor:
+      0:
+        item: "netherite_helmet"
+        enchantments:
+          protection: 4
+          unbreaking: 3
+      1:
+        item: "netherite_chestplate"
+        enchantments:
+          protection: 4
+          unbreaking: 3
+      2:
+        item: "netherite_leggings"
+        enchantments:
+          protection: 4
+          unbreaking: 3
+      3:
+        item: "netherite_boots"
+        enchantments:
+          protection: 4
+          #soul_speed: 3 TODO je ne connais pas encore cet enchantement
+  requirements:
+    - type: "break"
+      target: "wheat_block"
+      amount: 17000
+    - type: "break"
+      target: "carrot_block"
+      amount: 17000
+    - type: "kill"
+      target: "minecraft:cow"
+      amount: 1750
+    - type: "kill"
+      target: "minecraft:sheep"
+      amount: 1750

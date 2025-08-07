@@ -39,4 +39,24 @@ class Kit
     {
         return $this->id;
     }
+
+    public function isRequirementsAchieved(): bool
+    {
+        foreach ($this->requirements as $requirement) {
+            if (! $requirement->isComplete()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Pour plus de clareté au niveau de l'API
+     *
+     * @return bool
+     */
+    public function isUnlocked(): bool
+    {
+        return $this->isRequirementsAchieved();
+    }
 }

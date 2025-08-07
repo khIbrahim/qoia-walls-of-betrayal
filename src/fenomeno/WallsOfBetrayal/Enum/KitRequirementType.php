@@ -2,10 +2,10 @@
 
 namespace fenomeno\WallsOfBetrayal\Enum;
 
-enum KitRequirementType
+enum KitRequirementType: string
 {
 
-    case BREAK;
-    case KILL;
+    case BREAK = 'break';
+    case KILL = 'kill';
 
 }

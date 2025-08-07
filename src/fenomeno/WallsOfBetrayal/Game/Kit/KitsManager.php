@@ -3,6 +3,9 @@
 namespace fenomeno\WallsOfBetrayal\Game\Kit;
 
 use Closure;
+use fenomeno\WallsOfBetrayal\Enum\KitRequirementType;
+use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
+use fenomeno\WallsOfBetrayal\Game\Kit\RequirementHandlers\RequirementHandlerFactory;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\item\StringToItemParser;
@@ -14,6 +17,8 @@ use Throwable;
 class KitsManager
 {
 
+    private RequirementHandlerFactory $requirementHandlerFactory;
+
     /** @var Kit[] */
     private array $kits = [];
     private Config $config;
@@ -23,9 +28,27 @@ class KitsManager
         $this->main->saveResource('kits.yml', true);
         $this->config = new Config($this->main->getDataFolder() . 'kits.yml', Config::YAML);
 
-        $this->load(function (array $kits){
+        $this->requirementHandlerFactory = new RequirementHandlerFactory();
+
+        $this->load(function(array $kits) {
             $this->kits = $kits;
-            $this->main->getLogger()->info(TextFormat::GREEN . count($kits) . " kits loaded §6(" . implode(", ", array_map(fn(Kit $kit) => $kit->getDisplayName(), $kits)) . "§6)");
+
+            $kingdoms = $this->main->getKingdomManager()->getKingdoms();
+
+            foreach ($kingdoms as $kingdom) {
+                $loadedKits = [];
+
+                foreach ($this->kits as $kit) {
+                    if ($kit->getKingdom()->getId() === $kingdom->getId()) {
+                        $kingdom->kits[$kit->getId()] = $kit;
+                        $loadedKits[] = $kit;
+                    }
+                }
+
+                $kitNames = implode(", ", array_map(fn(Kit $kit) => $kit->getDisplayName(), $loadedKits));
+                $this->main->getLogger()->info("§l" . $kingdom->getDisplayName() . TextFormat::RESET . TextFormat::GREEN .
+                    " → " . count($loadedKits) . " kits loaded §6(" . $kitNames . "§6)");
+            }
         });
     }
 
@@ -52,13 +75,36 @@ class KitsManager
                  * TODO kits
                  */
 
-                $displayName = (string) $kitData['displayName'];
-                $description = (string) $kitData['description'];
-                $unlockDay   = (int)    $kitData['unlock_day'];
-                $inv         = Utils::loadItems($kitData['contents']['inv']);
-                $armor       = Utils::loadItems($kitData['contents']['armor']);
+                $displayName  = (string) $kitData['displayName'];
+                $description  = (string) $kitData['description'];
+                $unlockDay    = (int)    $kitData['unlock_day'];
+                $inv          = Utils::loadItems($kitData['contents']['inv']);
+                $armor        = Utils::loadItems($kitData['contents']['armor']);
+                $item         = StringToItemParser::getInstance()->parse((string ) $kitData['icon']) ?? VanillaItems::PAPER();
 
-                $item = StringToItemParser::getInstance()->parse((string ) $kitData['icon']) ?? VanillaItems::PAPER();
+                $requirements     = [];
+                $requirementsData = (array) $kitData['requirements'];
+                foreach ($requirementsData as $i => $requirementData){
+                    if(! isset($requirementData['type'], $requirementData['target'], $requirementData['amount'])){
+                        $this->main->getLogger()->error("Failed to load requirement $i for kit $kitId: data are missing (type, target, amount)");
+                        continue;
+                    }
+
+                    $typeValue = (string) $requirementData['type'];
+                    $type      = KitRequirementType::tryFrom($typeValue);
+                    if ($type === null){
+                        $this->main->getLogger()->error("Failed to load requirement $i for kit $kitId: unknown requirement type: " . $typeValue);
+                        continue;
+                    }
+
+                    $amount = (int) $requirementData['amount'];
+                    $target = $requirementData['target'];
+                    $requirements[$i] = new KitRequirement(
+                        type: $type,
+                        target: $target,
+                        amount: $amount
+                    );
+                }
 
                 $kit = new Kit(
                     id: $kitId,
@@ -69,6 +115,7 @@ class KitsManager
                     item: $item,
                     inv: $inv,
                     armor: $armor,
+                    requirements: $requirements
                 );
 
                 $kits[$kitId] = $kit;
@@ -89,6 +136,23 @@ class KitsManager
     public function getKits(): array
     {
         return $this->kits;
+    }
+
+    /** @return Kit[] */
+    public function getKitsByKingdom(?Kingdom $kingdom = null): array
+    {
+        if ($kingdom === null){
+            return $this->kits;
+        }
+
+        return array_filter($this->kits, function ($kit) use ($kingdom) {
+            return $kit->getKingdom()->getId() === $kingdom->getId();
+        });
+    }
+
+    public function getRequirementHandlerFactory(): RequirementHandlerFactory
+    {
+        return $this->requirementHandlerFactory;
     }
 
 }

@@ -2,7 +2,6 @@
 
 namespace fenomeno\WallsOfBetrayal\Utils;
 
-use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -24,7 +23,7 @@ class MessagesUtils {
     }
 
     public static function sendTo(Player|Server|array $player, string $id, array $extraTags = [], ?string $default = null) : void {
-        $message = self::getMessage($id, $default ?? $id, $extraTags);
+        $message = self::getMessage($id, $extraTags, $default ?? $id);
         if ($message === "") return;
 
         $type = self::$config->getNested($id . '.type', 'message');
@@ -62,7 +61,7 @@ class MessagesUtils {
         }
     }
 
-    public static function getMessage(string $id, ?string $default = null, array $extraTags = []) : string {
+    public static function getMessage(string $id, array $extraTags = [], ?string $default = null) : string {
         $default ??= $id;
         if (self::$config->getNested($id.'.message') !== null) {
             $message = (string)self::$config->getNested($id.'.message', $default);

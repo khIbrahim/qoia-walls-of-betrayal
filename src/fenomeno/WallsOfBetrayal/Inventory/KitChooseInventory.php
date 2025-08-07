@@ -3,8 +3,10 @@
 namespace fenomeno\WallsOfBetrayal\Inventory;
 
 use fenomeno\WallsOfBetrayal\Config\InventoriesConfig;
+use fenomeno\WallsOfBetrayal\Enum\KitRequirementType;
 use fenomeno\WallsOfBetrayal\Game\Handlers\KitClaimHandler;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
@@ -14,11 +16,17 @@ class KitChooseInventory extends WInventory
 
     private const KIT_TAG = 'Kit';
 
+    public function __construct(private readonly Player $player)
+    {
+        parent::__construct();
+    }
+
     protected function getInventoryDTO(): object
     {
-        $inventoryDTO = InventoriesConfig::getInventoryDTO(InventoriesConfig::CHOOSE_KIT_INVENTORY);
+        $session      = Session::get($this->player);
+        $inventoryDTO = clone InventoriesConfig::getInventoryDTO(InventoriesConfig::CHOOSE_KIT_INVENTORY);
         $inventoryDTO->items = [];
-        $kits = array_values(Main::getInstance()->getKitsManager()->getKits());
+        $kits = array_values(Main::getInstance()->getKitsManager()->getKitsByKingdom($session->isLoaded() ? $session->getKingdom() : null));
         foreach ($inventoryDTO->targetIndexes as $i => $index) {
             $kit = $kits[$i] ?? null;
             if ($kit) {
@@ -36,18 +44,18 @@ class KitChooseInventory extends WInventory
                 $lore[] = "§4Requirements:";
 
                 foreach ($kit->getRequirements() as $req) {
-                    $progress = 0; // à remplacer dynamiquement
+                    $progress = $req->getProgress();
                     $required = $req->getAmount();
-                    $icon = $req->getType() === "item" ? "§7•" : "§7×";
-                    $target = ucfirst($req->getTarget());
+                    $icon = $req->getType() === KitRequirementType::BREAK ? "§7•" : "§7×";
+                    $target = ucfirst((string) $req->getTarget());
 
                     $lore[] = "§r§8  $icon §f$target §7– §f{$progress}§8/§f$required";
                 }
 
                 $lore[] = "§r";
 
-                $isCompleted = true;
-                if ($isCompleted) {
+                $unlocked = $kit->isUnlocked();
+                if ($unlocked) {
                     $lore[] = "§r§a✔ Ready to claim";
                 } else {
                     $lore[] = "§r§c✖ Incomplete";

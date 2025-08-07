@@ -33,7 +33,7 @@ class KitCommand extends WCommand
         assert($sender instanceof Player);
 
         if(! isset($args[self::KIT_ARGUMENT])) {
-            (new KitChooseInventory())->send($sender);
+            (new KitChooseInventory($sender))->send($sender);
             return;
         }
 

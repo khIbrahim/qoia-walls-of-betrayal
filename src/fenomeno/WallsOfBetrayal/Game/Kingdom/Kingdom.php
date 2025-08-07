@@ -1,6 +1,7 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
+use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\item\Item;
@@ -19,7 +20,7 @@ class Kingdom
         public string $description,
         public ?Item $item = null,
         public ?Position $spawn = null,
-        public array $players = []
+        public array $kits = []
     ){}
 
     public function broadcastMessage(string $message, array $extraTags = [], ?string $default = null): void
@@ -49,6 +50,22 @@ class Kingdom
         }
 
         return $members;
+    }
+
+    public function getId(): string
+    {
+        return $this->id;
+    }
+
+    public function getDisplayName(): string
+    {
+        return $this->displayName;
+    }
+
+    /** @return Kit[] */
+    public function getKits(): array
+    {
+        return $this->kits;
     }
 
 }
