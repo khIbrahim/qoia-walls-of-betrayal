@@ -51,9 +51,9 @@ class Session
 
                 if ($this->kingdom === null){
                     $this->promptKingdomChoice();
-                } else {
-                    PlayerJoinHandler::handle($this->player);
                 }
+
+                PlayerJoinHandler::handle($this->player);
             }, function (){
                 $this->player->kick(MessagesUtils::getMessage('unstable'));
             });

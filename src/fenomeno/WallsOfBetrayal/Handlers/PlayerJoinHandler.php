@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Handlers;
 
+use fenomeno\WallsOfBetrayal\Events\PlayerJoinWobEvent;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\player\Player;
@@ -18,10 +19,13 @@ class PlayerJoinHandler
             return;
         }
 
+        $ev = new PlayerJoinWobEvent($player);
+        $ev->call();
+
         if($session->getKingdom() !== null){
             $kingdom = $session->getKingdom();
             MessagesUtils::sendTo($player, 'kingdoms.onJoin.' . $kingdom->id);
-            $kingdom->broadcastMessage('kingdoms.onJoin.broadcast.', [
+            $kingdom->broadcastMessage('kingdoms.onJoin.broadcast.' . $kingdom->id, [
                 '{PLAYER}'  => $player->getName(),
                 '{KINGDOM}' => $kingdom->displayName
             ]);

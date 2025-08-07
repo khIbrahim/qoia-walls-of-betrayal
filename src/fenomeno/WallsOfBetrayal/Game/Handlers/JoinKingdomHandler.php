@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Game\Handlers;
 
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
+use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomEvent;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
@@ -31,7 +32,9 @@ class JoinKingdomHandler
 
         $session->setChoosingKingdom(true);
         $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), $kingdom->id);
-        Main::getInstance()->getDatabaseManager()->getPlayerRepository()->updatePlayerKingdom($payload, function () use ($player, $kingdom, $session) {
+        $ev = new PlayerJoinKingdomEvent($player, $kingdom);
+        Main::getInstance()->getDatabaseManager()->getPlayerRepository()->updatePlayerKingdom($payload, function () use ($ev, $player, $kingdom, $session) {
+            $ev->call();
             $session->setKingdom($kingdom);
             $session->setChoosingKingdom(false);
             if($kingdom->spawn !== null){
@@ -42,7 +45,8 @@ class JoinKingdomHandler
             $player->getWorld()->addParticle($player->getPosition(), new EndermanTeleportParticle());
             $kingdom->broadcastMessage('kingdoms.onFirstJoin.' . $kingdom->id, ['{PLAYER}' => $player->getName()]);
             //TODO HISTORIQUE
-        }, function(Throwable $e) use ($session, $player) {
+        }, function(Throwable $e) use ($ev, $session, $player) {
+            $ev->cancel();
             $session->setChoosingKingdom(false);
             $player->sendMessage(TextFormat::RED . "An error occurred while choosing the kingdom :" . $e->getMessage());
         });

@@ -3,8 +3,10 @@ namespace fenomeno\WallsOfBetrayal;
 
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
+use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
+use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Utils\KingdomConfig;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
@@ -18,6 +20,7 @@ class Main extends PluginBase
 
     private KingdomManager $kingdomManager;
     private DatabaseManager $databaseManager;
+    private PhaseManager    $phaseManager;
 
     protected function onLoad(): void
     {
@@ -35,6 +38,7 @@ class Main extends PluginBase
 
         $this->kingdomManager  = new KingdomManager($this);
         $this->databaseManager = new DatabaseManager($this);
+        $this->phaseManager    = new PhaseManager($this);
 
         $this->getServer()->getCommandMap()->registerAll('wob', [
             new ChooseCommand($this)
@@ -42,6 +46,7 @@ class Main extends PluginBase
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new KingdomListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new ScoreboardUpdateListener($this), $this);
     }
 
     public function getDatabaseManager(): DatabaseManager
@@ -52,6 +57,16 @@ class Main extends PluginBase
     public function getKingdomManager(): KingdomManager
     {
         return $this->kingdomManager;
+    }
+
+    public function getPhaseManager(): PhaseManager
+    {
+        return $this->phaseManager;
+    }
+
+    protected function onDisable(): void
+    {
+        $this->phaseManager->save();
     }
 
 }

@@ -8,6 +8,8 @@ use fenomeno\WallsOfBetrayal\Main;
 class KingdomConfig
 {
 
+    public const SCOREBOARD_NAME = "wob.scoreboard";
+
     private static ?InventoryDTO $chooseInventoryDTO = null;
 
     public static function init(Main $main): void
