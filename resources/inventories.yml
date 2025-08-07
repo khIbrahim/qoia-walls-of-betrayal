@@ -1,0 +1,12 @@
+inventories:
+  choose-kingdom:
+    name: "§r§l§6Choose Your Destiny"
+    size: 27
+    targetIndexes: [11, 15]
+    contents: []
+
+  choose-kit:
+    name: "§r§l§6Choose Your Kit"
+    size: 27
+    targetIndexes: [11, 15]
+    contents: []

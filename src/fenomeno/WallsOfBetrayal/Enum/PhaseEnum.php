@@ -55,4 +55,14 @@ enum PhaseEnum: string
         };
     }
 
+    public function wallState(): WallStateEnum
+    {
+        return match ($this) {
+            self::LOBBY, self::PREPARATION, self::PAUSE => WallStateEnum::INTACT,
+            self::GRIND => WallStateEnum::CRACKING,
+            self::BATTLE => WallStateEnum::BREACHED,
+            self::END => WallStateEnum::REGENERATING,
+        };
+    }
+
 }

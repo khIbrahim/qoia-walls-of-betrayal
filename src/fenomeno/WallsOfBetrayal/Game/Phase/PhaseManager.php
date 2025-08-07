@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Game\Phase;
 
 use fenomeno\WallsOfBetrayal\Enum\PhaseEnum;
+use fenomeno\WallsOfBetrayal\Enum\WallStateEnum;
 use fenomeno\WallsOfBetrayal\Main;
 use pocketmine\utils\Config;
 
@@ -24,6 +25,11 @@ class PhaseManager
     public function getCurrentPhase(): PhaseEnum
     {
         return $this->currentPhase;
+    }
+
+    public function getWallState(): WallStateEnum
+    {
+        return $this->currentPhase->wallState();
     }
 
     public function getCurrentDay(): int

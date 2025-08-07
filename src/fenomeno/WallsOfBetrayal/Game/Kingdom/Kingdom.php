@@ -18,7 +18,8 @@ class Kingdom
         public string $color,
         public string $description,
         public ?Item $item = null,
-        public ?Position $spawn = null
+        public ?Position $spawn = null,
+        public array $players = []
     ){}
 
     public function broadcastMessage(string $message, array $extraTags = [], ?string $default = null): void

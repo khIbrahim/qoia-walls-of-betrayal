@@ -2,12 +2,14 @@
 namespace fenomeno\WallsOfBetrayal;
 
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
+use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
+use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
 use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
-use fenomeno\WallsOfBetrayal\Utils\KingdomConfig;
+use fenomeno\WallsOfBetrayal\Utils\WobConfig;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
@@ -18,15 +20,16 @@ class Main extends PluginBase
 {
     use SingletonTrait;
 
-    private KingdomManager $kingdomManager;
+    private KingdomManager  $kingdomManager;
     private DatabaseManager $databaseManager;
     private PhaseManager    $phaseManager;
+    private KitsManager     $kitsManager;
 
     protected function onLoad(): void
     {
         self::setInstance($this);
         $this->saveDefaultConfig();
-        KingdomConfig::init($this);
+        WobConfig::init($this);
         MessagesUtils::init($this);
     }
 
@@ -39,9 +42,11 @@ class Main extends PluginBase
         $this->kingdomManager  = new KingdomManager($this);
         $this->databaseManager = new DatabaseManager($this);
         $this->phaseManager    = new PhaseManager($this);
+        $this->kitsManager     = new KitsManager($this);
 
         $this->getServer()->getCommandMap()->registerAll('wob', [
-            new ChooseCommand($this)
+            new ChooseCommand($this),
+            new KitCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -62,6 +67,11 @@ class Main extends PluginBase
     public function getPhaseManager(): PhaseManager
     {
         return $this->phaseManager;
+    }
+
+    public function getKitsManager(): KitsManager
+    {
+        return $this->kitsManager;
     }
 
     protected function onDisable(): void

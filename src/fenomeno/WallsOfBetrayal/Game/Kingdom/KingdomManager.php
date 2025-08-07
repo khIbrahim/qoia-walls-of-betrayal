@@ -25,7 +25,7 @@ class KingdomManager
 
         $this->load(function (array $kingdoms){
             $this->kingdoms = $kingdoms;
-            $this->main->getLogger()->info(TextFormat::GREEN . count($kingdoms) . " kingdoms loaded §6(" . implode(", ", array_map(fn(Kingdom $kingdom) => $kingdom->displayName, $kingdoms)) . ")");
+            $this->main->getLogger()->info(TextFormat::GREEN . count($kingdoms) . " kingdoms loaded §6(" . implode(", ", array_map(fn(Kingdom $kingdom) => $kingdom->displayName, $kingdoms)) . "§6)");
         });
     }
 
@@ -36,7 +36,7 @@ class KingdomManager
             try {
                 $id = (string) $id;
                 if (! isset($kingdomData['display_name'], $kingdomData['color'], $kingdomData['icon'], $kingdomData['description'], $kingdomData['spawn'])) {
-                    $this->main->getLogger()->error(TextFormat::RESET . "Failed to load kingdom $id, data missing, verify the config in resources/kingdoms.yml");
+                    $this->main->getLogger()->error("Failed to load kingdom $id, data missing, verify the config in resources/kingdoms.yml");
                     continue;
                 }
 

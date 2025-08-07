@@ -7,3 +7,5 @@ author: fenomeno
 permissions:
   command.choose:
     default: true
+  command.kit:
+    default: true

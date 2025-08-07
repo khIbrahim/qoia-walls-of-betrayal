@@ -24,6 +24,7 @@ class PlayerJoinHandler
 
         if($session->getKingdom() !== null){
             $kingdom = $session->getKingdom();
+            $player->sendTitle("§c§lWALLS §6§lof §e§lBETRAYAL"); // j'enlève après
             MessagesUtils::sendTo($player, 'kingdoms.onJoin.' . $kingdom->id);
             $kingdom->broadcastMessage('kingdoms.onJoin.broadcast.' . $kingdom->id, [
                 '{PLAYER}'  => $player->getName(),

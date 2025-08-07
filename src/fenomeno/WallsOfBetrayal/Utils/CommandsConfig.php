@@ -6,6 +6,7 @@ use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\Main;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
+use Throwable;
 
 class CommandsConfig
 {
@@ -31,18 +32,10 @@ class CommandsConfig
                 $aliases = (array) ($commandData['aliases'] ?? []);
 
                 self::$commandsDTO[$commandId] = new CommandDTO($name, $description, $usage, $aliases);
-            } catch (\Throwable $e){
+            } catch (Throwable $e){
                 Main::getInstance()->getLogger()->error("Failed to parse command DTO $commandId: " . $e->getMessage());
             }
         }
-    }
-
-    /**
-     * @return array
-     */
-    public static function getCommandsDTO(): array
-    {
-        return self::$commandsDTO;
     }
 
     public static function getCommandById(string $id) : CommandDTO

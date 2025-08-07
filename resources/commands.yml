@@ -4,3 +4,11 @@ choose:
   usage: "§e/choose <kingdom> §8– §7Available: §cgorvok§7, §9thragmar"
   aliases:
     - "choosekingdom"
+
+kit:
+  name: "kit"
+  description: "§7§oView and unlock kits available to your kingdom"
+  usage: "§e/kit <kitId> §8– §7Open the kit menu | Claim a known kit"
+  aliases:
+    - "kits"
+    - "kitmenu"

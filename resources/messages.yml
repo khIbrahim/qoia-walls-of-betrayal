@@ -23,3 +23,6 @@ unknownKingdom: "{RED}Unknown Kingdom: {KINGDOM}"
 cantCloseChooseInventory:
   message: "{RED}You need to choose a kingdom to start your adventure."
   type: "title"
+
+kits:
+  unknown: "{RED}Unknown Kit Id: {KIT}"

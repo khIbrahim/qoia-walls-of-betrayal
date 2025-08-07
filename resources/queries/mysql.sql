@@ -28,3 +28,13 @@
         ON DUPLICATE KEY UPDATE kingdom = VALUES(kingdom);
     -- # }
 -- # }
+
+-- # { kit_requirements
+    -- # { init
+        CREATE TABLE IF NOT EXISTS kit_requirement (
+            kingdom_id VARCHAR(64) NOT NULL,
+            kit_id VARCHAR(64) NOT NULL,
+            amount INTEGER NOT NULL
+        );
+    -- # }
+-- # }

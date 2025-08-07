@@ -2,10 +2,10 @@
 
 namespace fenomeno\WallsOfBetrayal\Inventory;
 
+use fenomeno\WallsOfBetrayal\Config\InventoriesConfig;
 use fenomeno\WallsOfBetrayal\Game\Handlers\JoinKingdomHandler;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\KingdomConfig;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
@@ -20,7 +20,7 @@ class ChooseKingdomInventory extends WInventory
 
     protected function getInventoryDTO(): object
     {
-        $inventoryDTO = KingdomConfig::getChooseInventoryDTO();
+        $inventoryDTO = InventoriesConfig::getInventoryDTO(InventoriesConfig::CHOOSE_KINGDOM_INVENTORY);
         $inventoryDTO->items = [];
         $kingdoms = array_values(Main::getInstance()->getKingdomManager()->getKingdoms());
         foreach ($inventoryDTO->targetIndexes as $i => $index) {
