@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Sessions;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
+use fenomeno\WallsOfBetrayal\Handlers\PlayerJoinHandler;
 use fenomeno\WallsOfBetrayal\Inventory\ChooseKingdomInventory;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
@@ -27,7 +28,8 @@ class Session
 
     private bool $loaded = false;
 
-    private ?Kingdom $kingdom = null;
+    private ?Kingdom $kingdom     = null;
+    private bool $choosingKingdom = false;
 
     public function __construct(private readonly Player $player){}
 
@@ -50,7 +52,7 @@ class Session
                 if ($this->kingdom === null){
                     $this->promptKingdomChoice();
                 } else {
-                    MessagesUtils::sendTo($this->player, 'kingdoms.onJoin.' . $this->kingdom->id);
+                    PlayerJoinHandler::handle($this->player);
                 }
             }, function (){
                 $this->player->kick(MessagesUtils::getMessage('unstable'));
@@ -74,6 +76,16 @@ class Session
     public function setKingdom(?Kingdom $kingdom): void
     {
         $this->kingdom = $kingdom;
+    }
+
+    public function isChoosingKingdom(): bool
+    {
+        return $this->choosingKingdom;
+    }
+
+    public function setChoosingKingdom(bool $choosingKingdom): void
+    {
+        $this->choosingKingdom = $choosingKingdom;
     }
 
 }

@@ -29,18 +29,23 @@ class JoinKingdomHandler
             return;
         }
 
+        $session->setChoosingKingdom(true);
         $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), $kingdom->id);
         Main::getInstance()->getDatabaseManager()->getPlayerRepository()->updatePlayerKingdom($payload, function () use ($player, $kingdom, $session) {
             $session->setKingdom($kingdom);
+            $session->setChoosingKingdom(false);
             if($kingdom->spawn !== null){
                 $player->teleport($kingdom->spawn);
             }
             MessagesUtils::sendTo($player, 'kingdoms.onJoin.' . $kingdom->id);
             $player->broadcastSound(new XpLevelUpSound(1));
             $player->getWorld()->addParticle($player->getPosition(), new EndermanTeleportParticle());
-            //TODO NOTIFY ALL KINGDOM MEMBERS WITH MESSAGE AND SOUND & SERVER WITH MESSAGE ONLY
+            $kingdom->broadcastMessage('kingdoms.onFirstJoin.' . $kingdom->id, ['{PLAYER}' => $player->getName()]);
             //TODO HISTORIQUE
-        }, fn(Throwable $e) => $player->sendMessage(TextFormat::RED . "An error occurred while choosing the kingdom :" . $e->getMessage()));
+        }, function(Throwable $e) use ($session, $player) {
+            $session->setChoosingKingdom(false);
+            $player->sendMessage(TextFormat::RED . "An error occurred while choosing the kingdom :" . $e->getMessage());
+        });
     }
 
 }

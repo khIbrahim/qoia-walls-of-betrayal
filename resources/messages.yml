@@ -1,12 +1,25 @@
 kingdoms:
   onJoin:
+    broadcast:
+      message: "{YELLOW}{PLAYER} has joined the ranks of {KINGDOM}!"
+      type: "popup"
     gorvok:
-      message: "{RED}Welcome to the Gor'Vok Clan!\n§7Honor, strength, and loyalty await you."
-      type: "title"
+      message: "{RED}Welcome to the Gor'Vok Clan!\n{GRAY}Honor, strength, and loyalty await you."
+      type: "toast"
     thragmar:
-      message: "§9You joined Thrag'Mar Legion!\n§7Shadow, magic, and betrayal are your path."
-      type: "title"
+      message: "§9Welcome to the Thrag'Mar Legion Clan!\n{GRAY}Shadow, magic, and betrayal are your path."
+      type: "toast"
+  onFirstJoin:
+    gorvok:
+      message: "{GOLD}{PLAYER} has sworn allegiance to the Gor'Vok Clan!\n{GRAY}Their blood now binds them to honor and strength."
+      type: "popup"
+    thragmar:
+      message: "§b{PLAYER} has pledged loyalty to the Thrag'Mar Legion!\n{GRAY}Another pawn for the shadows has risen..."
+      type: "popup"
 
 unstable: "{RED}Your connection is unstable, please reconnect"
 alreadyInKingdom: "{RED}You are already in a kingdom!"
 unknownKingdom: "{RED}Unknown Kingdom: {KINGDOM}"
+cantCloseChooseInventory:
+  message: "{RED}You need to choose a kingdom to start your adventure."
+  type: "title"

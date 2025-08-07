@@ -23,25 +23,43 @@ class MessagesUtils {
         }
     }
 
-    public static function sendTo(CommandSender $player, string $id, array $extraTags = [], ?string $default = null) : void {
+    public static function sendTo(Player|Server|array $player, string $id, array $extraTags = [], ?string $default = null) : void {
         $message = self::getMessage($id, $default ?? $id, $extraTags);
-        if ($message === "")
+        if ($message === "") return;
+
+        $type = self::$config->getNested($id . '.type', 'message');
+
+        if (is_array($player)) {
+            foreach ($player as $p) {
+                if ($p instanceof Player) {
+                    self::sendTo($p, $id, $extraTags, $default);
+                }
+            }
             return;
-        if ($player instanceof Player){
-            match(self::$config->getNested($id.'.type')){
+        }
+
+        if ($player instanceof Player) {
+            match ($type) {
                 'title' => $player->sendTitle($message),
                 'popup' => $player->sendPopup($message),
                 'tip' => $player->sendTip($message),
-                default => $player->sendMessage($message)
+                'toast' => $player->sendToastNotification(
+                    explode("\n", $message)[0] ?? "",
+                    explode("\n", $message)[1] ?? ""
+                ),
+                default => $player->sendMessage($message),
             };
-        } elseif($player instanceof Server){
-            match(self::$config->getNested($id.'.type')){
+            return;
+        }
+
+        if ($player instanceof Server) {
+            match ($type) {
                 'title' => $player->broadcastTitle($message),
                 'popup' => $player->broadcastPopup($message),
                 'tip' => $player->broadcastTip($message),
-                default => $player->broadcastMessage($message)
+                default => $player->broadcastMessage($message),
             };
-        } else $player->sendMessage($message);
+        }
     }
 
     public static function getMessage(string $id, ?string $default = null, array $extraTags = []) : string {
