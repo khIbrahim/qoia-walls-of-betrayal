@@ -4,12 +4,11 @@ namespace fenomeno\WallsOfBetrayal\Database\Payload\Player;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\PayloadInterface;
 
-final readonly class SetPlayerKingdomPayload implements PayloadInterface
+final readonly class UpdatePlayerAbilities implements PayloadInterface
 {
 
     public function __construct(
         private string $uuid,
-        private string $kingdomId,
         private array  $abilities
     ){}
 
@@ -17,8 +16,7 @@ final readonly class SetPlayerKingdomPayload implements PayloadInterface
     {
         return [
             'uuid'      => $this->uuid,
-            'kingdom'   => $this->kingdomId,
-            'abilities' => json_encode($this->abilities)
+            'abilities' => json_encode($this->abilities),
         ];
     }
 }

@@ -2,8 +2,10 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
+use fenomeno\WallsOfBetrayal\Events\PhaseChangeEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinWobEvent;
+use fenomeno\WallsOfBetrayal\Game\Phase\DayChangeEvent;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\ScoreboardManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
@@ -33,14 +35,31 @@ class ScoreboardUpdateListener implements Listener
 
     public function onKingdomJoin(PlayerJoinKingdomEvent $event): void
     {
-        $player = $event->getPlayer();
+        $this->updateScoreboard($event->getPlayer(), 2,  "§7Kingdom : §r" . $event->getKingdom()->displayName ?? 'null');
+    }
 
+    public function onPhaseChange(PhaseChangeEvent $event): void
+    {
+        foreach ($this->main->getServer()->getOnlinePlayers() as $player) {
+            $this->updateScoreboard($player, 2,  "§7Phase   : §f" . $event->getTo()->displayName());
+        }
+    }
+
+    public function onDayChange(DayChangeEvent $event): void
+    {
+        foreach ($this->main->getServer()->getOnlinePlayers() as $player) {
+            $this->updateScoreboard($player, 2,  "§7Day      : §f" . $event->getTo() . "/" . WobConfig::getTotalDays());
+        }
+    }
+
+    private function updateScoreboard(Player $player, int $line, string $text): void
+    {
         $scoreboard = $this->scoreboard[$player] ?? null;
         if (! $scoreboard) {
             return;
         }
-        $scoreboard->removeLine(WobConfig::SCOREBOARD_NAME, 2);
-        $scoreboard->setLine(WobConfig::SCOREBOARD_NAME, 2,  "§7Kingdom : §r" . $event->getKingdom()->displayName ?? 'null');
+        $scoreboard->removeLine(WobConfig::SCOREBOARD_NAME, $line);
+        $scoreboard->setLine(WobConfig::SCOREBOARD_NAME, $line, $text);
     }
 
     public function onQuit(PlayerQuitEvent $event): void
@@ -62,7 +81,7 @@ class ScoreboardUpdateListener implements Listener
             "§a§7",
             "§7Kingdom : §r" . $session->getKingdom()?->displayName ?? 'null',
             "§7Phase   : §f" . $this->main->getPhaseManager()->getCurrentPhase()->displayName(),
-            "§7Day      : §f" . $this->main->getPhaseManager()->getCurrentDay() . "/14",
+            "§7Day      : §f" . $this->main->getPhaseManager()->getCurrentDay() . "/" . WobConfig::getTotalDays(),
             "§7Wall      : §f" . $this->main->getPhaseManager()->getWallState()->displayName(),
             "§r§7",
             "§7Score   : §f1290 pts",

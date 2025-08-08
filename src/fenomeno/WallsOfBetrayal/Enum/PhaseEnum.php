@@ -27,22 +27,6 @@ enum PhaseEnum: string
     // Phase d'interruption / pause, utilisée si le jeu doit être suspendu
     case PAUSE = 'pause';
 
-    /**
-     * Durée (en jours réels) de chaque phase pour la gestion du cycle complet.
-     * Exemple indicatif, à ajuster selon ton gameplay et timing.
-     */
-    public function day(): int
-    {
-        return match($this) {
-            self::LOBBY => 1,          // 1 day in lobby for players to join and prepare
-            self::PREPARATION => 2,    // 2 days to gather resources and build defenses
-            self::GRIND => 7,          // 7 days to farm, craft, strategize
-            self::BATTLE => 4,         // 4 days of open PvP action
-            self::END => 1,            // 1 day to announce results and reset
-            self::PAUSE => 0           // no duration, paused state
-        };
-    }
-
     public function displayName(): string
     {
         return match($this) {
@@ -62,6 +46,18 @@ enum PhaseEnum: string
             self::GRIND => WallStateEnum::CRACKING,
             self::BATTLE => WallStateEnum::BREACHED,
             self::END => WallStateEnum::REGENERATING,
+        };
+    }
+
+    public function next(): PhaseEnum
+    {
+        return match($this){
+            self::LOBBY => self::PREPARATION,
+            self::PREPARATION => self::GRIND,
+            self::GRIND => self::BATTLE,
+            self::BATTLE => self::END,
+            self::END => self::PAUSE,
+            self::PAUSE => self::LOBBY
         };
     }
 

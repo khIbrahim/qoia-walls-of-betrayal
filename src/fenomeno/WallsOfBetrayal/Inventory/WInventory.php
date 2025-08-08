@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Inventory;
 
+use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenu;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\transaction\InvMenuTransaction;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\transaction\InvMenuTransactionResult;
@@ -18,6 +19,11 @@ abstract class WInventory
         $dto = $this->getInventoryDTO();
         $this->invMenu = InvMenu::create($dto->type);
         $this->invMenu->setName($dto->name);
+        $items = $dto->items;
+        foreach ($items as $item) {
+            $item->setCustomName(str_replace(array_keys($this->placeHolders()), array_values($this->placeHolders()), $item->getCustomName()));
+            $item->setLore(str_replace(array_keys($this->placeHolders()), array_values($this->placeHolders()), $item->getLore()));
+        }
         $this->invMenu->getInventory()->setContents($dto->items);
         $this->invMenu->setListener(function (InvMenuTransaction $transaction): InvMenuTransactionResult {
             $player = $transaction->getPlayer();
@@ -31,7 +37,7 @@ abstract class WInventory
         $this->invMenu->setInventoryCloseListener(fn (Player $player, Inventory $inventory) => $this->onClose($player, $inventory));
     }
 
-    abstract protected function getInventoryDTO(): object;
+    abstract protected function getInventoryDTO(): InventoryDTO;
 
     abstract protected function onClick(Player $player, Item $item): bool;
 
@@ -40,14 +46,23 @@ abstract class WInventory
         return $this->invMenu->getInventory();
     }
 
-    public function send(Player $player): void
+    public function send(?Player $player = null): void
     {
+        if ($player === null && isset($this->player)){
+            $this->invMenu->send($this->player);
+            return;
+        }
         $this->invMenu->send($player);
     }
 
     protected function onClose(Player $player, Inventory $inventory): void
     {
 
+    }
+
+    protected function placeHolders(): array
+    {
+        return [];
     }
 
 }

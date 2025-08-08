@@ -4,10 +4,17 @@
         CREATE TABLE IF NOT EXISTS players(
             uuid VARCHAR(36) NOT NULL,
             kingdom VARCHAR(64) DEFAULT NULL,
+            abilities JSON,
 
             PRIMARY KEY (uuid),
             INDEX idx_uuid(uuid)
         );
+    -- # }
+
+    -- # { updateAbilities
+    -- # :abilities string
+    -- # :uuid string
+        UPDATE players SET abilities = :abilities WHERE uuid = :uuid;
     -- # }
 
     -- # { load
@@ -23,8 +30,9 @@
     -- # { setKingdom
     -- # :uuid string
     -- # :kingdom string
-        INSERT INTO players (uuid, kingdom)
-        VALUES (:uuid, :kingdom)
+    -- # :abilities string
+        INSERT INTO players (uuid, kingdom, abilities)
+        VALUES (:uuid, :kingdom, :abilities)
         ON DUPLICATE KEY UPDATE kingdom = VALUES(kingdom);
     -- # }
 -- # }

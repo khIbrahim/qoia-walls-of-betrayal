@@ -2,6 +2,7 @@
 namespace fenomeno\WallsOfBetrayal\Sessions;
 
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Handlers\PlayerJoinHandler;
@@ -16,6 +17,7 @@ class Session
 {
 
     private static WeakMap $map;
+    private array $abilities = [];
 
     public static function get(Player $player) : Session
     {
@@ -26,7 +28,7 @@ class Session
         return self::$map[$player] ??= new self($player);
     }
 
-    private bool $loaded = false;
+    private bool $loaded          = false;
 
     private ?Kingdom $kingdom     = null;
     private bool $choosingKingdom = false;
@@ -42,7 +44,8 @@ class Session
         Main::getInstance()->getDatabaseManager()->getPlayerRepository()->load($payload)
             ->onCompletion(function (?PlayerData $data){
                 if ($data !== null){
-                    $this->kingdom = Main::getInstance()->getKingdomManager()->getKingdomById($data->kingdom);
+                    $this->kingdom   = Main::getInstance()->getKingdomManager()->getKingdomById($data->kingdom);
+                    $this->abilities = array_filter($data->abilities, fn(string $abilityId) => Main::getInstance()->getAbilityManager()->getAbilityById($abilityId) !== null);
                 }
 
                 $this->player->setNoClientPredictions(false);
@@ -86,6 +89,27 @@ class Session
     public function setChoosingKingdom(bool $choosingKingdom): void
     {
         $this->choosingKingdom = $choosingKingdom;
+    }
+
+    public function getAbilities(): array
+    {
+        return $this->abilities;
+    }
+
+    public function addAbilities(array $abilities, bool $update = false): void
+    {
+        foreach ($abilities as $ability){
+            $this->abilities[] = $ability;
+        }
+
+        if ($update){
+            Main::getInstance()->getDatabaseManager()
+                ->getPlayerRepository()
+                ->updatePlayerAbilities(new UpdatePlayerAbilities(
+                    uuid: $this->player->getUniqueId()->toString(),
+                    abilities: $this->abilities
+                ));
+        }
     }
 
 }

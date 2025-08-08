@@ -12,3 +12,10 @@ kit:
   aliases:
     - "kits"
     - "kitmenu"
+
+abilities:
+  name: "abilities"
+  description: "§7§oView and unlock abilities"
+  usage: "§e/kit <kitId> §8– §7Open the abilities menu | Activate a known ability"
+  aliases:
+    - "ability"

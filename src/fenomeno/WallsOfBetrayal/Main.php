@@ -1,12 +1,15 @@
 <?php
 namespace fenomeno\WallsOfBetrayal;
 
+use fenomeno\WallsOfBetrayal\Commands\Player\AbilitiesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
+use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
 use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
+use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
@@ -25,6 +28,7 @@ class Main extends PluginBase
     private DatabaseManager $databaseManager;
     private PhaseManager    $phaseManager;
     private KitsManager     $kitsManager;
+    private AbilityManager  $abilityManager;
 
     protected function onLoad(): void
     {
@@ -40,6 +44,7 @@ class Main extends PluginBase
             InvMenuHandler::register($this);
         }
 
+        $this->abilityManager  = new AbilityManager($this);
         $this->kingdomManager  = new KingdomManager($this);
         $this->databaseManager = new DatabaseManager($this);
         $this->phaseManager    = new PhaseManager($this);
@@ -47,13 +52,15 @@ class Main extends PluginBase
 
         $this->getServer()->getCommandMap()->registerAll('wob', [
             new ChooseCommand($this),
-            new KitCommand($this)
+            new KitCommand($this),
+            new AbilitiesCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new KingdomListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new ScoreboardUpdateListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new KitsListener($this), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new AbilitiesListener($this), $this);
     }
 
     public function getDatabaseManager(): DatabaseManager
@@ -74,6 +81,11 @@ class Main extends PluginBase
     public function getKitsManager(): KitsManager
     {
         return $this->kitsManager;
+    }
+
+    public function getAbilityManager(): AbilityManager
+    {
+        return $this->abilityManager;
     }
 
     protected function onDisable(): void

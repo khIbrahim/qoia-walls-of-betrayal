@@ -14,6 +14,7 @@ class InventoriesConfig
 
     public const CHOOSE_KINGDOM_INVENTORY = 'choose-kingdom';
     public const CHOOSE_KIT_INVENTORY     = 'choose-kit';
+    public const ABILITIES_INVENTORY      = 'abilities';
 
     /** @var array<string, InventoryDTO> */
     private static array $inventoriesDTO = [];

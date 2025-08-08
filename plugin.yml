@@ -9,3 +9,5 @@ permissions:
     default: true
   command.kit:
     default: true
+  command.abilities:
+    default: true

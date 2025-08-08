@@ -13,5 +13,6 @@ interface Statements
     public const INSERT_KIT_REQUIREMENT    = 'kit_requirements.insert';
     public const INCREMENT_KIT_REQUIREMENT = 'kit_requirements.increment';
     public const INIT_KIT_REQUIREMENT      = 'kit_requirements.init';
+    public const UPDATE_PLAYER_ABILITIES   = 'players.updateAbilities';
 
 }

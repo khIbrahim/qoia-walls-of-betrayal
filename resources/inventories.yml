@@ -10,3 +10,25 @@ inventories:
     size: 27
     targetIndexes: [11, 15]
     contents: []
+
+  abilities:
+    name: "§r§l§6Abilities"
+    size: 27
+    targetIndexes: [ 11, 15 ]
+    contents:
+      4:
+        item: "book"
+        display-name: "§r§6Guide"
+        description:
+          - ""
+          - "§r§4§lWALLS OF BETRAYAL — ABILITIES"
+          - "§r──────────────────────────────"
+          - "§r{ABILITIES}"
+          - "§r──────────────────────────────"
+          - "§7§lHOW TO USE"
+          - "§7• Hover over an ability for a preview"
+          - "§7• Left-click to activate your ability"
+          - "§7• Or use: §4/ability <ability_id>"
+          - "§r──────────────────────────────"
+          - "§6Unlocked: {UNLOCKED}   §7Locked: {LOCKED}"
+          - "§r──────────────────────────────"

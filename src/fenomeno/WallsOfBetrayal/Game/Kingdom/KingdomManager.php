@@ -35,21 +35,18 @@ class KingdomManager
         foreach ($this->config->getAll() as $id => $kingdomData) {
             try {
                 $id = (string) $id;
-                if (! isset($kingdomData['display_name'], $kingdomData['color'], $kingdomData['icon'], $kingdomData['description'], $kingdomData['spawn'])) {
+                if (! isset($kingdomData['display_name'], $kingdomData['color'], $kingdomData['icon'], $kingdomData['description'], $kingdomData['spawn'], $kingdomData['abilities'])) {
                     $this->main->getLogger()->error("Failed to load kingdom $id, data missing, verify the config in resources/kingdoms.yml");
                     continue;
                 }
-
-                /**
-                 * TODO abilities
-                 * TODO kits
-                 */
 
                 $displayName = (string) $kingdomData['display_name'];
                 $item = StringToItemParser::getInstance()->parse((string ) $kingdomData['icon']) ?? VanillaItems::PAPER();
                 $item->setCustomName($displayName);
                 $item->setLore((array) $kingdomData['description']);
                 $position = PositionHelper::load((array) $kingdomData['spawn']);
+                $abilities = array_filter((array) $kingdomData['abilities'] ?? [], fn($abilityId) => is_string($abilityId) && $this->main->getAbilityManager()->getAbilityById($abilityId) !== null);
+                $this->main->getLogger()->info("Abilities of : $displayName are §6(" . implode(', ', $abilities) . ")");
 
                 $kingdom = new Kingdom(
                     id: $id,
@@ -57,7 +54,8 @@ class KingdomManager
                     color: (string) $kingdomData['color'],
                     description: implode("\n", (array) $kingdomData['description']),
                     item: $item,
-                    spawn: $position
+                    spawn: $position,
+                    abilities: $abilities
                 );
                 $kingdoms[$id] = $kingdom;
             } catch (Throwable $e){

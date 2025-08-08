@@ -31,11 +31,12 @@ class JoinKingdomHandler
         }
 
         $session->setChoosingKingdom(true);
-        $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), $kingdom->id);
-        $ev = new PlayerJoinKingdomEvent($player, $kingdom);
+        $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), $kingdom->id, $kingdom->abilities);
+        $ev      = new PlayerJoinKingdomEvent($player, $kingdom);
         Main::getInstance()->getDatabaseManager()->getPlayerRepository()->updatePlayerKingdom($payload, function () use ($ev, $player, $kingdom, $session) {
             $ev->call();
             $session->setKingdom($kingdom);
+            $session->addAbilities($kingdom->abilities);
             $session->setChoosingKingdom(false);
             if($kingdom->spawn !== null){
                 $player->teleport($kingdom->spawn);

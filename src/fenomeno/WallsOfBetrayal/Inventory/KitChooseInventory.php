@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Inventory;
 
 use fenomeno\WallsOfBetrayal\Config\InventoriesConfig;
+use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\Enum\KitRequirementType;
 use fenomeno\WallsOfBetrayal\Game\Handlers\KitClaimHandler;
 use fenomeno\WallsOfBetrayal\Main;
@@ -16,12 +17,12 @@ class KitChooseInventory extends WInventory
 
     private const KIT_TAG = 'Kit';
 
-    public function __construct(private readonly Player $player)
+    public function __construct(protected readonly Player $player)
     {
         parent::__construct();
     }
 
-    protected function getInventoryDTO(): object
+    protected function getInventoryDTO(): InventoryDTO
     {
         $session      = Session::get($this->player);
         $inventoryDTO = clone InventoriesConfig::getInventoryDTO(InventoriesConfig::CHOOSE_KIT_INVENTORY);

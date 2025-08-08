@@ -13,6 +13,16 @@ use pocketmine\world\sound\Sound;
 class Kingdom
 {
 
+    /**
+     * @param string $id
+     * @param string $displayName
+     * @param string $color
+     * @param string $description
+     * @param Item|null $item
+     * @param Position|null $spawn
+     * @param Kit[] $kits
+     * @param string[] $abilities -> abilityId[]
+     */
     public function __construct(
         public string $id,
         public string $displayName,
@@ -20,7 +30,8 @@ class Kingdom
         public string $description,
         public ?Item $item = null,
         public ?Position $spawn = null,
-        public array $kits = []
+        public array $kits = [],
+        public array $abilities = []
     ){}
 
     public function broadcastMessage(string $message, array $extraTags = [], ?string $default = null): void

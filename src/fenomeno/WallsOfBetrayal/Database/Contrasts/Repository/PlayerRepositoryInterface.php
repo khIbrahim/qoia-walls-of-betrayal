@@ -5,6 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use pocketmine\promise\Promise;
 
@@ -25,5 +26,7 @@ interface PlayerRepositoryInterface
     public function insert(InsertPlayerPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
 
     public function updatePlayerKingdom(SetPlayerKingdomPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
+
+    public function updatePlayerAbilities(UpdatePlayerAbilities $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
 
 }

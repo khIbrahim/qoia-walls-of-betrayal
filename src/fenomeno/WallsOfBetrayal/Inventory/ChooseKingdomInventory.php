@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Inventory;
 
 use fenomeno\WallsOfBetrayal\Config\InventoriesConfig;
+use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\Game\Handlers\JoinKingdomHandler;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
@@ -18,7 +19,7 @@ class ChooseKingdomInventory extends WInventory
 
     private const KINGDOM_TAG = 'Kingdom';
 
-    protected function getInventoryDTO(): object
+    protected function getInventoryDTO(): InventoryDTO
     {
         $inventoryDTO = InventoriesConfig::getInventoryDTO(InventoriesConfig::CHOOSE_KINGDOM_INVENTORY);
         $inventoryDTO->items = [];
