@@ -10,3 +10,5 @@ database:
     password: "sQnTHaXucsbZ4OnjLXfp9yWI"
     schema: s567075_qoia
   worker-limit: 1
+
+kit_requirements_flush_interval: 5

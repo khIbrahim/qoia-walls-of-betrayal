@@ -1,6 +1,6 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Database\Contrasts;
+namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;

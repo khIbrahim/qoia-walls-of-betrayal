@@ -65,21 +65,19 @@ class KitsListener implements Listener
                 }
 
                 $handler = $this->main->getKitsManager()->getRequirementHandlerFactory()->make($type);
-                if ($handler && $handler->handle($player, $requirement, $kit, $target)){
+                if ($handler && $handler->handle($player, $requirement, $kit, $target)) {
                     $kingdom->broadcastMessage(MessagesUtils::getMessage('kits.requirementAchieved', [
                         '{PLAYER}' => $player->getName(),
-                        '{KIT}'    => $kit->getDisplayName()
+                        '{KIT}' => $kit->getDisplayName()
                     ]));
                     $kingdom->broadcastSound(new BlazeShootSound());
-                    if ($kit->isRequirementsAchieved()){
+                    if ($kit->isRequirementsAchieved()) {
                         $kingdom->broadcastMessage(MessagesUtils::getMessage('kits.achieved', [
                             '{PLAYER}' => $player->getName(),
-                            '{KIT}'    => $kit->getDisplayName()
+                            '{KIT}' => $kit->getDisplayName()
                         ]));
                         $kingdom->broadcastSound(new GhastSound());
                     }
-                } else {
-                    $player->sendMessage('handler said no');
                 }
             }
         }

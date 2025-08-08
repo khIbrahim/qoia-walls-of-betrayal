@@ -21,8 +21,10 @@ class EntityRequirementHandler implements RequirementHandlerInterface
             return false;
         }
 
-        $requirement->incrementProgress();
-        MessagesUtils::sendTo($player, 'kits.onProgress', ['{KIT}' => $kit->getDisplayName()]);
+        $requirement->incrementProgress(
+            fn() => MessagesUtils::sendTo($player, 'kits.onProgress', ['{KIT}' => $kit->getDisplayName()]),
+            fn(\Throwable $e) => $player->sendPopup("§cFailed to increment your progress on kit requirement {$requirement->getId()}, kit : {$kit->getDisplayName()}, kingdom: {$requirement->getKingdomId()}: " . $e->getMessage())
+        );
         return $requirement->isComplete();
     }
 }

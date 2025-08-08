@@ -3,13 +3,17 @@
 namespace fenomeno\WallsOfBetrayal\Game\Kit;
 
 use Closure;
+use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\InsertKitRequirementPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\LoadKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Enum\KitRequirementType;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Game\Kit\RequirementHandlers\RequirementHandlerFactory;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
+use fenomeno\WallsOfBetrayal\Utils\WobConfig;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use Throwable;
@@ -36,20 +40,44 @@ class KitsManager
             $kingdoms = $this->main->getKingdomManager()->getKingdoms();
 
             foreach ($kingdoms as $kingdom) {
-                $loadedKits = [];
 
                 foreach ($this->kits as $kit) {
                     if ($kit->getKingdom()->getId() === $kingdom->getId()) {
                         $kingdom->kits[$kit->getId()] = $kit;
-                        $loadedKits[] = $kit;
+
+                        $this->main->getDatabaseManager()->getKitRequirementRepository()->load(
+                            new LoadKitRequirementPayload($kingdom->getId(), $kit->getId())
+                        )->onCompletion(function ($requirements) use ($kit, $kingdom) {
+                                if ($requirements === []){
+                                    foreach ($kit->getRequirements() as $id => $requirement){
+                                        $this->main->getDatabaseManager()->getKitRequirementRepository()->insert(
+                                            new InsertKitRequirementPayload($id, $kingdom->getId(), $kit->getId()),
+                                            fn() => $this->main->getLogger()->info("§l" . $kingdom->getDisplayName() . " §ainserted kit §6(" . $kit->getDisplayName() . "§6)"),
+                                            fn(Throwable $e) => $this->main->getLogger()->error('failed to create requirement ' . $id . ' for kingdom ' . $kingdom->getId() . ' & kit ' . $kit->getId()),
+                                        );
+                                    }
+                                    return;
+                                }
+
+                                foreach ($requirements as $id => $requirementProgress){
+                                    $requirement = $kit->getRequirement($id);
+                                    if ($requirement === null){
+                                        $this->main->getLogger()->error("Failed to get kit requirement (id: $id) for kingdom {$kingdom->getId()} & kit {$kit->getId()}");
+                                        continue;
+                                    }
+
+                                    $requirement->setProgress((int) $requirementProgress);
+                                }
+
+                                $this->main->getLogger()->info("§l" . $kingdom->getDisplayName() . " §akit loaded §6(" . $kit->getDisplayName() . "§6)");
+                        }, fn() => $this->main->getLogger()->error("Failed to load kit requirements for kingdom {$kingdom->getId()} & kit {$kit->getId()}"));
+
                     }
                 }
-
-                $kitNames = implode(", ", array_map(fn(Kit $kit) => $kit->getDisplayName(), $loadedKits));
-                $this->main->getLogger()->info("§l" . $kingdom->getDisplayName() . TextFormat::RESET . TextFormat::GREEN .
-                    " → " . count($loadedKits) . " kits loaded §6(" . $kitNames . "§6)");
             }
         });
+
+        $this->main->getScheduler()->scheduleRepeatingTask(new ClosureTask(fn() => $this->flushKitRequirements()), 20 * WobConfig::getKitRequirementsFlushInterval());
     }
 
     private function load(Closure $onSuccess): void
@@ -61,7 +89,7 @@ class KitsManager
                 $kingdomId = (string) ($kitData['kingdom'] ?? 'null');
                 $kingdom   = $this->main->getKingdomManager()->getKingdomById($kingdomId);
                 if ($kingdom === null){
-                    $this->main->getLogger()->error("Error while parsing $kitId kit: unknown kingdom id ($kingdomId)");
+                    $this->main->getLogger()->error("Error while parsing kit $kitId: unknown kingdom id ($kingdomId)");
                     continue;
                 }
 
@@ -84,22 +112,25 @@ class KitsManager
 
                 $requirements     = [];
                 $requirementsData = (array) $kitData['requirements'];
-                foreach ($requirementsData as $i => $requirementData){
+                foreach ($requirementsData as $requirementId => $requirementData){
                     if(! isset($requirementData['type'], $requirementData['target'], $requirementData['amount'])){
-                        $this->main->getLogger()->error("Failed to load requirement $i for kit $kitId: data are missing (type, target, amount)");
+                        $this->main->getLogger()->error("Failed to load requirement $requirementId for kit $kitId: data are missing (type, target, amount)");
                         continue;
                     }
 
                     $typeValue = (string) $requirementData['type'];
                     $type      = KitRequirementType::tryFrom($typeValue);
                     if ($type === null){
-                        $this->main->getLogger()->error("Failed to load requirement $i for kit $kitId: unknown requirement type: " . $typeValue);
+                        $this->main->getLogger()->error("Failed to load requirement $requirementId for kit $kitId: unknown requirement type: " . $typeValue);
                         continue;
                     }
 
                     $amount = (int) $requirementData['amount'];
                     $target = $requirementData['target'];
-                    $requirements[$i] = new KitRequirement(
+                    $requirements[$requirementId] = new KitRequirement(
+                        id: $requirementId,
+                        kingdomId: $kingdomId,
+                        kitId: $kitId,
                         type: $type,
                         target: $target,
                         amount: $amount
@@ -133,12 +164,6 @@ class KitsManager
     }
 
     /** @return Kit[] */
-    public function getKits(): array
-    {
-        return $this->kits;
-    }
-
-    /** @return Kit[] */
     public function getKitsByKingdom(?Kingdom $kingdom = null): array
     {
         if ($kingdom === null){
@@ -153,6 +178,35 @@ class KitsManager
     public function getRequirementHandlerFactory(): RequirementHandlerFactory
     {
         return $this->requirementHandlerFactory;
+    }
+
+    private function flushKitRequirements(): void
+    {
+        foreach ($this->main->getKingdomManager()->getKingdoms() as $kingdom) {
+            $batch = [];
+            foreach ($kingdom->getKits() as $kit) {
+                foreach ($kit->getRequirements() as $requirement) {
+                    $delta = $requirement->consumeDirty();
+                    if ($delta > 0) {
+                        $batch[] = [
+                            'id'      => $requirement->getId(),
+                            'kingdom' => $kingdom->getId(),
+                            'kit'     => $kit->getId(),
+                            'delta'   => $delta,
+                        ];
+                    }
+                }
+            }
+            if (! empty($batch)) {
+                try {
+                    $this->main->getDatabaseManager()
+                        ->getKitRequirementRepository()
+                        ->batchIncrement($batch);
+                } catch (Throwable $e) {
+                    $this->main->getLogger()->error("Failed to batchIncrement kits for kingdom {$kingdom->getId()}: {$e->getMessage()}");
+                }
+            }
+        }
     }
 
 }

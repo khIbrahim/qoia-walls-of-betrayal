@@ -2,7 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Repository;
 
-use fenomeno\WallsOfBetrayal\Database\Contrasts\PlayerRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;

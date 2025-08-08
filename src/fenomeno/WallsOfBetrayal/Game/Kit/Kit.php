@@ -59,4 +59,9 @@ class Kit
     {
         return $this->isRequirementsAchieved();
     }
+
+    public function getRequirement(int $id): ?KitRequirement
+    {
+        return $this->requirements[$id] ?? null;
+    }
 }
