@@ -8,78 +8,131 @@ use fenomeno\WallsOfBetrayal\Main;
 use InvalidArgumentException;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
+use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use Throwable;
 
 class Utils
 {
 
-    public static function getInvMenuSize(int $size): string
-    {
-        if ($size >= 0 && $size <= 9) {
-            return InvMenuTypeIds::TYPE_HOPPER;
-        } elseif ($size > 9 && $size <= 27) {
-            return InvMenuTypeIds::TYPE_CHEST;
-        } elseif ($size > 27 && $size <= 54) {
-            return InvMenuTypeIds::TYPE_DOUBLE_CHEST;
-        } else {
-            throw new InvalidArgumentException("Invalid inventory size invalide: $size");
-        }
+    public static function getInvMenuSize(int $size): string {
+        // plus strict et prévisible
+        return match ($size) {
+            5   => InvMenuTypeIds::TYPE_HOPPER,
+            9,18,27 => InvMenuTypeIds::TYPE_CHEST,
+            36,45,54 => InvMenuTypeIds::TYPE_DOUBLE_CHEST,
+            default => throw new InvalidArgumentException("Invalid inventory size: $size (allowed: 5,9,18,27,36,45,54)")
+        };
     }
 
-    public static function loadItems(array $itemsData, array $extraTags = []): array
-    {
-        $items = [];
-        foreach ($itemsData as $slot => $itemData) {
-            try {
-                $item = StringToItemParser::getInstance()->parse($itemData['item'] ?? 'paper');
-                if (isset($itemData['display-name'])){
-                    $item->setCustomName((string) str_replace(array_keys($extraTags), $extraTags, $itemData['display-name']));
-                }
-                if (isset($itemData['description'])){
-                    if (is_string($itemData['description'])){
-                        $description = str_replace(array_keys($extraTags), $extraTags, $itemData['description']);
-                        $item->setLore(explode("\n", $description));
-                    } elseif(is_array($itemData['description'])) {
-                        $item->setLore(array_map(fn($desc) => str_replace(array_keys($extraTags), $extraTags, $desc), $itemData['description']));
-                    } else {
-                        $item->setLore((array) $itemData['description']);
-                    }
-                }
-                if (isset($itemData['enchantments'])){
-                    foreach ($itemData['enchantments'] as $enchantmentName => $level) {
-                        $enchant = StringToEnchantmentParser::getInstance()->parse($enchantmentName);
-                        $enchantmentInstance = new EnchantmentInstance($enchant, (int) $level);
-                        $item->addEnchantment($enchantmentInstance);
-                    }
-                }
+    public static function parseSlotSpec(int|string|array $spec): array {
+        if (is_int($spec)) return [$spec];
+        if (is_array($spec)) return array_values(array_map('intval', $spec));
 
-                $items[$slot] = $item;
-            } catch (Throwable $e){
-                Main::getInstance()->getLogger()->error("An error occurred while parsing item with slot: $slot: " . $e->getMessage());
+        $out = [];
+        foreach (explode(',', str_replace(' ', '', $spec)) as $token) {
+            if ($token === '') continue;
+            if (str_contains($token, '..')) {
+                [$a, $b] = array_map('intval', explode('..', $token, 2));
+                if ($a > $b) [$a, $b] = [$b, $a];
+                for ($i = $a; $i <= $b; $i++) $out[] = $i;
+            } else {
+                $out[] = (int)$token;
             }
         }
-        return $items;
+        return array_values(array_unique($out));
     }
 
-    public static function loadInventory(array $config): ?InventoryDTO
-    {
-        if(empty($config)){
-            return null;
+    /**
+     * Charge un inventaire “front” depuis la config:
+     * - `contents` = liste d’objets {slot, item, display-name, description, enchantments, action}
+     * - `slot` peut être int | "0..8" | "1,3,5" | "0..8,45..53"
+     * - placeholders interpolés via $extraTags
+     * Retourne [items, actions]
+     *
+     * @return array{0: array<int,Item>, 1: array<int,string>}
+     */
+    public static function loadItems(array $contents, array $extraTags = []): array {
+        $items  = [];
+        $actions = [];
+        $parserItem = StringToItemParser::getInstance();
+        $parserEnchant = StringToEnchantmentParser::getInstance();
+
+        foreach ($contents as $entry) {
+            try {
+                $slots = self::parseSlotSpec($entry['slot'] ?? -1);
+                if (empty($slots)) continue;
+
+                $id = (string)($entry['item'] ?? 'paper');
+                $base = $parserItem->parse($id) ?? $parserItem->parse('paper');
+                if (! $base) continue;
+
+                foreach ($slots as $slot) {
+                    $it = clone $base;
+
+                    if (isset($entry['display-name'])) {
+                        $it->setCustomName(str_replace(array_keys($extraTags), $extraTags, (string)$entry['display-name']));
+                    }
+                    if (isset($entry['description'])) {
+                        $desc = $entry['description'];
+                        if (is_string($desc)) {
+                            $desc = explode("\n", $desc);
+                        }
+                        $desc = array_map(
+                            fn($line) => str_replace(array_keys($extraTags), $extraTags, (string)$line),
+                            (array)$desc
+                        );
+                        if ($desc === []) { $desc = [""]; }
+                        $it->setLore($desc);
+                    }
+                    if (isset($entry['enchantments']) && is_array($entry['enchantments'])) {
+                        foreach ($entry['enchantments'] as $name => $level) {
+                            $e = $parserEnchant->parse((string)$name);
+                            if ($e !== null) {
+                                $it->addEnchantment(new EnchantmentInstance($e, max(1, (int)$level)));
+                            }
+                        }
+                    }
+                    if (isset($entry['count'])) {
+                        $c = max(1, min(64, (int)$entry['count']));
+                        $it->setCount($c);
+                    }
+
+                    if (isset($entry['action'])) {
+                        $actions[$slot] = (string)$entry['action'];
+                        // $it->getNamedTag()->setString('wob_action', (string)$entry['action']);
+                    }
+
+                    $items[$slot] = $it;
+                }
+
+            } catch (\Throwable $e) {
+                Main::getInstance()->getLogger()->error("loadItems: ".$e->getMessage());
+            }
         }
 
-        $name          = $config['name'] ?? 'Default Inventory';
-        $size          = (int) ($config['size'] ?? 27);
-        $type          = Utils::getInvMenuSize($size);
-        $items         = Utils::loadItems($config['contents'] ?? []);
-        $targetIndexes = (array) ($config['targetIndexes'] ?? []);
+        ksort($items);
+        return [$items, $actions];
+    }
+
+    public static function loadInventory(array $config, array $extraTags = []): ?InventoryDTO {
+        if (empty($config)) return null;
+
+        $name = (string)($config['name'] ?? 'Default Inventory');
+        $size = (int)($config['size'] ?? 27);
+        $type = self::getInvMenuSize($size);
+
+        [$items, $actions] = self::loadItems($config['contents'] ?? [], $extraTags);
+        $targetIndexes = array_values(self::parseSlotSpec($config['targetIndexes'] ?? []));
 
         return new InventoryDTO(
             name: $name,
             size: $size,
             type: $type,
             items: $items,
-            targetIndexes: $targetIndexes
+            actions: $actions,
+            targetIndexes: $targetIndexes,
+            meta: (array)($config['meta'] ?? [])
         );
     }
 

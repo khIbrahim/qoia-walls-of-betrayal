@@ -6,16 +6,22 @@ use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\BaseCommand;
 use fenomeno\WallsOfBetrayal\Main;
 
-abstract class WCommand extends BaseCommand{
-
+abstract class WCommand extends BaseCommand
+{
     public function __construct(protected readonly Main $main)
     {
-        parent::__construct($this->main, $this->getCommandDTO()->name, $this->getCommandDTO()->description, $this->getCommandDTO()->aliases);
+        $dto = $this->getCommandDTO();
 
-        $this->setUsage($this->getCommandDTO()->usage);
-        $this->setPermission('command.' . $this->getCommandDTO()->name);
+        parent::__construct(
+            $this->main,
+            $dto->name,
+            $dto->description,
+            $dto->aliases
+        );
+
+        $this->setUsage($dto->usage);
+        $this->setPermission('command.' . strtolower($dto->name));
     }
 
     abstract public function getCommandDTO(): CommandDTO;
-
 }

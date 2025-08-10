@@ -11,3 +11,5 @@ permissions:
     default: true
   command.abilities:
     default: true
+  command.shop:
+    default: true

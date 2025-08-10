@@ -37,7 +37,7 @@ class AbilitiesInventory extends WInventory
         return $inv;
     }
 
-    protected function onClick(Player $player, Item $item): bool
+    protected function onClickLegacy(Player $player, Item $item): bool
     {
         $player->removeCurrentWindow();
 

@@ -37,7 +37,7 @@ class ChooseKingdomInventory extends WInventory
         return $inventoryDTO;
     }
 
-    protected function onClick(Player $player, Item $item): bool
+    protected function onClickLegacy(Player $player, Item $item): bool
     {
         if ($item->getNamedTag()->getTag(ChooseKingdomInventory::KINGDOM_TAG) !== null) {
 

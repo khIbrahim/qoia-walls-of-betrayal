@@ -1,64 +1,164 @@
+theme:
+  # Préfixes
+  prefixes:
+    global: "§r§l§6Walls§eOf§6Betrayal §8»§r "
+    kingdoms: "§r§4§lKingdoms §8»§r "
+    kits: "§r§c§lKits §8»§r "
+    abilities: "§r§5§lAbilities §8»§r "
+    shop: "§r§6§lShop §8»§r "
+
+  colors:
+    RED: "§c"
+    DARK_RED: "§4"
+    GOLD: "§6"
+    YELLOW: "§e"
+    GREEN: "§a"
+    AQUA: "§b"
+    BLUE: "§9"
+    PURPLE: "§5"
+    WHITE: "§f"
+    GRAY: "§7"
+    DARK_GRAY: "§8"
+    BOLD: "§l"
+    ITALIC: "§o"
+    RESET: "§r"
+
+# ---------------------------------------------------------------------------
+
+common:
+  unstable: "{GLOBAL_PREFIX}{RED}Your connection is unstable, please reconnect."
+  noPermission: "{GLOBAL_PREFIX}{RED}You don't have permission."
+  notPlayer: "{GLOBAL_PREFIX}{RED}This command can only be used in‑game."
+  unknownCommand: "{GLOBAL_PREFIX}{RED}Unknown command."
+  actionDenied: "{GLOBAL_PREFIX}{RED}You cannot do this right now."
+  # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
+
+# ---------------------------------------------------------------------------
+
 kingdoms:
+  # On garde un ton RP marqué (épique), avec annonce serveur + messages ciblés
   onJoin:
     broadcast:
-      message: "{YELLOW}{PLAYER} has joined the ranks of {KINGDOM}!"
+      message: "{GLOBAL_PREFIX}{YELLOW}{PLAYER} has joined the ranks of {KINGDOM}!"
       type: "popup"
     gorvok:
-      message: "{RED}Welcome to the Gor'Vok Clan!\n{GRAY}Honor, strength, and loyalty await you."
+      message: "{KINGDOMS_PREFIX}{DARK_RED}{BOLD}Welcome to the Gor'Vok Clan!{RESET}\n{GRAY}Honor, strength, and loyalty await you."
       type: "toast"
     thragmar:
-      message: "§9Welcome to the Thrag'Mar Legion Clan!\n{GRAY}Shadow, magic, and betrayal are your path."
+      message: "{KINGDOMS_PREFIX}{BLUE}{BOLD}Welcome to the Thrag'Mar Legion!{RESET}\n{GRAY}Shadow, magic, and betrayal are your path."
       type: "toast"
+
   onFirstJoin:
     gorvok:
-      message: "{GOLD}{PLAYER} has sworn allegiance to the Gor'Vok Clan!\n{GRAY}Their blood now binds them to honor and strength."
+      message: "{KINGDOMS_PREFIX}{GOLD}{PLAYER} has sworn allegiance to the {BOLD}Gor'Vok Clan{RESET}!\n{GRAY}Their blood now binds them to honor and strength."
       type: "popup"
     thragmar:
-      message: "§b{PLAYER} has pledged loyalty to the Thrag'Mar Legion!\n{GRAY}Another pawn for the shadows has risen..."
+      message: "{KINGDOMS_PREFIX}{AQUA}{PLAYER} has pledged loyalty to the {BOLD}Thrag'Mar Legion{RESET}!\n{GRAY}Another pawn for the shadows has risen..."
       type: "popup"
 
-unstable: "{RED}Your connection is unstable, please reconnect"
-alreadyInKingdom: "{RED}You are already in a kingdom!"
-unknownKingdom: "{RED}Unknown Kingdom: {KINGDOM}"
-cantCloseChooseInventory:
-  message: "{RED}You need to choose a kingdom to start your adventure."
-  type: "title"
+  errors:
+    unstable: "{KINGDOMS_PREFIX}{RED}Your connection is unstable, please reconnect."
+    alreadyInKingdom: "{KINGDOMS_PREFIX}{RED}You are already in a kingdom!"
+    unknownKingdom: "{KINGDOMS_PREFIX}{RED}Unknown Kingdom: {KINGDOM}"
+    cantCloseChooseInventory:
+      message: "{KINGDOMS_PREFIX}{RED}You need to choose a kingdom to start your adventure."
+      type: "title"
+
+# ---------------------------------------------------------------------------
 
 kits:
-  unknown: "{RED}Unknown Kit Id: {KIT}"
-  requirementAchieved: "§7⚔ §f{PLAYER} §7made progress on §4{KIT}"
+  # Ton propre, lisible, moins RP (infos, progression, succès)
+  unknown: "{KITS_PREFIX}{RED}Unknown Kit Id: {KIT}"
+  requirementAchieved: "{KITS_PREFIX}{GRAY}⚔ {WHITE}{PLAYER} {GRAY}made progress on {DARK_RED}{KIT}"
   achieved:
-    message: "§6⚔ §f{PLAYER} §7has completed all tasks for §4{KIT} §7!"
+    message: "{KITS_PREFIX}{GOLD}⚔ {WHITE}{PLAYER} {GRAY}has completed all tasks for {DARK_RED}{KIT}{GRAY}!"
     type: "title"
   onProgress:
-    message: "§6+1 progress on §4{KIT}"
+    message: "{KITS_PREFIX}{GOLD}+1 {GRAY}progress on {DARK_RED}{KIT}"
     type: "popup"
+  notAvailableForKingdom: "{KITS_PREFIX}{RED}This kit is not available to your kingdom."
+  alreadyClaimed: "{KITS_PREFIX}{YELLOW}You already claimed this kit recently."
+  claimed:
+    message: "{KITS_PREFIX}{GREEN}Kit {WHITE}{KIT}{GREEN} has been delivered to your inventory."
+    type: "toast"
+
+# ---------------------------------------------------------------------------
 
 abilities:
-  unknown: "{RED}Unknown Ability Id: {ABILITY}"
-  noAccess: "{RED}You don't have this ability."
-  noUse: "{RED}This ability is not usable by interacting."
-  canNotGive: "{RED}This ability can not be given as an item."
-  alreadyHasAbilityInInv: "{RED}You already have this ability item in your inventory."
-  giveItem: "{GREEN}You have successfully received the ability item: {ABILITY}"
+  # RP mais lisible; feedback clair (cooldown, no access, success)
+  unknown: "{ABILITIES_PREFIX}{RED}Unknown Ability Id: {ABILITY}"
+  noAccess: "{ABILITIES_PREFIX}{RED}You don't have this ability."
+  noUse: "{ABILITIES_PREFIX}{RED}This ability is not usable by interacting."
+  canNotGive: "{ABILITIES_PREFIX}{RED}This ability cannot be given as an item."
+  alreadyHasAbilityInInv: "{ABILITIES_PREFIX}{RED}You already have this ability item in your inventory."
+  giveItem: "{ABILITIES_PREFIX}{GREEN}You have received: {WHITE}{ABILITY}"
+
   activated:
-    message: "{RARITY_COLOR}{BOLD}{ABILITY}\n§7Activated for §e{USAGE}s"
+    message: "{ABILITIES_PREFIX}{BOLD}{RARITY_COLOR}{ABILITY}{RESET}\n{GRAY}Activated for {YELLOW}{USAGE}s"
     type: "title"
+
   cooldown:
-    message: "§c✖ {NAME} §7on cooldown: §e{TIME}"
+    message: "{ABILITIES_PREFIX}{RED}✖ {WHITE}{NAME} {GRAY}on cooldown: {YELLOW}{TIME}"
     type: "popup"
+
   disabled:
-    message: "{COLOR}{NAME}\n{GRAY}Ability Expired"
+    message: "{ABILITIES_PREFIX}{COLOR}{NAME}\n{GRAY}Ability Expired"
     type: "title"
+
+  # Sub‑themes par ability (RP augmenté)
   blood_rage:
-    victimEnter: "§c⚠ §7{KILLER} §7entered §cBlood Rage§7!"
+    victimEnter: "{ABILITIES_PREFIX}{RED}⚠ {GRAY}{KILLER} entered {RED}Blood Rage{GRAY}!"
   shadow_step:
-    success: "§d§lSHADOW STEP!\n§7You dashed through the shadows."
+    success: "{ABILITIES_PREFIX}{PURPLE}{BOLD}SHADOW STEP!{RESET}\n{GRAY}You dashed through the shadows."
   night_veil:
     day:
-      message: "§7Night Veil can only be used §d§lAT NIGHT§7!"
+      message: "{ABILITIES_PREFIX}{GRAY}Night Veil can only be used {PURPLE}{BOLD}AT NIGHT{RESET}!"
       type: "bar"
     once:
-      message: "§c✖ §7You can only use Night Veil once per night!"
+      message: "{ABILITIES_PREFIX}{RED}✖ {GRAY}You can only use Night Veil once per night!"
       type: "bar"
-    success: "§5§lNIGHT VEIL!\n§7You are cloaked by the darkness."
+    success: "{ABILITIES_PREFIX}{PURPLE}{BOLD}NIGHT VEIL!{RESET}\n{GRAY}You are cloaked by the darkness."
+
+# ---------------------------------------------------------------------------
+
+shop:
+  # Ton “market” clair, peu RP, très UX (prix, quantité, solde, erreurs…)
+  categoryNotFound: "{SHOP_PREFIX}{RED}Shop Category Not Found."
+  itemNotFound: "{SHOP_PREFIX}{RED}Item Not Found."
+  notEnoughMoney: "{SHOP_PREFIX}{RED}You don't have enough balance. Needed: {YELLOW}{PRICE}"
+  notEnoughSpace: "{SHOP_PREFIX}{RED}You don't have enough inventory space."
+  invalidQuantity: "{SHOP_PREFIX}{RED}Invalid quantity."
+  modeSwitched: "{SHOP_PREFIX}{GRAY}Mode switched to: {WHITE}{MODE}"
+  quantityUpdated: "{SHOP_PREFIX}{GRAY}Quantity set to: {WHITE}{QTY}"
+  preview:
+    message: "{SHOP_PREFIX}{WHITE}{ITEM}{GRAY} × {YELLOW}{QTY}{GRAY} — Total: {GOLD}{TOTAL_PRICE}"
+    type: "popup"
+  bought:
+    message: "{SHOP_PREFIX}{GREEN}Purchased {WHITE}{ITEM}{GREEN} × {YELLOW}{QTY}{GREEN} for {GOLD}{TOTAL_PRICE}."
+    type: "toast"
+  sold:
+    message: "{SHOP_PREFIX}{AQUA}Sold {WHITE}{ITEM}{AQUA} × {YELLOW}{QTY}{AQUA} for {GOLD}{TOTAL_PRICE}."
+    type: "toast"
+  balance:
+    message: "{SHOP_PREFIX}{GRAY}Balance: {GOLD}{BALANCE}"
+    type: "popup"
+  confirm:
+    title: "{SHOP_PREFIX}{GOLD}{BOLD}{MODE}{RESET}"
+    line1: "{WHITE}{ITEM}{GRAY} × {YELLOW}{QTY}"
+    line2: "{GRAY}Unit: {GOLD}{UNIT_PRICE} {GRAY}• Total: {GOLD}{TOTAL_PRICE}"
+    type: "title"
+
+# ---------------------------------------------------------------------------
+# Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)
+# - {GLOBAL_PREFIX}     -> theme.prefixes.global
+# - {KINGDOMS_PREFIX}   -> theme.prefixes.kingdoms
+# - {KITS_PREFIX}       -> theme.prefixes.kits
+# - {ABILITIES_PREFIX}  -> theme.prefixes.abilities
+# - {SHOP_PREFIX}       -> theme.prefixes.shop
+# - Couleurs {RED}/{GOLD}/... -> theme.colors
+# - Variables dynamiques: {PLAYER}, {KINGDOM}, {KIT}, {ABILITY}, {NAME}, {TIME}, {USAGE}, {ITEM}, {QTY}, {UNIT_PRICE}, {TOTAL_PRICE}, {BALANCE}, {MODE}, {RARITY_COLOR}
+
+events:
+  chat:
+    loaded: "{GRAY}[{GOLD}{KINGDOM}{GRAY}] {RANK_COLOR}{RANK} {GRAY}{USERNAME}{GRAY}: {WHITE}{MESSAGE}"
+    noLoaded: "{GRAY}[{RED}No Kingdom{GRAY}] {GRAY}{USERNAME}{GRAY}: {WHITE}{MESSAGE}"

@@ -70,7 +70,7 @@ class KitChooseInventory extends WInventory
         return $inventoryDTO;
     }
 
-    protected function onClick(Player $player, Item $item): bool
+    protected function onClickLegacy(Player $player, Item $item): bool
     {
         if ($item->getNamedTag()->getTag(KitChooseInventory::KIT_TAG) !== null) {
             $kitId = $item->getNamedTag()->getString(KitChooseInventory::KIT_TAG);

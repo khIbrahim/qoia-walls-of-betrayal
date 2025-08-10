@@ -8,11 +8,15 @@ final readonly class LoadPlayerPayload implements PayloadInterface
 {
 
     public function __construct(
-        public string $uuid
+        public string $uuid,
+        public string $name,
     ){}
 
     public function jsonSerialize(): array
     {
-        return ['uuid' => $this->uuid];
+        return [
+            'uuid' => $this->uuid,
+            'name' => $this->name
+        ];
     }
 }

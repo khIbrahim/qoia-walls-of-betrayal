@@ -36,7 +36,9 @@
     -- # :abilities string
         INSERT INTO players (uuid, name, kingdom, abilities)
         VALUES (:uuid, :name, :kingdom, :abilities)
-        ON DUPLICATE KEY UPDATE kingdom = VALUES(kingdom);
+        ON DUPLICATE KEY UPDATE
+            kingdom = VALUES(kingdom),
+            abilities = VALUES(abilities);
     -- # }
 -- # }
 

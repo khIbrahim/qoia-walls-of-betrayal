@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal;
 use fenomeno\WallsOfBetrayal\Commands\Player\AbilitiesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
+use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
@@ -17,6 +18,7 @@ use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
+use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\plugin\PluginBase;
@@ -31,6 +33,7 @@ class Main extends PluginBase
     private PhaseManager    $phaseManager;
     private KitsManager     $kitsManager;
     private AbilityManager  $abilityManager;
+    private ShopManager     $shopManager;
 
     protected function onLoad(): void
     {
@@ -58,11 +61,13 @@ class Main extends PluginBase
         $this->databaseManager = new DatabaseManager($this);
         $this->phaseManager    = new PhaseManager($this);
         $this->kitsManager     = new KitsManager($this);
+        $this->shopManager     = new ShopManager($this);
 
         $this->getServer()->getCommandMap()->registerAll('wob', [
             new ChooseCommand($this),
             new KitCommand($this),
-            new AbilitiesCommand($this)
+            new AbilitiesCommand($this),
+            new ShopCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -95,6 +100,11 @@ class Main extends PluginBase
     public function getAbilityManager(): AbilityManager
     {
         return $this->abilityManager;
+    }
+
+    public function getShopManager(): ShopManager
+    {
+        return $this->shopManager;
     }
 
     protected function onDisable(): void

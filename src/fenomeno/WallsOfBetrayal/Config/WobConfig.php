@@ -24,6 +24,7 @@ class WobConfig
     {
         CommandsConfig::init($main);
         InventoriesConfig::init($main);
+        ShopConfig::init($main);
 
         $config = $main->getConfig()->getAll();
 

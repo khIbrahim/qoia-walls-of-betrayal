@@ -1,3 +1,4 @@
+#file: noinspection YAMLIncompatibleTypes
 inventories:
   choose-kingdom:
     name: "§r§l§6Choose Your Destiny"
@@ -32,3 +33,67 @@ inventories:
           - "§r──────────────────────────────"
           - "§6Unlocked: {UNLOCKED}   §7Locked: {LOCKED}"
           - "§r──────────────────────────────"
+
+  shop-categories:
+    name: "§r§l§aShop - Categories"
+    size: 54
+    targetIndexes: [20, 22, 24]
+    contents:
+      # Barre du haut
+      - slot: "0..8"
+        item: "gray_stained_glass_pane"
+        display-name: " "
+      # Bordures latérales
+      - slot: "9,17,18,26,27,35,36,44"
+        item: "gray_stained_glass_pane"
+        display-name: " "
+      # Barre du bas
+      - slot: "45..53"
+        item: "gray_stained_glass_pane"
+        display-name: " "
+      # Titre central
+      - slot: 4
+        item: "nether_star"
+        display-name: "§r§e§lSHOP CATEGORIES"
+        description:
+          - ""
+          - "§7Select a category to browse items."
+      # Navigation / fermer
+      - slot: 49
+        item: "barrier"
+        display-name: "§r§cClose"
+        action: "close_menu"
+
+  shop-items:
+    name: "§r§l§aShop - Items"
+    size: 54
+    targetIndexes: "10..16,19..25,28..34"
+    contents:
+      # Bordures
+      - slot: "0..8,45..53,9,17,18,26,27,35,36,44"
+        item: "gray_stained_glass_pane"
+        display-name: " "
+      # Bouton retour aux catégories
+      - slot: 48
+        item: "arrow"
+        display-name: "§r§eBack to Categories"
+        action: "open_shop_categories"
+      # Bouton fermer
+      - slot: 49
+        item: "barrier"
+        display-name: "§r§cClose"
+        action: "close_menu"
+      # Bouton page précédente
+      - slot: 47
+        item: "player_head"
+        display-name: "§r§ePrevious Page"
+        description: [ "§7Go to the previous page." ]
+        action: "paginate_items_prev"
+      # Bouton page suivante
+      - slot: 51
+        item: "player_head"
+        display-name: "§r§eNext Page"
+        description: [ "§7Go to the next page." ]
+        action: "paginate_items_next"
+      # Placeholder dynamique d'items (remplis via targetIndexes)
+      # L'affichage réel des items sera fait côté backend

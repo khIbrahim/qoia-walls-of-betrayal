@@ -1,3 +1,11 @@
+# Thème global pour toutes les commandes
+theme:
+  prefix: "§r§l§6Walls§eOf§6Betrayal §8»§r "
+  primary: "§6"
+  secondary: "§e"
+  accent: "§7"
+  error: "§c"
+
 choose:
   name: "choose"
   description: "§7§oSelect your kingdom to begin your destiny"
@@ -16,6 +24,14 @@ kit:
 abilities:
   name: "abilities"
   description: "§7§oView and unlock abilities"
-  usage: "§e/kit <kitId> §8– §7Open the abilities menu | Activate a known ability"
+  usage: "§e/abilities §8– §7Open the abilities menu | Activate a known ability"
   aliases:
     - "ability"
+
+shop:
+  name: "shop"
+  description: "§7§oBrowse and purchase items from the shop"
+  usage: "§e/shop §8– §7Open the shop menu"
+  aliases:
+    - "market"
+    - "store"

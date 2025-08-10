@@ -28,21 +28,31 @@ class PlayerRepository implements PlayerRepositoryInterface
             try {
                 $data = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::LOAD_PLAYER, $payload->jsonSerialize());
                 if (empty($data)){
+                    $this->insert(
+                        new InsertPlayerPayload($payload->uuid, $payload->name),
+                        fn() => $this->main->getLogger()->info("§a$payload->name successfully inserted."),
+                        fn(Throwable $e) => $this->main->getLogger()->info("§aFailed to insert: $payload->name: " . $e->getMessage()),
+                    );
                     $resolver->resolve(null);
                     return;
                 }
 
                 $data = $data[0];
+                if(! isset($data['kingdom'], $data['abilities'])){
+                    $resolver->resolve(null);
+                    return;
+                }
 
-                $kingdom   = $data['kingdom'] ?? null;
-                $abilities = json_decode(($data['abilities'] ?? '[]'), true);
+                $kingdom   = (string) $data['kingdom'];
+                $abilities = json_decode(((string) $data['abilities']), true);
 
                 $resolver->resolve(new PlayerData(
                     kingdom: $kingdom,
-                    abilities: $abilities
+                    abilities: $abilities,
                 ));
             } catch (Throwable $e){
                 $this->main->getLogger()->error("§cFailed to load player data : " . $e->getMessage());
+                $this->main->getLogger()->logException($e);
 
                 $resolver->reject();
             }

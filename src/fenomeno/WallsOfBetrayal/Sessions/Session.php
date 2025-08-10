@@ -40,7 +40,7 @@ class Session
         $this->player->setNoClientPredictions();
         $this->player->sendTitle("§7Loading your data...");
 
-        $payload = new LoadPlayerPayload($this->player->getUniqueId()->toString());
+        $payload = new LoadPlayerPayload($this->player->getUniqueId()->toString(), $this->player->getName());
         Main::getInstance()->getDatabaseManager()->getPlayerRepository()->load($payload)
             ->onCompletion(function (?PlayerData $data){
                 if ($data !== null){
