@@ -3,14 +3,17 @@
 namespace fenomeno\WallsOfBetrayal\Game\Abilities;
 
 use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
+use pocketmine\item\Item;
 use pocketmine\player\Player;
 
 interface AbilityInterface
 {
+    const ABILITY_TAG = 'Ability';
+
     public function getId(): string;
     public function getName(): string;
     public function getDescription(): string;
-    public function getIcon(): string;
+    public function getIcon(?Player $player = null): Item;
     public function getColor(): string;
     public function getRarity(): AbilityRarity;
 

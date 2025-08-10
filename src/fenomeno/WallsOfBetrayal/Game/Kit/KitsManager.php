@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Game\Kit;
 
 use Closure;
+use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\InsertKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\LoadKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Enum\KitRequirementType;
@@ -10,7 +11,6 @@ use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Game\Kit\RequirementHandlers\RequirementHandlerFactory;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
-use fenomeno\WallsOfBetrayal\Utils\WobConfig;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\scheduler\ClosureTask;

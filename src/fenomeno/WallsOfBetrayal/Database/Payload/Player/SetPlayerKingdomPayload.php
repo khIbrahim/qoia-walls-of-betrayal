@@ -9,6 +9,7 @@ final readonly class SetPlayerKingdomPayload implements PayloadInterface
 
     public function __construct(
         private string $uuid,
+        private string $name,
         private string $kingdomId,
         private array  $abilities
     ){}
@@ -17,6 +18,7 @@ final readonly class SetPlayerKingdomPayload implements PayloadInterface
     {
         return [
             'uuid'      => $this->uuid,
+            'name'      => $this->name,
             'kingdom'   => $this->kingdomId,
             'abilities' => json_encode($this->abilities)
         ];

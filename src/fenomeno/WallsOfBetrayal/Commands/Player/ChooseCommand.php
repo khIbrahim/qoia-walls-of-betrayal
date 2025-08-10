@@ -3,13 +3,13 @@
 namespace fenomeno\WallsOfBetrayal\Commands\Player;
 
 use fenomeno\WallsOfBetrayal\Commands\WCommand;
+use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\Game\Handlers\JoinKingdomHandler;
 use fenomeno\WallsOfBetrayal\Inventory\ChooseKingdomInventory;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\constraint\InGameRequiredConstraint;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
-use fenomeno\WallsOfBetrayal\Utils\CommandsConfig;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;

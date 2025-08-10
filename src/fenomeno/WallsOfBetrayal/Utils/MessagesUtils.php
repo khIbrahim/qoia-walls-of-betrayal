@@ -46,6 +46,7 @@ class MessagesUtils {
                     explode("\n", $message)[0] ?? "",
                     explode("\n", $message)[1] ?? ""
                 ),
+                'bar' => $player->sendActionBarMessage($message),
                 default => $player->sendMessage($message),
             };
             return;

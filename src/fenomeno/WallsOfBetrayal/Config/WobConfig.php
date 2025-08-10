@@ -1,8 +1,7 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Utils;
+namespace fenomeno\WallsOfBetrayal\Config;
 
-use fenomeno\WallsOfBetrayal\Config\InventoriesConfig;
 use fenomeno\WallsOfBetrayal\Enum\PhaseEnum;
 use fenomeno\WallsOfBetrayal\Main;
 

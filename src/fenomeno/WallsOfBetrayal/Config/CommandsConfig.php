@@ -1,6 +1,6 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Utils;
+namespace fenomeno\WallsOfBetrayal\Config;
 
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\Main;

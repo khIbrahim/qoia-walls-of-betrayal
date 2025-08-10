@@ -31,7 +31,7 @@ class JoinKingdomHandler
         }
 
         $session->setChoosingKingdom(true);
-        $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), $kingdom->id, $kingdom->abilities);
+        $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), $player->getName(), $kingdom->id, $kingdom->abilities);
         $ev      = new PlayerJoinKingdomEvent($player, $kingdom);
         Main::getInstance()->getDatabaseManager()->getPlayerRepository()->updatePlayerKingdom($payload, function () use ($ev, $player, $kingdom, $session) {
             $ev->call();

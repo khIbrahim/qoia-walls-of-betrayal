@@ -22,6 +22,7 @@ gorvok:
   kits:
     - brute_force
     - earth_breaker
+  portal: "nephelia:portal_nether"
 
 thragmar:
   display_name: "§9Thrag'Mar Legion"
@@ -47,3 +48,4 @@ thragmar:
   kits:
     - shadow_raid
     - cursed_blade
+  portal: "nephelia:portal_end"

@@ -2,12 +2,12 @@
 
 namespace fenomeno\WallsOfBetrayal\Game\Phase;
 
+use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Enum\PhaseEnum;
 use fenomeno\WallsOfBetrayal\Enum\WallStateEnum;
 use fenomeno\WallsOfBetrayal\Events\PhaseChangeEvent;
 use fenomeno\WallsOfBetrayal\Events\WallFallEvent;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\WobConfig;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
 

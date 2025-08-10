@@ -4,10 +4,13 @@ namespace fenomeno\WallsOfBetrayal\Game\Abilities\Ability;
 
 use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\KillAbilityInterface;
+use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\CooldownManager;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
+use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\particle\LavaParticle;
@@ -33,30 +36,36 @@ class BloodRageAbility extends BaseAbility implements KillAbilityInterface
         return "§7Gain §c+50% strength §7after eliminating an enemy\n§7Duration: §e13 seconds\n§7Cooldown: §c5 minutes";
     }
 
-    public function getIcon(): string
-    {
-        return "textures/items/redstone_dust";
+    public function getIcon(?Player $player = null): Item {
+        $item = VanillaItems::REDSTONE_DUST();
+        $item->setCustomName(TextFormat::RESET . $this->getColor() . $this->getName());
+
+        $status = "§r§aREADY";
+        if ($player !== null && Main::getInstance()->getAbilityManager()->isOnCooldown($player, $this->getId())) {
+            $rem = Main::getInstance()->getAbilityManager()->getCooldownRemaining($player, $this->getId());
+            $m = intdiv($rem, 60); $s = $rem % 60;
+            $status = "§r§cON COOLDOWN §7({$m}m {$s}s)";
+        }
+
+        $lore = [
+            "§r§7Gain §c+50% strength §7after a kill.",
+            "§r§7Type: §fOn‑Kill  §8|  §7Rarity: {$this->getRarity()->getColor()}Epic",
+            "§r§7Duration: §f13s  §8|  §7Cooldown: §f5m 0s",
+            "§r§8────────────────────────",
+            "§r§6Status: $status",
+            "§r§7Trigger: §fEliminate a player to activate.",
+            "§r§8────────────────────────",
+            "§r§7Left‑click: §fDetails  §8|  §7Right‑click: §fAssign",
+            "§r§7Command: §f/ability blood_rage"
+        ];
+        $item->setLore($lore);
+        return $item;
     }
 
-    public function getColor(): string
-    {
-        return TextFormat::RED;
-    }
-
-    public function getRarity(): AbilityRarity
-    {
-        return AbilityRarity::EPIC;
-    }
-
-    public function getUsageTime(): int
-    {
-        return 13;
-    }
-
-    public function getCooldown(): int
-    {
-        return 5 * 60;
-    }
+    public function getColor(): string{return TextFormat::RED;}
+    public function getRarity(): AbilityRarity{return AbilityRarity::EPIC;}
+    public function getUsageTime(): int{return 13;}
+    public function getCooldown(): int{return 5 * 60;}
 
     public function onEnable(Player $player): void
     {

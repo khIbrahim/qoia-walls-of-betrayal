@@ -4,19 +4,21 @@ namespace fenomeno\WallsOfBetrayal;
 use fenomeno\WallsOfBetrayal\Commands\Player\AbilitiesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
+use fenomeno\WallsOfBetrayal\Config\WobConfig;
+use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
 use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
+use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\HookAlreadyRegistered;
+use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
-use fenomeno\WallsOfBetrayal\Utils\WobConfig;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
-use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
+use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 
@@ -38,10 +40,17 @@ class Main extends PluginBase
         MessagesUtils::init($this);
     }
 
+    /**
+     * @throws HookAlreadyRegistered
+     */
     protected function onEnable(): void
     {
         if(! InvMenuHandler::isRegistered()){
             InvMenuHandler::register($this);
+        }
+
+        if(! PacketHooker::isRegistered()){
+            PacketHooker::register($this);
         }
 
         $this->abilityManager  = new AbilityManager($this);

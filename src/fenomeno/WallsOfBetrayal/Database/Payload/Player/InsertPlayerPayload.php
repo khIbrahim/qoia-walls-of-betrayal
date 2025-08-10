@@ -7,10 +7,10 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\PayloadInterface;
 final readonly class InsertPlayerPayload implements PayloadInterface
 {
 
-    public function __construct(public string $uuid){}
+    public function __construct(public string $uuid, public string $name){}
 
     public function jsonSerialize(): array
     {
-        return ['uuid' => $this->uuid];
+        return ['uuid' => $this->uuid, 'name' => $this->name];
     }
 }

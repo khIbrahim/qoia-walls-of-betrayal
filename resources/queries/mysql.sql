@@ -3,6 +3,7 @@
     -- # { init
         CREATE TABLE IF NOT EXISTS players(
             uuid VARCHAR(36) NOT NULL,
+            name VARCHAR(32) NOT NULL,
             kingdom VARCHAR(64) DEFAULT NULL,
             abilities JSON,
 
@@ -24,15 +25,17 @@
 
     -- # { insert
     -- # :uuid string
-        INSERT INTO players(uuid) VALUES (:uuid);
+    -- # :name string
+        INSERT INTO players(uuid, name) VALUES (:uuid, :name);
     -- # }
 
     -- # { setKingdom
     -- # :uuid string
+    -- # :name string
     -- # :kingdom string
     -- # :abilities string
-        INSERT INTO players (uuid, kingdom, abilities)
-        VALUES (:uuid, :kingdom, :abilities)
+        INSERT INTO players (uuid, name, kingdom, abilities)
+        VALUES (:uuid, :name, :kingdom, :abilities)
         ON DUPLICATE KEY UPDATE kingdom = VALUES(kingdom);
     -- # }
 -- # }

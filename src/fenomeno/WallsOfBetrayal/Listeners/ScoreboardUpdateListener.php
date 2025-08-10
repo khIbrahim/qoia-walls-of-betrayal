@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
+use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Events\PhaseChangeEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinWobEvent;
@@ -9,7 +10,6 @@ use fenomeno\WallsOfBetrayal\Game\Phase\DayChangeEvent;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\ScoreboardManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\WobConfig;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\player\Player;

@@ -15,10 +15,10 @@ enum AbilityRarity
     public function getColor(): string
     {
         return match ($this){
-            self::COMMUN => TextFormat::GRAY,
+            self::COMMUN    => TextFormat::GRAY,
             self::LEGENDARY => TextFormat::GOLD,
-            self::EPIC => TextFormat::DARK_PURPLE,
-            self::RARE => TextFormat::AQUA,
+            self::EPIC      => TextFormat::DARK_PURPLE,
+            self::RARE      => TextFormat::AQUA,
         };
     }
 

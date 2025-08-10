@@ -3,12 +3,17 @@
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
 use Closure;
+use fenomeno\WallsOfBetrayal\Entities\PortalEntity;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Utils\EntityFactoryUtils;
 use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use pocketmine\entity\EntityDataHelper;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
+use pocketmine\world\World;
 use Throwable;
 
 class KingdomManager
@@ -25,6 +30,17 @@ class KingdomManager
 
         $this->load(function (array $kingdoms){
             $this->kingdoms = $kingdoms;
+
+            /** @var Kingdom $kingdom */
+            foreach ($kingdoms as $kingdom){
+                $portalId = $kingdom->portalId;
+                if($portalId !== ""){
+                    EntityFactoryUtils::registerEntity(PortalEntity::class, $portalId, static function (World $world, CompoundTag $nbt) use ($portalId): PortalEntity {
+                        return new PortalEntity(EntityDataHelper::parseLocation($nbt, $world), $portalId, $nbt);
+                    });
+                }
+            }
+
             $this->main->getLogger()->info(TextFormat::GREEN . count($kingdoms) . " kingdoms loaded §6(" . implode(", ", array_map(fn(Kingdom $kingdom) => $kingdom->displayName, $kingdoms)) . "§6)");
         });
     }
@@ -55,7 +71,8 @@ class KingdomManager
                     description: implode("\n", (array) $kingdomData['description']),
                     item: $item,
                     spawn: $position,
-                    abilities: $abilities
+                    abilities: $abilities,
+                    portalId: $kingdomData['portal'] ?? ""
                 );
                 $kingdoms[$id] = $kingdom;
             } catch (Throwable $e){
@@ -75,6 +92,17 @@ class KingdomManager
     public function getKingdoms(): array
     {
         return $this->kingdoms;
+    }
+
+    public function getKingdomByPortalId(string $portalId): ?Kingdom
+    {
+        foreach ($this->kingdoms as $kingdom){
+            if($kingdom->portalId === $portalId){
+                return $kingdom;
+            }
+        }
+
+        return null;
     }
 
 }

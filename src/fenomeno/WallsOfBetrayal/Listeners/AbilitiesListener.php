@@ -2,14 +2,14 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
-use fenomeno\WallsOfBetrayal\Enum\KitRequirementType;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\KillAbilityInterface;
+use fenomeno\WallsOfBetrayal\Game\Handlers\AbilityUseHandler;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
-use pocketmine\event\entity\EntityDeathEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
+use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\player\Player;
 
 class AbilitiesListener implements Listener
@@ -34,7 +34,17 @@ class AbilitiesListener implements Listener
             return;
         }
 
-        $this->main->getAbilityManager()->triggerAbilityType($killer, KillAbilityInterface::class, 'onKill', $victim);
+        $this->main->getAbilityManager()->triggerAbilityType($killer, KillAbilityInterface::class, $victim);
+    }
+
+    public function onUse(PlayerItemUseEvent $event): void
+    {
+        $player = $event->getPlayer();
+        if (! Session::get($player)->isLoaded()) return;
+
+        if (AbilityUseHandler::useItem($player, $event->getItem())){
+            $event->cancel();
+        }
     }
 
 }

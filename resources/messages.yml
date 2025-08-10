@@ -35,11 +35,17 @@ kits:
     type: "popup"
 
 abilities:
+  unknown: "{RED}Unknown Ability Id: {ABILITY}"
+  noAccess: "{RED}You don't have this ability."
+  noUse: "{RED}This ability is not usable by interacting."
+  canNotGive: "{RED}This ability can not be given as an item."
+  alreadyHasAbilityInInv: "{RED}You already have this ability item in your inventory."
+  giveItem: "{GREEN}You have successfully received the ability item: {ABILITY}"
   activated:
     message: "{RARITY_COLOR}{BOLD}{ABILITY}\n§7Activated for §e{USAGE}s"
     type: "title"
   cooldown:
-    message: "§c✖ {ABILITY} §7on cooldown: §e{TIME}"
+    message: "§c✖ {NAME} §7on cooldown: §e{TIME}"
     type: "popup"
   disabled:
     message: "{COLOR}{NAME}\n{GRAY}Ability Expired"
@@ -48,7 +54,11 @@ abilities:
     victimEnter: "§c⚠ §7{KILLER} §7entered §cBlood Rage§7!"
   shadow_step:
     success: "§d§lSHADOW STEP!\n§7You dashed through the shadows."
-    night_veil:
-      day: "§7Night Veil can only be used §d§lAT NIGHT§7!"
-      once: "§c✖ §7You can only use Night Veil once per night!"
-      success: "§5§lNIGHT VEIL!\n§7You are cloaked by the darkness."
+  night_veil:
+    day:
+      message: "§7Night Veil can only be used §d§lAT NIGHT§7!"
+      type: "bar"
+    once:
+      message: "§c✖ §7You can only use Night Veil once per night!"
+      type: "bar"
+    success: "§5§lNIGHT VEIL!\n§7You are cloaked by the darkness."

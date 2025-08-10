@@ -5,8 +5,11 @@ namespace fenomeno\WallsOfBetrayal\Game\Abilities\Ability;
 use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
 use fenomeno\WallsOfBetrayal\Game\Abilities\BaseAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\UseAbilityInterface;
+use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\CooldownManager;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use pocketmine\item\Item;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\particle\EndermanTeleportParticle;
@@ -16,10 +19,32 @@ class ShadowStepAbility extends BaseAbility implements UseAbilityInterface
 {
     public function getId(): string { return "shadow_step"; }
     public function getName(): string { return "Shadow Step"; }
-    public function getDescription(): string {
-        return "§7Teleport instantly §e10 blocks§7 in the direction you're facing.\n§7Cooldown: §c3 minutes";
+    public function getDescription(): string {return "§7Teleport instantly §e10 blocks§7 in the direction you're facing.\n§7Cooldown: §c3 minutes";}
+    public function getIcon(?Player $player = null): Item {
+        $item = VanillaItems::ENDER_PEARL();
+        $item->setCustomName(TextFormat::RESET . $this->getColor() . $this->getName());
+
+        $status = "§r§aREADY";
+        if ($player !== null && Main::getInstance()->getAbilityManager()->isOnCooldown($player, $this->getId())) {
+            $rem = Main::getInstance()->getAbilityManager()->getCooldownRemaining($player, $this->getId());
+            $m = intdiv($rem, 60); $s = $rem % 60;
+            $status = "§r§cON COOLDOWN §7({$m}m {$s}s)";
+        }
+
+        $lore = [
+            "§r§7Blink forward §f10 blocks§7.",
+            "§r§7Type: §fUse  §8|  §7Rarity: {$this->getRarity()->getColor()}Legendary",
+            "§r§7Duration: §f—  §8|  §7Cooldown: §f3m 0s",
+            "§r§8────────────────────────",
+            "§r§6Status: $status",
+            "§r§7Hint: Right‑click the bound item or use §f/ability use shadow_step",
+            "§r§8────────────────────────",
+            "§r§7Left‑click: §fDetails  §8|  §7Right‑click: §fAssign",
+            "§r§7Command: §f/ability shadow_step"
+        ];
+        $item->setLore($lore);
+        return $item;
     }
-    public function getIcon(): string { return "textures/items/ender_pearl"; }
     public function getColor(): string { return TextFormat::DARK_PURPLE; }
     public function getRarity(): AbilityRarity { return AbilityRarity::LEGENDARY; }
     public function getUsageTime(): int { return 0; }
