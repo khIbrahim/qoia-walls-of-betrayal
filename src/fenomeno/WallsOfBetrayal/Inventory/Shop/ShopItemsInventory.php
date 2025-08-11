@@ -6,36 +6,53 @@ use fenomeno\WallsOfBetrayal\Class\Shop\ShopCategory;
 use fenomeno\WallsOfBetrayal\Config\InventoriesConfig;
 use fenomeno\WallsOfBetrayal\Config\ShopConfig;
 use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
+use fenomeno\WallsOfBetrayal\Inventory\Traits\InventoryPaginatorTrait;
+use fenomeno\WallsOfBetrayal\Inventory\Types\PageableInventory;
 use fenomeno\WallsOfBetrayal\Inventory\WInventory;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
-use pocketmine\utils\TextFormat;
+use pocketmine\scheduler\ClosureTask;
 
-class ShopItemsInventory extends WInventory
+final class ShopItemsInventory extends WInventory implements PageableInventory
 {
+    use InventoryPaginatorTrait;
 
     public function __construct(
-        private readonly ShopCategory $category
-    ){parent::__construct();}
+        private readonly ShopCategory $category,
+        int $page = 0,
+        ?int $batch = null
+    ){
+        $this->setPage($page);
+        if ($batch !== null) $this->setBatch($batch);
+        parent::__construct();
+    }
 
     protected function getInventoryDTO(): InventoryDTO
     {
         $dto = clone InventoriesConfig::getInventoryDTO(InventoriesConfig::SHOP_ITEMS_INVENTORY);
 
-        $shopItems = array_values($this->category->getShopItems());
-        foreach ($dto->targetIndexes as $i => $targetIndex){
-            $shopItem = $shopItems[$i] ?? null;
-            if(! $shopItem){
-                continue;
-            }
+        if ($this->getBatch() <= 0) {
+            $this->setBatch(max(1, count($dto->targetIndexes)));
+        }
 
-            $item = $shopItem->getItem();
-            $item->setCustomName(TextFormat::RESET . $shopItem->getDisplayName());
-            $item->setLore(str_replace(['{BUY_PRICE}', '{SELL_PRICE}'], [$shopItem->getBuyPrice(), $shopItem->getSellPrice()], ShopConfig::getShopItemDescription()));
+        $all   = array_values($this->category->getShopItems());
+        $total = count($all);
 
-            $dto->items[$targetIndex] = $item;
+        $this->clampPage($total);
+
+        $offset    = $this->getPage() * $this->getBatch();
+        $pageItems = array_slice($all, $offset, $this->getBatch());
+
+        foreach ($dto->targetIndexes as $i => $slot){
+            $shopItem = $pageItems[$i] ?? null;
+            if (!$shopItem) continue;
+
+            $it = $shopItem->getDisplayItem();
+            $it->getNamedTag()->setString(ShopConfig::SHOP_ITEM_TAG, $shopItem->getId());
+
+            $dto->items[$slot] = $it;
         }
 
         return $dto;
@@ -44,17 +61,30 @@ class ShopItemsInventory extends WInventory
     protected function onClickLegacy(Player $player, Item $item): bool
     {
         $tag = $item->getNamedTag()->getTag(ShopConfig::SHOP_ITEM_TAG);
-        if ($tag === null) {
-            return true;
-        }
+        if ($tag === null) return true;
 
-        $shopItem = Main::getInstance()->getShopManager()->getShopItemById($item->getNamedTag()->getString(ShopConfig::SHOP_ITEM_TAG, 'null'));
-        if(! $shopItem){
+        $shopItem = Main::getInstance()->getShopManager()
+            ->getShopItemById($item->getNamedTag()->getString(ShopConfig::SHOP_ITEM_TAG, 'null'));
+
+        $player->removeCurrentWindow();
+        if (!$shopItem){
             MessagesUtils::sendTo($player, 'shop.itemNotFound');
             return true;
         }
 
-        $player->sendMessage("TODO");
+        Main::getInstance()->getScheduler()->scheduleDelayedTask(
+            new ClosureTask(fn() => ShopMenus::sendChooseMode($player, $shopItem)),
+            5
+        );
         return true;
+    }
+
+    protected function placeholders(): array
+    {
+        return [
+            '{CATEGORY_NAME}' => $this->category->getDisplayName(),
+            '{PAGE}'          => (string)($this->getPage() + 1),
+            '{TOTAL_PAGES}'   => (string)$this->getTotalPages(count($this->category->getShopItems()))
+        ];
     }
 }

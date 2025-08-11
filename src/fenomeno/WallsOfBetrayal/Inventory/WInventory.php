@@ -3,13 +3,18 @@
 namespace fenomeno\WallsOfBetrayal\Inventory;
 
 use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
-use fenomeno\WallsOfBetrayal\Inventory\Handlers\InventoryHandlers;
+use fenomeno\WallsOfBetrayal\Inventory\Actions\InventoryActions;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenu;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\transaction\InvMenuTransaction;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\transaction\InvMenuTransactionResult;
+use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
+use ReflectionException;
+use Throwable;
 
 abstract class WInventory {
 
@@ -19,10 +24,11 @@ abstract class WInventory {
     public function __construct() {
         $this->dto = $this->getInventoryDTO();
         $this->invMenu = InvMenu::create($this->dto->type);
-        $this->invMenu->setName($this->dto->name);
 
-        $phKeys = array_keys($this->placeHolders());
-        $phVals = array_values($this->placeHolders());
+        $phKeys = array_keys($this->placeholders());
+        $phVals = array_values($this->placeholders());
+
+        $this->invMenu->setName(str_replace($phKeys, $phVals, $this->dto->name));
 
         $items = $this->dto->items;
         foreach ($items as $slot => $item) {
@@ -39,7 +45,14 @@ abstract class WInventory {
             $item   = $tx->getItemClicked();
 
             $action = $this->dto->actions[$slot] ?? null;
-            if ($this->onClick($player, $item, $slot, $action)) {
+            try {
+                if ($this->onClick($player, $item, $slot, $action)) {
+                    return $tx->discard();
+                }
+            } catch (Throwable $e){
+                $player->removeCurrentWindow();
+                MessagesUtils::sendTo($player, 'common.errorOnInvTransaction', ['{ERR}' => $e->getMessage()]);
+                Main::getInstance()->getLogger()->logException($e);
                 return $tx->discard();
             }
             return $tx->continue();
@@ -50,20 +63,34 @@ abstract class WInventory {
 
     abstract protected function getInventoryDTO(): InventoryDTO;
 
+    /**
+     * @throws ReflectionException
+     */
     protected function onClick(Player $player, Item $item, int $slot, ?string $action): bool {
         if ($action){
-            return InventoryHandlers::handleAction($player, $item, $slot, $action, $this->getInventory());
+            $args = Utils::getChildPropertiesValues($this);
+
+            return InventoryActions::handleAction(
+                $player,
+                $item,
+                $slot,
+                $action,
+                $this,
+                ...$args
+            );
         }
 
-        $handledByRandomItem = InventoryHandlers::handleItem($player, $item, $slot, $this->getInventory());
+        $handledByRandomItem = InventoryActions::handleItem($player, $item, $slot, $this, ...Utils::getChildPropertiesValues($this));
+
         return $handledByRandomItem === true || $this->onClickLegacy($player, $item);
     }
+
 
     protected function onClickLegacy(Player $player, Item $item): bool { return false; }
 
     protected function onClose(Player $player, Inventory $inventory): void {}
 
-    protected function placeHolders(): array { return []; }
+    protected function placeholders(): array { return []; }
 
     public function getInventory(): Inventory { return $this->invMenu->getInventory(); }
 

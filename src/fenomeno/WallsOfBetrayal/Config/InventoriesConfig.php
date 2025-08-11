@@ -3,7 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Config;
 
 use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
-use fenomeno\WallsOfBetrayal\Inventory\Handlers\InventoryHandlers;
+use fenomeno\WallsOfBetrayal\Inventory\Actions\InventoryActions;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\utils\Config;
@@ -17,7 +17,7 @@ class InventoriesConfig
     public const CHOOSE_KIT_INVENTORY      = 'choose-kit';
     public const ABILITIES_INVENTORY       = 'abilities';
     public const SHOP_CATEGORIES_INVENTORY = 'shop-categories';
-    public const SHOP_ITEMS_INVENTORY      = 'shop-categories';
+    public const SHOP_ITEMS_INVENTORY      = 'shop-items';
 
     /** @var array<string, InventoryDTO> */
     private static array $inventoriesDTO = [];
@@ -26,7 +26,7 @@ class InventoriesConfig
 
     public static function init(Main $main): void
     {
-        InventoryHandlers::init();
+        InventoryActions::init();
 
         $main->saveResource('inventories.yml', true);
         self::$data = (new Config($main->getDataFolder() . 'inventories.yml', Config::YAML))->get('inventories');

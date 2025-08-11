@@ -2,15 +2,18 @@
 
 namespace fenomeno\WallsOfBetrayal\Utils;
 
+use cooldogedev\BedrockEconomy\BedrockEconomy;
+use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
 use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\type\InvMenuTypeIds;
 use fenomeno\WallsOfBetrayal\Main;
 use InvalidArgumentException;
+use pocketmine\inventory\Inventory;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
-use Throwable;
+use pocketmine\player\Player;
 
 class Utils
 {
@@ -134,6 +137,105 @@ class Utils
             targetIndexes: $targetIndexes,
             meta: (array)($config['meta'] ?? [])
         );
+    }
+
+    public static function parseQty(string $raw): ?int {
+        if (! preg_match('/^\d+$/', trim($raw))) return null;
+        $q = (int)$raw;
+        return ($q >= 1 && $q <= 1000) ? $q : null;
+    }
+
+    public static function formatCurrency(float $price): string
+    {
+        [$balance, $decimals] = self::getBalanceAndDecimals($price);
+
+        return BedrockEconomy::getInstance()->getCurrency()->formatter->format($balance, $decimals);
+    }
+
+    public static function formatBalance(Player $player): string {
+        $entry = GlobalCache::ONLINE()->get($player->getName());
+        return BedrockEconomy::getInstance()->getCurrency()->formatter->format($entry->amount, $entry->decimals);
+    }
+
+    public static function countInInventory(Inventory $inv, Item $needle): int {
+        $sum = 0;
+        foreach ($inv->getContents() as $it) {
+            if ($it->equals($needle, false, false)) $sum += $it->getCount();
+        }
+        return $sum;
+    }
+
+    public static function getBalanceAndDecimals(float $total): array
+    {
+        $amount = explode(".", (string)$total);
+
+        $balance = (int)$amount[0];
+        $decimals = (int)($amount[1] ?? 0);
+        if ($decimals >= 100) {
+            $decimals = 99;
+        }
+
+        return [$balance, $decimals];
+    }
+
+    public static function rawBalance(Player $player): int {
+        $entry = GlobalCache::ONLINE()->get($player->getName());
+        return $entry->amount;
+    }
+
+    public static function canGive(Inventory $inv, Item $base, int $qty): bool {
+        $required = $base->getCount() * $qty;
+        $check = clone $base;
+        while ($required > 0) {
+            $stack = min($check->getMaxStackSize(), $required);
+            $chunk = clone $check;
+            $chunk->setCount($stack);
+            if (! $inv->canAddItem($chunk)) return false;
+            $required -= $stack;
+        }
+        return true;
+    }
+
+    public static function giveStacked(Inventory $inv, Item $base, int $qty): void {
+        $required = $base->getCount() * $qty;
+        $check = clone $base;
+        while ($required > 0) {
+            $stack = min($check->getMaxStackSize(), $required);
+            $chunk = clone $check;
+            $chunk->setCount($stack);
+            $inv->addItem($chunk);
+            $required -= $stack;
+        }
+    }
+
+    public static function takeStacked(Inventory $inv, Item $base, int $qty): void {
+        $required = $base->getCount() * $qty;
+        $probe = clone $base;
+        while ($required > 0) {
+            $stack = min($probe->getMaxStackSize(), $required);
+            $chunk = clone $probe;
+            $chunk->setCount($stack);
+            $inv->removeItem($chunk);
+            $required -= $stack;
+        }
+    }
+
+    /**
+     * @throws \ReflectionException
+     */
+    public static function getChildPropertiesValues($o): array {
+        $reflection = new \ReflectionClass($o);
+        $values = [];
+
+        foreach ($reflection->getProperties() as $property) {
+            // On ne récupère que les propriétés déclarées dans la classe enfant
+            if ($property->getDeclaringClass()->getName() === get_class($o)) {
+                $property->setAccessible(true); // Nécessaire pour accéder aux protected/private
+                $values[] = $property->getValue($o);
+            }
+        }
+
+        return $values;
     }
 
 }

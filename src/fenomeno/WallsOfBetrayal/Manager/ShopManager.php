@@ -6,6 +6,7 @@ use fenomeno\WallsOfBetrayal\Class\Shop\ShopCategory;
 use fenomeno\WallsOfBetrayal\Class\Shop\ShopItem;
 use fenomeno\WallsOfBetrayal\Config\ShopConfig;
 use fenomeno\WallsOfBetrayal\Main;
+use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use Throwable;
 
@@ -107,21 +108,8 @@ final class ShopManager {
     /** @return array<string,ShopCategory> */
     public function getCategories(): array { return $this->categories; }
 
-    public function getCategory(string $id): ?ShopCategory {
-        return $this->categories[$id] ?? null;
-    }
-
-    /** @return array<string,ShopItem> */
-    public function getItems(): array { return $this->shopItems; }
-
     public function getItem(string $id): ?ShopItem {
         return $this->shopItems[$id] ?? null;
-    }
-
-    /** @return array<string,ShopItem> */
-    public function getItemsByCategory(string $categoryId): array {
-        $cat = $this->getCategory($categoryId);
-        return $cat?->getShopItems() ?? [];
     }
 
     public function getCategoryById(string $categoryId): ?ShopCategory
@@ -132,5 +120,16 @@ final class ShopManager {
     public function getShopItemById(string $shopItemId): ?ShopItem
     {
         return $this->shopItems[$shopItemId] ?? null;
+    }
+
+    public function getShopItemByItem(Item $item): ?ShopItem
+    {
+        foreach ($this->shopItems as $shopItem) {
+            if ($shopItem->getItem()->getTypeId() === $item->getTypeId()){
+                return $shopItem;
+            }
+        }
+
+        return null;
     }
 }

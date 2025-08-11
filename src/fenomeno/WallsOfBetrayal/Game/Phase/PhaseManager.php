@@ -66,7 +66,7 @@ class PhaseManager
         $this->currentDay++;
         $this->save();
 
-        $this->main->getLogger()->info("Day changed: " . $this->currentDay);
+//        $this->main->getLogger()->info("Day changed: " . $this->currentDay);
 
         if($this->canChangePhase()){
             $this->changePhase($this->currentPhase->next());

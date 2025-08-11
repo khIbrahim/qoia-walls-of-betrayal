@@ -19,7 +19,6 @@ class PortalEntity extends Living
     public function __construct(Location $location, string $portalId, ?CompoundTag $nbt = null)
     {
         self::$portalId = $portalId;
-        var_dump(self::$portalId);
 
         parent::__construct($location, $nbt);
     }

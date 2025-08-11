@@ -54,7 +54,7 @@ final class ShopCategoryInventory extends WInventory
         return true;
     }
 
-    protected function placeHolders(): array
+    protected function placeholders(): array
     {
         return [
             '{PLAYER}' => $this->player->getName(),

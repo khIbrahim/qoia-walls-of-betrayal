@@ -31,6 +31,8 @@ common:
   notPlayer: "{GLOBAL_PREFIX}{RED}This command can only be used in‑game."
   unknownCommand: "{GLOBAL_PREFIX}{RED}Unknown command."
   actionDenied: "{GLOBAL_PREFIX}{RED}You cannot do this right now."
+  errorOnInvTransaction: "{GLOBAL_PREFIX}{RED}An error occurred, contact a staff: {ERR}"
+  invNotPageable: "{GLOBAL_PREFIX}{RED}This inventory is not pageable."
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
 # ---------------------------------------------------------------------------
@@ -128,6 +130,7 @@ shop:
   notEnoughMoney: "{SHOP_PREFIX}{RED}You don't have enough balance. Needed: {YELLOW}{PRICE}"
   notEnoughSpace: "{SHOP_PREFIX}{RED}You don't have enough inventory space."
   invalidQuantity: "{SHOP_PREFIX}{RED}Invalid quantity."
+  unknownMode: "{SHOP_PREFIX}{RED}Unknown {MODE} mode, available modes: {MODES}."
   modeSwitched: "{SHOP_PREFIX}{GRAY}Mode switched to: {WHITE}{MODE}"
   quantityUpdated: "{SHOP_PREFIX}{GRAY}Quantity set to: {WHITE}{QTY}"
   preview:
@@ -147,6 +150,25 @@ shop:
     line1: "{WHITE}{ITEM}{GRAY} × {YELLOW}{QTY}"
     line2: "{GRAY}Unit: {GOLD}{UNIT_PRICE} {GRAY}• Total: {GOLD}{TOTAL_PRICE}"
     type: "title"
+  canNotBuy: "{SHOP_PREFIX}{RED}This item is not purchasable."
+  canNotSell: "{SHOP_PREFIX}{RED}This item is not sellable."
+  notEnoughItems: "{SHOP_PREFIX}{RED}Not enough items. Needed: {YELLOW}{NEEDED}"
+  txnBusy: "{SHOP_PREFIX}{YELLOW}A transaction is already in progress..."
+  txnFailed: "{SHOP_PREFIX}{RED}Transaction failed: {ERR}."
+  txnRolledBack: "{SHOP_PREFIX}{RED}An error occurred. Your balance was restored."
+  choose-menu:
+    title: "{SHOP_PREFIX}Choose Mode"
+    text: "{GRAY}Item: {WHITE}{SHOP_ITEM}\n{GRAY}Select Buy or Sell."
+    buy: "§aBUY"
+    sell: "§cSELL"
+  buy-menu:
+    title: "{SHOP_PREFIX}Buy {SHOP_ITEM}"
+    label: "{GRAY}Unit: {GOLD}{UNIT_PRICE}\n{GRAY}Balance: {GOLD}{BALANCE}\n\n{GRAY}Enter quantity to purchase."
+    input: "§7Quantity (1-1000)"
+  sell-menu:
+    title: "{SHOP_PREFIX}Sell {SHOP_ITEM}"
+    label: "{GRAY}Unit: {GOLD}{UNIT_PRICE}\n{GRAY}You have: {GOLD}{HAVE} per x{COUNT}\n\n{GRAY}Enter quantity to sell."
+    input: "§7Quantity (1-1000)"
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

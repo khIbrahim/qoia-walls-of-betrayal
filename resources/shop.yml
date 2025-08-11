@@ -271,13 +271,13 @@ categories:
       - item: "oak_planks"
         display-name: "§r§7Oak Planks x64"
         count: 64
-        buy: 320
+        buy: 0
         sell: 64
       - item: "spruce_planks"
         display-name: "§r§7Spruce Planks x64"
         count: 64
         buy: 320
-        sell: 64
+        sell: 0
       - item: "stone"
         display-name: "§r§7Stone x64"
         count: 64

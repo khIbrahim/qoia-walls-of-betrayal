@@ -15,7 +15,7 @@ class PlayerJoinHandler
     {
         $session = Session::get($player);
         if(! $session->isLoaded()){
-            $player->kick(MessagesUtils::getMessage('unstable'));
+            $player->kick(MessagesUtils::getMessage('common.unstable'));
             return;
         }
 

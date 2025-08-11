@@ -58,7 +58,7 @@ class Session
 
                 PlayerJoinHandler::handle($this->player);
             }, function (){
-                $this->player->kick(MessagesUtils::getMessage('unstable'));
+                $this->player->kick(MessagesUtils::getMessage('common.unstable'));
             });
     }
 

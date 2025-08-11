@@ -49,7 +49,7 @@ class AbilitiesInventory extends WInventory
         return true;
     }
 
-    protected function placeHolders(): array
+    protected function placeholders(): array
     {
         $session = Session::get($this->player);
 
