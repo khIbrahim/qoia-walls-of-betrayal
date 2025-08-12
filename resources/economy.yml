@@ -1,0 +1,9 @@
+currency:
+  name: United States Dollar
+  code: USD
+  symbol: $
+  formatter: compact # The currency formatter, compact or commadot
+  default:
+    amount: 0
+    decimals: 00
+  decimals: false

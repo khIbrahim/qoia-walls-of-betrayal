@@ -2,6 +2,8 @@
 
 namespace fenomeno\WallsOfBetrayal\Utils;
 
+use pocketmine\command\CommandSender;
+use pocketmine\console\ConsoleCommandSender;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
 use pocketmine\Server;
@@ -48,7 +50,7 @@ final class MessagesUtils {
         self::init(self::$plugin, self::$configName);
     }
 
-    public static function sendTo(Player|Server|array $target, string $id, array $extraTags = [], ?string $default = null) : void {
+    public static function sendTo(CommandSender|Player|Server|array $target, string $id, array $extraTags = [], ?string $default = null) : void {
         $message = self::getMessage($id, $extraTags, $default ?? $id);
         if ($message === "") return;
 
@@ -75,6 +77,11 @@ final class MessagesUtils {
                 'bar' => $target->sendActionBarMessage($message),
                 default => $target->sendMessage($message),
             };
+            return;
+        }
+
+        if ($target instanceof ConsoleCommandSender){
+            $target->sendMessage($message);
             return;
         }
 
@@ -148,7 +155,8 @@ final class MessagesUtils {
                 '{KINGDOMS_PREFIX}'  => (string)($prefixes['kingdoms']  ?? ''),
                 '{KITS_PREFIX}'      => (string)($prefixes['kits']      ?? ''),
                 '{ABILITIES_PREFIX}' => (string)($prefixes['abilities'] ?? ''),
-                '{SHOP_PREFIX}'      => (string)($prefixes['shop']      ?? '')
+                '{SHOP_PREFIX}'      => (string)($prefixes['shop']      ?? ''),
+                '{MONEY_PREFIX}'     => (string)($prefixes['money']     ?? ''),
             ];
             foreach ($map as $k => $v) {
                 if ($v !== '') self::$themeTags[$k] = $v;

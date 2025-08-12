@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Commands\Player;
 
+use fenomeno\WallsOfBetrayal\Commands\CommandsIds;
 use fenomeno\WallsOfBetrayal\Commands\WCommand;
 use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
@@ -49,6 +50,6 @@ class KitCommand extends WCommand
 
     public function getCommandDTO(): CommandDTO
     {
-        return CommandsConfig::getCommandById('kit');
+        return CommandsConfig::getCommandById(CommandsIds::KIT);
     }
 }

@@ -6,6 +6,7 @@ theme:
     kits: "§r§c§lKits §8»§r "
     abilities: "§r§5§lAbilities §8»§r "
     shop: "§r§6§lShop §8»§r "
+    money: "§r§a§lBalance§8»§r "
 
   colors:
     RED: "§c"
@@ -33,6 +34,7 @@ common:
   actionDenied: "{GLOBAL_PREFIX}{RED}You cannot do this right now."
   errorOnInvTransaction: "{GLOBAL_PREFIX}{RED}An error occurred, contact a staff: {ERR}"
   invNotPageable: "{GLOBAL_PREFIX}{RED}This inventory is not pageable."
+  logicError: "{RED}An error occurred, try later: {ERR}"
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
 # ---------------------------------------------------------------------------
@@ -174,6 +176,36 @@ shop:
     title: "{SHOP_PREFIX}Sell {SHOP_ITEM}"
     label: "{GRAY}Unit: {GOLD}{UNIT_PRICE}\n{GRAY}You have: {GOLD}{HAVE} per x{COUNT}\n\n{GRAY}Enter quantity to sell."
     input: "§7Quantity (1-1000)"
+
+# ---------------------------------------------------------------------------
+
+economy:
+  errors:
+    database: "{MONEY_PREFIX}{RED}An unknown error occurred while processing your request. Please try again later. ({ERR})"
+    account:
+      nonexistent: "{MONEY_PREFIX}{RED}The account you are trying to access does not exist."
+      insufficient: "{MONEY_PREFIX}{RED}Insufficient funds."
+      missingData: "{MONEY_PREFIX}{RED}Data are missing for this account."
+    amount:
+      invalid: "{MONEY_PREFIX}{RED}The amount you entered is invalid."
+      small: "{MONEY_PREFIX}{RED}The amount you entered is too small."
+      large: "{MONEY_PREFIX}{RED}The amount you entered is too large."
+    rich:
+      no_records: "{MONEY_PREFIX}{RED}There are no records to display."
+    pay:
+      self: "{MONEY_PREFIX}{RED}You cannot pay yourself."
+  balance:
+    info: "{MONEY_PREFIX}{GREEN}Your current balance is {YELLOW}{BALANCE}{GREEN}. (#{BALANCE_POSITION})"
+    info_other: "{MONEY_PREFIX}{GREEN}{PLAYER}'s current balance is {YELLOW}{BALANCE}{GREEN}. (#{BALANCE_POSITION})"
+    pay: "{MONEY_PREFIX}{GREEN}You have paid {WHITE}{BALANCE}{GREEN} to {PLAYER}."
+    pay_receive: "{MONEY_PREFIX}{GREEN}You have received {WHITE}{BALANCE}{GREEN} from {PLAYER}."
+    add: "{MONEY_PREFIX}{GREEN}You have added {YELLOW}{BALANCE}{GREEN} to {PLAYER}'s balance."
+    remove: "{MONEY_PREFIX}{GREEN}You have removed {YELLOW}{BALANCE}{GREEN} from {PLAYER}'s balance."
+    set: "{MONEY_PREFIX}{GREEN}You have set {PLAYER}'s balance to {YELLOW}{BALANCE}{GREEN}."
+  rich:
+    header: "{MONEY_PREFIX}{GREEN}Top balances:"
+    entry: "{YELLOW}{BALANCE_POSITION}. {GREEN}{PLAYER} - {YELLOW}{BALANCE}"
+    footer: "{GREEN}You are currently ranked {YELLOW}#{BALANCE_POSITION}{GREEN}."
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

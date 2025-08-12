@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Commands\Player;
 
+use fenomeno\WallsOfBetrayal\Commands\CommandsIds;
 use fenomeno\WallsOfBetrayal\Commands\WCommand;
 use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
@@ -128,6 +129,6 @@ class ShopCommand extends WCommand
 
     public function getCommandDTO(): CommandDTO
     {
-        return CommandsConfig::getCommandById('shop');
+        return CommandsConfig::getCommandById(CommandsIds::SHOP);
     }
 }

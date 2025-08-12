@@ -5,13 +5,25 @@ version: 1.0.0
 author: fenomeno
 
 permissions:
-  command.choose:
+  wob.command.choose:
     default: true
-  command.kit:
+  wob.command.kit:
     default: true
-  command.abilities:
+  wob.command.abilities:
     default: true
-  command.shop:
+  wob.command.shop:
     default: true
   wob.kit.sentinel:
+    default: op
+  wob.command.balance:
+    default: true
+  wob.command.pay:
+    default: true
+  wob.command.rich:
+    default: true
+  wob.command.addbalance:
+    default: op
+  wob.command.removebalance:
+    default: op
+  wob.command.setbalance:
     default: op

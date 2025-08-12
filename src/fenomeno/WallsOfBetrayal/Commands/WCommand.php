@@ -20,7 +20,7 @@ abstract class WCommand extends BaseCommand
         );
 
         $this->setUsage($dto->usage);
-        $this->setPermission('command.' . strtolower($dto->name));
+        $this->setPermission('wob.command.' . strtolower($dto->name));
     }
 
     abstract public function getCommandDTO(): CommandDTO;

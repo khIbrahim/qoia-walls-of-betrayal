@@ -35,3 +35,46 @@ shop:
   aliases:
     - "market"
     - "store"
+
+balance:
+  name: balance
+  description: Displays your current balance
+  usage: "§cUsage /balance [player: string]"
+  aliases:
+    - "money"
+
+pay:
+  name: pay
+  description: Pays others from your balance
+  usage: "§cUsage /pay <player: string> <amount: number>"
+  aliases: [ ]
+
+rich:
+  name: rich
+  description: Displays the top balances
+  usage: "§cUsage /rich [page: number]"
+  aliases:
+    - "topmoney"
+
+
+add-balance:
+  name: addbalance
+  description: Adds balance points to a user
+  usage: "§cUsage /addbalance <player: string> <amount: number>"
+  aliases:
+    - "addmoney"
+
+remove-balance:
+  name: removebalance
+  description: Removes balance points from a user
+  usage: "§cUsage /removebalance <player: string> <amount: number>"
+  aliases:
+    - "subtractbalance"
+    - "removemoney"
+
+set-balance:
+  name: setbalance
+  description: Sets the balance of a user
+  usage: "§cUsage /setbalance <player: string> <amount: number>"
+  aliases:
+    - "setmoney"

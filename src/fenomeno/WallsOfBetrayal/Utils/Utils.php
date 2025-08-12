@@ -155,12 +155,12 @@ class Utils
     {
         [$balance, $decimals] = self::getBalanceAndDecimals($price);
 
-        return BedrockEconomy::getInstance()->getCurrency()->formatter->format($balance, $decimals);
+        return Main::getInstance()->getEconomyManager()->getCurrency()->formatter->format($balance);
     }
 
     public static function formatBalance(Player $player): string {
         $entry = GlobalCache::ONLINE()->get($player->getName());
-        return BedrockEconomy::getInstance()->getCurrency()->formatter->format($entry->amount, $entry->decimals);
+        return Main::getInstance()->getEconomyManager()->getCurrency()->formatter->format($entry->amount);
     }
 
     public static function countInInventory(Inventory $inv, Item $needle): int {

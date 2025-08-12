@@ -1,12 +1,19 @@
 <?php
 namespace fenomeno\WallsOfBetrayal;
 
+use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\AddBalanceCommand;
+use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\RemoveBalanceCommand;
+use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\SetBalanceCommand;
+use fenomeno\WallsOfBetrayal\Commands\Economy\BalanceCommand;
+use fenomeno\WallsOfBetrayal\Commands\Economy\PayCommand;
+use fenomeno\WallsOfBetrayal\Commands\Economy\RichCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\AbilitiesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
+use fenomeno\WallsOfBetrayal\Economy\EconomyManager;
 use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
@@ -15,6 +22,7 @@ use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\HookAlreadyRegiste
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
+use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
@@ -36,6 +44,7 @@ class Main extends PluginBase
     private AbilityManager  $abilityManager;
     private ShopManager     $shopManager;
     private CooldownManager $cooldownManager;
+    private EconomyManager  $economyManager;
 
     protected function onLoad(): void
     {
@@ -65,12 +74,19 @@ class Main extends PluginBase
         $this->kitsManager     = new KitsManager($this);
         $this->shopManager     = new ShopManager($this);
         $this->cooldownManager = new CooldownManager($this);
+        $this->economyManager  = new EconomyManager($this);
 
         $this->getServer()->getCommandMap()->registerAll('wob', [
             new ChooseCommand($this),
             new KitCommand($this),
             new AbilitiesCommand($this),
-            new ShopCommand($this)
+            new ShopCommand($this),
+            new BalanceCommand($this),
+            new PayCommand($this),
+            new RichCommand($this),
+            new AddBalanceCommand($this),
+            new SetBalanceCommand($this),
+            new RemoveBalanceCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -78,6 +94,7 @@ class Main extends PluginBase
         $this->getServer()->getPluginManager()->registerEvents(new ScoreboardUpdateListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new KitsListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new AbilitiesListener($this), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new EconomyListener($this), $this);
     }
 
     public function getDatabaseManager(): DatabaseManager
@@ -113,6 +130,11 @@ class Main extends PluginBase
     public function getCooldownManager(): CooldownManager
     {
         return $this->cooldownManager;
+    }
+
+    public function getEconomyManager(): EconomyManager
+    {
+        return $this->economyManager;
     }
 
     protected function onDisable(): void

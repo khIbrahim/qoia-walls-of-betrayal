@@ -21,5 +21,13 @@ interface Statements
     public const REMOVE_COOLDOWN                = 'cooldowns.remove';
     public const CLEANUP_EXPIRED_COOLDOWNS      = 'cooldowns.cleanupExpired';
     public const GET_PLAYER_COOLDOWN            = 'cooldowns.getPlayerSpecificCooldown';
+    public const INIT_ECONOMY                   = 'economy.init';
+    public const GET_ECONOMY                    = 'economy.get';
+    public const INSERT_ECONOMY                 = 'economy.insert';
+    public const ADD_ECONOMY                    = 'economy.add';
+    public const SUBTRACT_ECONOMY               = 'economy.subtract';
+    public const TRANSFER_ECONOMY               = 'economy.transfer';
+    public const TOP_ECONOMY                    = 'economy.top';
+    public const SET_ECONOMY                    = 'economy.set';
 
 }

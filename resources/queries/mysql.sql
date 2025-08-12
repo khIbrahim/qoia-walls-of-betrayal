@@ -146,3 +146,86 @@
             expiry_time > :currentTime;
     -- # }
 -- # }
+
+-- # { economy
+    -- # { init
+        CREATE TABLE IF NOT EXISTS economy(
+            uuid VARCHAR(36) PRIMARY KEY,
+            username VARCHAR(32) NOT NULL,
+            amount DECIMAL(64, 2) NOT NULL DEFAULT 0,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+            INDEX uuid_idx(uuid)
+        );
+    -- # }
+
+    -- # { get
+    -- # :uuid ?string
+    -- # :name ?string
+        SELECT
+            e.*,
+            DENSE_RANK() OVER (ORDER BY e.amount DESC) AS position
+        FROM economy e
+        WHERE e.uuid = :uuid OR e.username = :name;
+    -- # }
+
+    -- # { insert
+    -- # :uuid string
+    -- # :name string
+        INSERT IGNORE INTO economy(uuid, username) VALUES (:uuid, :name);
+    -- # }
+
+    -- # { add
+    -- # :uuid ?string
+    -- # :name ?string
+    -- # :amount int
+        UPDATE economy
+        SET amount = amount + :amount
+        WHERE uuid = :uuid OR username = :name;
+    -- # }
+
+    -- # { subtract
+    -- # :uuid ?string
+    -- # :name ?string
+    -- # :amount int
+        UPDATE economy
+        SET amount = amount - :amount
+        WHERE uuid = :uuid OR username = :name AND amount >= :amount;
+    -- # }
+
+    -- # { transfer
+    -- # :r_uuid string
+    -- # :s_uuid string
+    -- # :amount int
+        UPDATE economy s
+        JOIN economy r
+            ON s.uuid = :s_uuid
+            AND r.uuid = :r_uuid
+        SET s.amount = s.amount - :amount,
+            r.amount = r.amount + :amount
+        WHERE s.amount >= :amount;
+    -- # }
+
+    -- # { top
+    -- # :limit int
+    -- # :offset int
+        SELECT
+            e.username,
+            e.uuid,
+            e.amount,
+            DENSE_RANK() OVER (ORDER BY e.amount DESC) AS position
+        FROM economy e
+        ORDER BY e.amount DESC, e.username
+        LIMIT :limit OFFSET :offset;
+    -- # }
+
+    -- # { set
+    -- # :uuid ?string
+    -- # :name ?string
+    -- # :amount int
+        UPDATE economy
+        SET amount = :amount
+        WHERE uuid = :uuid OR username = :name;
+    -- # }
+
+-- # }
