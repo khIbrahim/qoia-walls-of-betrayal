@@ -95,9 +95,15 @@ abstract class WInventory {
     public function getInventory(): Inventory { return $this->invMenu->getInventory(); }
 
     public function send(?Player $player = null): void {
-        if ($player === null && isset($this->player)) {
-            $this->invMenu->send($this->player); return;
+        try {
+            if ($player === null && isset($this->player)) {
+                $this->invMenu->send($this->player); return;
+            }
+            $this->invMenu->send($player);
+        } catch (Throwable $e){
+            if ($player){
+                MessagesUtils::sendTo($player, 'common.errorOnInvTransaction', ['{ERR}' => $e->getMessage()]);
+            }
         }
-        $this->invMenu->send($player);
     }
 }

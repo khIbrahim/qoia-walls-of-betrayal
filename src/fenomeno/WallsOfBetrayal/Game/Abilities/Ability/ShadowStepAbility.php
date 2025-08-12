@@ -6,7 +6,6 @@ use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
 use fenomeno\WallsOfBetrayal\Game\Abilities\BaseAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\UseAbilityInterface;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\CooldownManager;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\item\Item;
 use pocketmine\item\VanillaItems;
@@ -53,8 +52,8 @@ class ShadowStepAbility extends BaseAbility implements UseAbilityInterface
     public function onUse(Player $player): void
     {
         $this->onEnable($player);
-        if (CooldownManager::isOnCooldown($this->getId(), $player->getName())) {
-            $remaining = CooldownManager::getCooldownRemaining($this->getId(), $player->getName());
+        if (Main::getInstance()->getCooldownManager()->isOnCooldown($this->getId(), $player->getName())) {
+            $remaining = Main::getInstance()->getCooldownManager()->getCooldownRemaining($this->getId(), $player->getName());
             $this->sendCooldownMessage($player, $remaining);
             return;
         }
@@ -81,7 +80,7 @@ class ShadowStepAbility extends BaseAbility implements UseAbilityInterface
             '{ABILITY}' => $this->getName()
         ]);
 
-        CooldownManager::setCooldown($this->getId(), $player->getName(), $this->getCooldown());
+        Main::getInstance()->getCooldownManager()->setCooldown($this->getId(), $player->getName(), $this->getCooldown());
     }
 
     public function displayVisualEffects(Player $player): void

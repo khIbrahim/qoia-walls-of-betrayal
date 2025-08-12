@@ -6,7 +6,6 @@ use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
 use fenomeno\WallsOfBetrayal\Game\Abilities\BaseAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\UseAbilityInterface;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\CooldownManager;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -113,8 +112,8 @@ class LavabornAbility extends BaseAbility implements UseAbilityInterface
 
     public function onUse(Player $player): void
     {
-        if (CooldownManager::isOnCooldown($this->getId(), $player->getName())) {
-            $remaining = CooldownManager::getCooldownRemaining($this->getId(), $player->getName());
+        if (Main::getInstance()->getCooldownManager()->isOnCooldown($this->getId(), $player->getName())) {
+            $remaining = Main::getInstance()->getCooldownManager()->getCooldownRemaining($this->getId(), $player->getName());
             $this->sendCooldownMessage($player, $remaining);
             return;
         }
@@ -122,7 +121,7 @@ class LavabornAbility extends BaseAbility implements UseAbilityInterface
         $this->onEnable($player);
         $this->sendActivationMessage($player);
 
-        CooldownManager::setCooldown($this->getId(), $player->getName(), $this->getCooldown());
+        Main::getInstance()->getCooldownManager()->setCooldown($this->getId(), $player->getName(), $this->getCooldown());
     }
 
     public function displayVisualEffects(Player $player): void

@@ -13,6 +13,7 @@ use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
+use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
 
 class Utils
@@ -61,10 +62,14 @@ class Utils
         $parserItem = StringToItemParser::getInstance();
         $parserEnchant = StringToEnchantmentParser::getInstance();
 
-        foreach ($contents as $entry) {
+        foreach ($contents as $i => $entry) {
             try {
-                $slots = self::parseSlotSpec($entry['slot'] ?? -1);
-                if (empty($slots)) continue;
+                if (isset($entry['slot'])){
+                    $slots = self::parseSlotSpec($entry['slot']);
+                    if (empty($slots)) continue;
+                } else {
+                    $slots = self::parseSlotSpec($i);
+                }
 
                 $id = (string)($entry['item'] ?? 'paper');
                 $base = $parserItem->parse($id) ?? $parserItem->parse('paper');
@@ -102,6 +107,7 @@ class Utils
                     }
 
                     if (isset($entry['action'])) {
+                        $it->getNamedTag()->setByte((string) $entry['action'], 1);
                         $actions[$slot] = (string)$entry['action'];
                         // $it->getNamedTag()->setString('wob_action', (string)$entry['action']);
                     }
@@ -183,7 +189,10 @@ class Utils
         return $entry->amount;
     }
 
-    public static function canGive(Inventory $inv, Item $base, int $qty): bool {
+    public static function canGive(Inventory $inv, Item $base, ?int $qty = null): bool {
+        if ($qty === null){
+            $qty = 1;
+        }
         $required = $base->getCount() * $qty;
         $check = clone $base;
         while ($required > 0) {
@@ -236,6 +245,58 @@ class Utils
         }
 
         return $values;
+    }
+
+    /** 3661 -> "1h 1m", 59 -> "59s" */
+    public static function formatDuration(?int $seconds): string
+    {
+        if($seconds <= 0 || $seconds === null){
+            return "None";
+        }
+
+        $d = intdiv($seconds, 86400); $seconds %= 86400;
+        $h = intdiv($seconds, 3600);  $seconds %= 3600;
+        $m = intdiv($seconds, 60);    $s = $seconds % 60;
+
+        $parts = [];
+        if ($d) $parts[] = $d . "d";
+        if ($h) $parts[] = $h . "h";
+        if ($m) $parts[] = $m . "m";
+        if ($s && !$d && !$h) $parts[] = $s . "s"; // on n'affiche les secondes que si court
+        return implode(" ", $parts);
+    }
+
+    public static function canGiveBundle(Inventory $inv, array $items): bool
+    {
+        foreach ($items as $it) {
+            if (!self::canGive($inv, $it)) return false;
+        }
+        return true;
+    }
+
+    public static function tryGiveOrDrop(Player $player, int $slot, Item $item, bool $armor = false): void {
+        if (! $armor){
+            $inv = $player->getInventory();
+        } else {
+            $inv = $player->getArmorInventory();
+        }
+
+        if ($inv->getItem($slot)->getTypeId() === VanillaItems::AIR()->getTypeId()) {
+            $inv->setItem($slot, $item);
+            return;
+        }
+
+        if (self::canGive($inv, $item)) {
+            $inv->addItem($item);
+        } else {
+            $player->getWorld()->dropItem($player->getPosition(), $item);
+        }
+    }
+
+    public static function giveItemSet(Player $player, array $items, bool $armor = false): void {
+        foreach ($items as $slot => $item) {
+            self::tryGiveOrDrop($player, $slot, $item, $armor);
+        }
     }
 
 }

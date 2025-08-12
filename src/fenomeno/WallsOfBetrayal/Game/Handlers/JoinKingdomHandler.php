@@ -26,7 +26,7 @@ class JoinKingdomHandler
         }
 
         if ($session->getKingdom() !== null){
-            MessagesUtils::sendTo($player, 'alreadyInKingdom');
+            MessagesUtils::sendTo($player, 'kingdoms.kingdoms.alreadyInKingdom');
             return;
         }
 

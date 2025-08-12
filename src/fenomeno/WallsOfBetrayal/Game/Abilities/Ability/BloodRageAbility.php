@@ -5,7 +5,6 @@ namespace fenomeno\WallsOfBetrayal\Game\Abilities\Ability;
 use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\KillAbilityInterface;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\CooldownManager;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
@@ -121,8 +120,8 @@ class BloodRageAbility extends BaseAbility implements KillAbilityInterface
 
     public function onKill(Player $killer, Player $victim): void
     {
-        if (CooldownManager::isOnCooldown($this->getId(), $killer->getName())) {
-            $remaining = CooldownManager::getCooldownRemaining($this->getId(), $killer->getName());
+        if (Main::getInstance()->getCooldownManager()->isOnCooldown($this->getId(), $killer->getName())) {
+            $remaining = Main::getInstance()->getCooldownManager()->getCooldownRemaining($this->getId(), $killer->getName());
             $this->sendCooldownMessage($killer, $remaining);
             return;
         }
@@ -130,7 +129,7 @@ class BloodRageAbility extends BaseAbility implements KillAbilityInterface
         $this->onEnable($killer);
         $this->sendActivationMessage($killer);
 
-        CooldownManager::setCooldown($this->getId(), $killer->getName(), $this->getCooldown());
+        Main::getInstance()->getCooldownManager()->setCooldown($this->getId(), $killer->getName(), $this->getCooldown());
 
         foreach ($killer->getWorld()->getNearbyEntities($killer->getBoundingBox()->expandedCopy(20, 20, 20)) as $entity) {
             if ($entity instanceof Player && $entity !== $killer) {

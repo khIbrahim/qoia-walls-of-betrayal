@@ -28,7 +28,9 @@ categories:
         count: 16
         buy: 800
         sell: 0
-      - item: "cooked_porkchop"
+      - item: "cooked_
+      
+      porkchop"
         display-name: "§r§dCooked Pork x16"
         count: 16
         buy: 800
@@ -63,11 +65,6 @@ categories:
         count: 64
         buy: 640
         sell: 96
-      - item: "shield"
-        display-name: "§r§7Shield"
-        count: 1
-        buy: 1400
-        sell: 280
       - item: "iron_sword"
         display-name: "§r§fIron Sword"
         count: 1
@@ -83,11 +80,6 @@ categories:
         count: 1
         buy: 2200
         sell: 440
-      - item: "trident"
-        display-name: "§r§bTrident"
-        count: 1
-        buy: 24000
-        sell: 4800
       - item: "golden_apple"
         display-name: "§r§6Golden Apples x4"
         count: 4
@@ -338,31 +330,6 @@ categories:
         count: 16
         buy: 3200
         sell: 640
-      - item: "observer"
-        display-name: "§r§7Observer x16"
-        count: 16
-        buy: 4000
-        sell: 800
-      - item: "piston"
-        display-name: "§r§7Piston x16"
-        count: 16
-        buy: 3200
-        sell: 640
-      - item: "sticky_piston"
-        display-name: "§r§aSticky Piston x16"
-        count: 16
-        buy: 5600
-        sell: 1120
-      - item: "dispenser"
-        display-name: "§r§7Dispenser x8"
-        count: 8
-        buy: 2400
-        sell: 480
-      - item: "dropper"
-        display-name: "§r§7Dropper x8"
-        count: 8
-        buy: 2000
-        sell: 400
       - item: "hopper"
         display-name: "§r§7Hopper x8"
         count: 8
@@ -398,11 +365,6 @@ categories:
         count: 1
         buy: 6000
         sell: 1200
-      - item: "grindstone"
-        display-name: "§r§7Grindstone"
-        count: 1
-        buy: 800
-        sell: 160
       - item: "smithing_table"
         display-name: "§r§7Smithing Table"
         count: 1

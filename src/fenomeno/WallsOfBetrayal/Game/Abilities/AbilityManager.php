@@ -12,7 +12,6 @@ use fenomeno\WallsOfBetrayal\Game\Abilities\Types\KillAbilityInterface;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\UseAbilityInterface;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\CooldownManager;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
 
@@ -111,11 +110,11 @@ class AbilityManager
     }
 
     public function isOnCooldown(Player $player, string $abilityId): bool {
-        return CooldownManager::isOnCooldown($abilityId, $player->getName());
+        return $this->main->getCooldownManager()->isOnCooldown($abilityId, $player->getName());
     }
 
     public function getCooldownRemaining(Player $player, string $abilityId): int {
-        return CooldownManager::getCooldownRemaining($abilityId, $player->getName());
+        return $this->main->getCooldownManager()->getCooldownRemaining($abilityId, $player->getName());
     }
 
     public function triggerAbility(Player $player, AbilityInterface $ability, ...$args): void

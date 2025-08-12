@@ -20,3 +20,5 @@ phase_lengths:
   grind: 12          # jours 2–13
   battle: 1          # jour 14
   end: 1             # jour 15 (résultats)
+cooldowns:
+  cleanup_interval_seconds: 300

@@ -83,6 +83,11 @@ kits:
   claimed:
     message: "{KITS_PREFIX}{GREEN}Kit {WHITE}{KIT}{GREEN} has been delivered to your inventory."
     type: "toast"
+  invFull: "{KITS_PREFIX}{RED}Your inventory is full."
+  cooldown: "{KITS_PREFIX}{KIT} {RED}is on cooldown: {TIME}"
+  requirementsNotAchieved: "{KITS_PREFIX}{RED}Kits requirements are not achieved."
+  noPermission: "{KITS_PREFIX}{RED}You don't have permission to claim {KIT}."
+  notSameKingdom: "{KITS_PREFIX}{RED}This kit is reserved for kingdom {KINGDOM}."
 
 # ---------------------------------------------------------------------------
 

@@ -18,6 +18,7 @@ use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
+use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
@@ -34,6 +35,7 @@ class Main extends PluginBase
     private KitsManager     $kitsManager;
     private AbilityManager  $abilityManager;
     private ShopManager     $shopManager;
+    private CooldownManager $cooldownManager;
 
     protected function onLoad(): void
     {
@@ -62,6 +64,7 @@ class Main extends PluginBase
         $this->phaseManager    = new PhaseManager($this);
         $this->kitsManager     = new KitsManager($this);
         $this->shopManager     = new ShopManager($this);
+        $this->cooldownManager = new CooldownManager($this);
 
         $this->getServer()->getCommandMap()->registerAll('wob', [
             new ChooseCommand($this),
@@ -105,6 +108,11 @@ class Main extends PluginBase
     public function getShopManager(): ShopManager
     {
         return $this->shopManager;
+    }
+
+    public function getCooldownManager(): CooldownManager
+    {
+        return $this->cooldownManager;
     }
 
     protected function onDisable(): void

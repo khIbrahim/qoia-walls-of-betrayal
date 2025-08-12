@@ -54,9 +54,9 @@ brute_force:
     - type: "break"
       target: "carrot_block"
       amount: 10
-#    - type: "kill"
-#      target: "minecraft:cow"
-#      amount: 1750
+    - type: "kill"
+      target: "minecraft:cow"
+      amount: 1750
 
 cursed_blade:
   id: "cursed_blade"
@@ -124,3 +124,79 @@ cursed_blade:
     - type: "kill"
       target: "minecraft:sheep"
       amount: 1750
+
+sentinel:
+  id: "sentinel"
+  permission: "wob.kit.sentinel"
+  displayName: "§r§6Sentinel Kit"
+  description: "Sturdy frontline loadout built for defense and steady pressure. Usable every 3 days."
+  cooldown: 259200 # 3 jours
+  icon: "iron_chestplate"
+  contents:
+    inv:
+      0:
+        item: "iron_sword"
+        display-name: "§r§fSentinel Blade"
+        enchantments:
+          sharpness: 2
+      1:
+        item: "iron_pickaxe"
+        display-name: "§r§fSentinel Pick"
+        enchantments:
+          efficiency: 3
+          unbreaking: 1
+      2:
+        item: "iron_axe"
+        display-name: "§r§fSentinel Axe"
+        enchantments:
+          efficiency: 2
+      3:
+        item: "iron_shovel"
+        display-name: "§r§fSentinel Shovel"
+        enchantments:
+          efficiency: 2
+      4:
+        item: "bread"
+        count: 16
+      5:
+        item: "cobblestone"
+        count: 64
+      6:
+        item: "potion"
+        display-name: "§r§bSpeed Potion"
+        description: "§7Speed I §f(3:00)"
+    armor:
+      0:
+        item: "iron_helmet"
+        enchantments:
+          protection: 2
+          unbreaking: 1
+      1:
+        item: "iron_chestplate"
+        enchantments:
+          protection: 2
+          unbreaking: 1
+      2:
+        item: "iron_leggings"
+        enchantments:
+          protection: 2
+          unbreaking: 1
+      3:
+        item: "iron_boots"
+        enchantments:
+          protection: 2
+          unbreaking: 1
+
+starter:
+  id: "starter"
+  displayName: "§r§aStarter Kit"
+  description: "Balanced tools to begin."
+  icon: "stone_pickaxe"
+  cooldown: 10
+  contents:
+    inv:
+      0: { item: "stone_axe" }
+      1: { item: "wooden_pickaxe" }
+      2: { item: "bread", count: 14 }
+    armor:
+      1: { item: "leather_chestplate", enchantments: { protection: 1 } }

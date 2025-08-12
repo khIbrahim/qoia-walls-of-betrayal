@@ -14,7 +14,7 @@ class InventoriesConfig
 {
 
     public const CHOOSE_KINGDOM_INVENTORY  = 'choose-kingdom';
-    public const CHOOSE_KIT_INVENTORY      = 'choose-kit';
+    public const CHOOSE_KIT_INVENTORY      = 'kits-menu';
     public const ABILITIES_INVENTORY       = 'abilities';
     public const SHOP_CATEGORIES_INVENTORY = 'shop-categories';
     public const SHOP_ITEMS_INVENTORY      = 'shop-items';

@@ -13,6 +13,7 @@ use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
+use pocketmine\permission\DefaultPermissions;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
@@ -39,9 +40,13 @@ class KitsManager
 
             $kingdoms = $this->main->getKingdomManager()->getKingdoms();
 
+            $noKingdomKits = [];
             foreach ($kingdoms as $kingdom) {
-
                 foreach ($this->kits as $kit) {
+                    if(! $kit->getKingdom()) {
+                        $noKingdomKits[$kit->getId()] = $kit;
+                        continue;
+                    }
                     if ($kit->getKingdom()->getId() === $kingdom->getId()) {
                         $kingdom->kits[$kit->getId()] = $kit;
 
@@ -69,12 +74,15 @@ class KitsManager
                                     $requirement->setProgress((int) $requirementProgress);
                                 }
 
-                                $this->main->getLogger()->info("§l" . $kingdom->getDisplayName() . " §akit loaded §6(" . $kit->getDisplayName() . "§6)");
+                                $this->main->getLogger()->info("§l§6KINGDOM KIT §7-" . $kingdom->getDisplayName() . " §akit loaded §6(" . $kit->getDisplayName() . "§6)");
                         }, fn() => $this->main->getLogger()->error("Failed to load kit requirements for kingdom {$kingdom->getId()} & kit {$kit->getId()}"));
 
                     }
                 }
             }
+
+            $noKingdomKitsNames = implode(', ', array_map(fn(Kit $kit) => $kit->getDisplayName(), $noKingdomKits));
+            $this->main->getLogger()->info("§aLoaded " . count($noKingdomKits) . ' simple kits: §6(' . $noKingdomKitsNames . '§6)');
         });
 
         $this->main->getScheduler()->scheduleRepeatingTask(new ClosureTask(fn() => $this->flushKitRequirements()), 20 * WobConfig::getKitRequirementsFlushInterval());
@@ -86,14 +94,17 @@ class KitsManager
         foreach ($this->config->getAll() as $kitId => $kitData) {
             try {
                 $kitId     = (string) $kitId;
-                $kingdomId = (string) ($kitData['kingdom'] ?? 'null');
-                $kingdom   = $this->main->getKingdomManager()->getKingdomById($kingdomId);
-                if ($kingdom === null){
-                    $this->main->getLogger()->error("Error while parsing kit $kitId: unknown kingdom id ($kingdomId)");
-                    continue;
+                $kingdom   = null;
+                if (isset($kitData['kingdom'])){
+                    $kingdomId = (string) $kitData['kingdom'];
+                    $kingdom   = $this->main->getKingdomManager()->getKingdomById($kingdomId);
+                    if ($kingdom === null){
+                        $this->main->getLogger()->error("Error while parsing kit $kitId: unknown kingdom id ($kingdomId)");
+                        continue;
+                    }
                 }
 
-                if (! isset($kitData['id'], $kitData['displayName'], $kitData['description'], $kitData['unlock_day'], $kitData['icon'], $kitData['contents'], $kitData['contents']['inv'], $kitData['contents']['armor'], $kitData['requirements'])) {
+                if (! isset($kitData['id'], $kitData['displayName'], $kitData['description'], $kitData['icon'], $kitData['contents'], $kitData['contents']['inv'], $kitData['contents']['armor'])) {
                     $this->main->getLogger()->error(TextFormat::RESET . "Failed to load kit $kitId, data missing, verify the config in resources/kits.yml");
                     continue;
                 }
@@ -105,53 +116,61 @@ class KitsManager
 
                 $displayName  = (string) $kitData['displayName'];
                 $description  = (string) $kitData['description'];
-                $unlockDay    = (int)    $kitData['unlock_day'];
-                $inv          = Utils::loadItems($kitData['contents']['inv']);
-                $armor        = Utils::loadItems($kitData['contents']['armor']);
+                $unlockDay    = (int)    ($kitData['unlock_day'] ?? 0);
+                [$inv]          = Utils::loadItems($kitData['contents']['inv']);
+                [$armor]        = Utils::loadItems($kitData['contents']['armor']);
                 $item         = StringToItemParser::getInstance()->parse((string ) $kitData['icon']) ?? VanillaItems::PAPER();
+                $permission   = (string) ($kitData['permission'] ?? DefaultPermissions::ROOT_USER);
+                $cooldown     = (int) ($kitData['cooldown'] ?? 0);
 
                 $requirements     = [];
-                $requirementsData = (array) $kitData['requirements'];
-                foreach ($requirementsData as $requirementId => $requirementData){
-                    if(! isset($requirementData['type'], $requirementData['target'], $requirementData['amount'])){
-                        $this->main->getLogger()->error("Failed to load requirement $requirementId for kit $kitId: data are missing (type, target, amount)");
-                        continue;
-                    }
+                if (isset($kitData['requirements'])){
+                    $requirementsData = (array) $kitData['requirements'];
+                    foreach ($requirementsData as $requirementId => $requirementData){
+                        $kingdomId = (string) $kitData['kingdom'];
 
-                    $typeValue = (string) $requirementData['type'];
-                    $type      = KitRequirementType::tryFrom($typeValue);
-                    if ($type === null){
-                        $this->main->getLogger()->error("Failed to load requirement $requirementId for kit $kitId: unknown requirement type: " . $typeValue);
-                        continue;
-                    }
+                        if(! isset($kitData['kingdom'], $requirementData['type'], $requirementData['target'], $requirementData['amount'])){
+                            $this->main->getLogger()->error("Failed to load requirement $requirementId for kit $kitId: data are missing (type, target, amount)");
+                            continue;
+                        }
 
-                    $amount = (int) $requirementData['amount'];
-                    $target = $requirementData['target'];
-                    $requirements[$requirementId] = new KitRequirement(
-                        id: $requirementId,
-                        kingdomId: $kingdomId,
-                        kitId: $kitId,
-                        type: $type,
-                        target: $target,
-                        amount: $amount
-                    );
+                        $typeValue = (string) $requirementData['type'];
+                        $type      = KitRequirementType::tryFrom($typeValue);
+                        if ($type === null){
+                            $this->main->getLogger()->error("Failed to load requirement $requirementId for kit $kitId: unknown requirement type: " . $typeValue);
+                            continue;
+                        }
+
+                        $amount = (int) $requirementData['amount'];
+                        $target = $requirementData['target'];
+                        $requirements[$requirementId] = new KitRequirement(
+                            id: $requirementId,
+                            kingdomId: $kingdomId,
+                            kitId: $kitId,
+                            type: $type,
+                            target: $target,
+                            amount: $amount
+                        );
+                    }
                 }
 
                 $kit = new Kit(
                     id: $kitId,
-                    kingdom: $kingdom,
                     displayName: $displayName,
                     description: $description,
                     unlockDay: $unlockDay,
                     item: $item,
                     inv: $inv,
                     armor: $armor,
-                    requirements: $requirements
+                    requirements: $requirements,
+                    permission: $permission,
+                    kingdom: $kingdom,
+                    cooldown: $cooldown
                 );
 
                 $kits[$kitId] = $kit;
             } catch (Throwable $e){
-                $this->main->getLogger()->error("§cFailed to load kit $kitId for kingdom id $kingdomId (verify the config in resources/kits.yml): " . $e->getMessage());
+                $this->main->getLogger()->error("§cFailed to load kit $kitId (verify the config in resources/kits.yml): " . $e->getMessage());
             }
         }
 
@@ -171,7 +190,7 @@ class KitsManager
         }
 
         return array_filter($this->kits, function ($kit) use ($kingdom) {
-            return $kit->getKingdom()->getId() === $kingdom->getId();
+            return $kit->getKingdom() !== null && $kit->getKingdom()->getId() === $kingdom->getId();
         });
     }
 
@@ -207,6 +226,11 @@ class KitsManager
                 }
             }
         }
+    }
+
+    public function getKits(): array
+    {
+        return $this->kits;
     }
 
 }

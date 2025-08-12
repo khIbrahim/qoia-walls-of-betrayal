@@ -13,3 +13,5 @@ permissions:
     default: true
   command.shop:
     default: true
+  wob.kit.sentinel:
+    default: op

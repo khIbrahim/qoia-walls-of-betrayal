@@ -6,7 +6,7 @@ use fenomeno\WallsOfBetrayal\Commands\WCommand;
 use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\Game\Handlers\KitClaimHandler;
-use fenomeno\WallsOfBetrayal\Inventory\KitChooseInventory;
+use fenomeno\WallsOfBetrayal\Inventory\KitsInventory;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\constraint\InGameRequiredConstraint;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
@@ -33,7 +33,7 @@ class KitCommand extends WCommand
         assert($sender instanceof Player);
 
         if(! isset($args[self::KIT_ARGUMENT])) {
-            (new KitChooseInventory($sender))->send($sender);
+            (new KitsInventory($sender))->send($sender);
             return;
         }
 
