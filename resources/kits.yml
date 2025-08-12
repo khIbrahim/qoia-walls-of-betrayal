@@ -192,7 +192,7 @@ starter:
   displayName: "§r§aStarter Kit"
   description: "Balanced tools to begin."
   icon: "stone_pickaxe"
-  cooldown: 10
+  cooldown: 28800
   contents:
     inv:
       0: { item: "stone_axe" }
