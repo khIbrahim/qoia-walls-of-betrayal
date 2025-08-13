@@ -25,7 +25,14 @@ use Throwable;
 class EconomyRepository implements EconomyRepositoryInterface
 {
 
-    public function __construct(private readonly Main $main){}
+    public function __construct(private readonly Main $main){$this->init();}
+
+    public function init(): void
+    {
+        $this->main->getDatabaseManager()->executeGeneric(Statements::INIT_ECONOMY, [], function (){
+            $this->main->getLogger()->info("§aTable `economy` has been successfully init");
+        });
+    }
 
     public function get(GetEconomyPayload $payload): Generator
     {

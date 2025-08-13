@@ -2,11 +2,12 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
+use fenomeno\WallsOfBetrayal\Database\Contrasts\RepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\GetActiveCooldownsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\RemoveCooldownPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\UpsertCooldownPayload;
 
-interface CooldownRepositoryInterface
+interface CooldownRepositoryInterface extends RepositoryInterface
 {
 
     public function getAll(GetActiveCooldownsPayload $payload): \Generator;

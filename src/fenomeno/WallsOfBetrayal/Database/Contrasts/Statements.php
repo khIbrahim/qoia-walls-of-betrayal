@@ -34,5 +34,6 @@ interface Statements
     public const TRANSFER_ROLLBACK              = 'economy.transfer.rollback';
     public const TRANSFER_DEBIT_SENDER          = 'economy.transfer.debitSender';
     public const CREDIT_RECEIVER                = 'economy.transfer.creditReceiver';
+    public const INIT_ROLES                     = 'roles.init';
 
 }

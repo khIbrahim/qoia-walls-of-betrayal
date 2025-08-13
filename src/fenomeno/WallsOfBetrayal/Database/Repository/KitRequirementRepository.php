@@ -17,7 +17,14 @@ use Throwable;
 class KitRequirementRepository implements KitRequirementRepositoryInterface
 {
 
-    public function __construct(private readonly Main $main){}
+    public function __construct(private readonly Main $main){$this->init();}
+
+    public function init(): void
+    {
+        $this->main->getDatabaseManager()->executeGeneric(Statements::INIT_KIT_REQUIREMENT, [], function (){
+            $this->main->getLogger()->info("§aTable `kit_requirement` has been successfully init");
+        });
+    }
 
     public function load(LoadKitRequirementPayload $payload): Promise
     {

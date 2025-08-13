@@ -13,7 +13,14 @@ use fenomeno\WallsOfBetrayal\Main;
 class CooldownRepository implements CooldownRepositoryInterface
 {
 
-    public function __construct(private readonly Main $main){}
+    public function __construct(private readonly Main $main){$this->init();}
+
+    public function init(): void
+    {
+        $this->main->getDatabaseManager()->executeGeneric(Statements::INIT_COOLDOWNS, [], function (){
+            $this->main->getLogger()->info("§aTable `cooldowns` has been successfully init");
+        });
+    }
 
     public function getAll(GetActiveCooldownsPayload $payload): \Generator {
         $rows = yield from $this->main->getDatabaseManager()->asyncSelect(

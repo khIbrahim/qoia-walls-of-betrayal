@@ -250,3 +250,38 @@
     -- # }
 
 -- # }
+
+-- # { roles
+    -- # { init
+        CREATE TABLE IF NOT EXISTS player_roles(
+            uuid VARCHAR(36) NOT NULL PRIMARY KEY,
+            role_id VARCHAR(64) NOT NULL,
+            assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            expires_at BIGINT DEFAULT NULL,
+            INDEX idx_role_id(role_id),
+            INDEX idx_expires_at(expires_at)
+        );
+    -- # }
+
+    -- # { assign
+    -- # :uuid string
+    -- # :role_id string
+    -- é :expires_at ?int
+        INSERT INTO player_roles(uuid, role_id, expires_at)
+        VALUES (:uuid, :role_id, :expires_at)
+        ON DUPLICATE KEY UPDATE
+            role_id = VALUES(role_id),
+            assigned_at = CURRENT_TIMESTAMP,
+            expires_at = VALUES(expires_at);
+    -- # }
+
+    -- # { get
+    -- # :uuid string
+        SELECT * FROM player_roles WHERE uuid = :uuid;
+    -- # }
+
+    -- # { remove
+    -- # :uuid string
+        DELETE FROM player_roles WHERE uuid = :uuid;
+    -- # }
+-- # }

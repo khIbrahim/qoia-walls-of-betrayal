@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
+use fenomeno\WallsOfBetrayal\Database\Contrasts\RepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\AddEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\GetEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\InsertEconomyPayload;
@@ -17,7 +18,7 @@ use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordNotFoundException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\InsufficientFundsException;
 use Generator;
 
-interface EconomyRepositoryInterface
+interface EconomyRepositoryInterface extends RepositoryInterface
 {
 
     /**

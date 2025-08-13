@@ -37,17 +37,8 @@ class DatabaseManager
                 "mysql"  => "queries/mysql.sql"
             ]);
 
-            $this->database->executeGeneric(Statements::INIT_PLAYERS, [], function (){
-                $this->main->getLogger()->info("§aTable `players` has been successfully init");
-            });
-            $this->database->executeGeneric(Statements::INIT_KIT_REQUIREMENT, [], function (){
-                $this->main->getLogger()->info("§aTable `kit_requirement` has been successfully init");
-            });
-            $this->database->executeGeneric(Statements::INIT_COOLDOWNS, [], function (){
-                $this->main->getLogger()->info("§aTable `cooldowns` has been successfully init");
-            });
-            $this->database->executeGeneric(Statements::INIT_ECONOMY, [], function (){
-                $this->main->getLogger()->info("§aTable `economy` has been successfully init");
+            $this->database->executeGeneric(Statements::INIT_ROLES, [], function (){
+                $this->main->getLogger()->info("§aTable `player_roles` has been successfully init");
             });
 
             $this->playerRepository         = new PlayerRepository($this->main);

@@ -2,12 +2,13 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
+use fenomeno\WallsOfBetrayal\Database\Contrasts\RepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\IncrementKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\InsertKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\LoadKitRequirementPayload;
 use pocketmine\promise\Promise;
 
-interface KitRequirementRepositoryInterface
+interface KitRequirementRepositoryInterface extends RepositoryInterface
 {
 
     public function load(LoadKitRequirementPayload $payload): Promise;
