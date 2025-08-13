@@ -140,6 +140,10 @@ class Main extends PluginBase
     protected function onDisable(): void
     {
         $this->phaseManager->save();
+        $this->economyManager->clearCache();
+
+        $this->databaseManager->waitAll();
+        $this->databaseManager->close();
     }
 
 }

@@ -181,7 +181,7 @@
     -- # :amount int
         UPDATE economy
         SET amount = amount + :amount
-        WHERE uuid = :uuid OR username = :name;
+        WHERE (uuid = :uuid OR username = :name);
     -- # }
 
     -- # { subtract
@@ -190,20 +190,42 @@
     -- # :amount int
         UPDATE economy
         SET amount = amount - :amount
-        WHERE uuid = :uuid OR username = :name AND amount >= :amount;
+        WHERE (uuid = :uuid OR username = :name) AND amount >= :amount;
     -- # }
 
     -- # { transfer
-    -- # :r_uuid string
-    -- # :s_uuid string
-    -- # :amount int
-        UPDATE economy s
-        JOIN economy r
-            ON s.uuid = :s_uuid
-            AND r.uuid = :r_uuid
-        SET s.amount = s.amount - :amount,
-            r.amount = r.amount + :amount
-        WHERE s.amount >= :amount;
+
+        -- # { begin
+            BEGIN;
+        -- # }
+
+        -- # { debitSender
+        -- # :s_uuid string
+        -- # :s_name ?string
+        -- # :amount int
+            UPDATE economy
+            SET amount = amount - :amount
+            WHERE (uuid = :s_uuid OR username = :s_name)
+              AND amount >= :amount;
+        -- # }
+
+        -- # { creditReceiver
+        -- # :r_uuid string
+        -- # :r_name ?string
+        -- # :amount int
+            UPDATE economy
+            SET amount = amount + :amount
+            WHERE (uuid = :r_uuid OR username = :r_name);
+        -- # }
+
+        -- # { commit
+            COMMIT;
+        -- # }
+
+        -- # { rollback
+            ROLLBACK;
+        -- # }
+
     -- # }
 
     -- # { top
@@ -220,12 +242,11 @@
     -- # }
 
     -- # { set
-    -- # :uuid ?string
-    -- # :name ?string
+    -- # :name string # pour le moment ça va marcher seulement avec le name
     -- # :amount int
         UPDATE economy
         SET amount = :amount
-        WHERE uuid = :uuid OR username = :name;
+        WHERE username = :name;
     -- # }
 
 -- # }

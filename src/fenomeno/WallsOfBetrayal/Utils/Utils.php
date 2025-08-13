@@ -2,8 +2,6 @@
 
 namespace fenomeno\WallsOfBetrayal\Utils;
 
-use cooldogedev\BedrockEconomy\BedrockEconomy;
-use cooldogedev\BedrockEconomy\database\cache\GlobalCache;
 use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\type\InvMenuTypeIds;
 use fenomeno\WallsOfBetrayal\Main;
@@ -158,11 +156,6 @@ class Utils
         return Main::getInstance()->getEconomyManager()->getCurrency()->formatter->format($balance);
     }
 
-    public static function formatBalance(Player $player): string {
-        $entry = GlobalCache::ONLINE()->get($player->getName());
-        return Main::getInstance()->getEconomyManager()->getCurrency()->formatter->format($entry->amount);
-    }
-
     public static function countInInventory(Inventory $inv, Item $needle): int {
         $sum = 0;
         foreach ($inv->getContents() as $it) {
@@ -182,11 +175,6 @@ class Utils
         }
 
         return [$balance, $decimals];
-    }
-
-    public static function rawBalance(Player $player): int {
-        $entry = GlobalCache::ONLINE()->get($player->getName());
-        return $entry->amount;
     }
 
     public static function canGive(Inventory $inv, Item $base, ?int $qty = null): bool {

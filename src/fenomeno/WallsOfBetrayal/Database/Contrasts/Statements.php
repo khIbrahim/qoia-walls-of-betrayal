@@ -29,5 +29,10 @@ interface Statements
     public const TRANSFER_ECONOMY               = 'economy.transfer';
     public const TOP_ECONOMY                    = 'economy.top';
     public const SET_ECONOMY                    = 'economy.set';
+    public const TRANSFER_BEGIN                 = 'economy.transfer.begin';
+    public const TRANSFER_COMMIT                = 'economy.transfer.commit';
+    public const TRANSFER_ROLLBACK              = 'economy.transfer.rollback';
+    public const TRANSFER_DEBIT_SENDER          = 'economy.transfer.debitSender';
+    public const CREDIT_RECEIVER                = 'economy.transfer.creditReceiver';
 
 }

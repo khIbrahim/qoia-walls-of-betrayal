@@ -9,7 +9,9 @@ final readonly class TransferEconomyPayload implements PayloadInterface
 
     public function __construct(
         public string $senderUuid,
+        public string $senderUsername,
         public string $receiverUuid,
+        public string $receiverUsername,
         public int    $amount
     ){}
 
@@ -17,7 +19,9 @@ final readonly class TransferEconomyPayload implements PayloadInterface
     {
         return [
             'r_uuid' => $this->receiverUuid,
+            'r_name' => $this->receiverUsername,
             's_uuid' => $this->senderUuid,
+            's_name' => $this->senderUsername,
             'amount' => $this->amount
         ];
     }

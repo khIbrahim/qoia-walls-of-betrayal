@@ -29,5 +29,6 @@ final class MessagesIds
     public const BALANCE_ERR_INSUFFICIENT_FUNDS = 'economy.errors.account.insufficient';
     public const BALANCE_ACCOUNT_MISSING_DATA = 'economy.errors.account.missingData';
     public const ERROR = 'common.logicError';
+    public const BALANCE_SAME_BALANCE = 'economy.errors.amount.same';
 
 }

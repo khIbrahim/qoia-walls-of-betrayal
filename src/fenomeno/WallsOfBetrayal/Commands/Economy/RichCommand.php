@@ -39,7 +39,7 @@ class RichCommand extends WCommand
 
         Await::f2c(function () use ($offset, $sender, $args){
             $entries = yield from $this->main->getEconomyManager()->getTop(offset: $offset);
-            if(count($entries) === 0){
+            if($entries === null || count($entries) === 0){
                 MessagesUtils::sendTo($sender, MessagesIds::ERROR_RICH_NO_RECORDS);
                 return;
             }

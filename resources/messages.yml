@@ -190,6 +190,7 @@ economy:
       invalid: "{MONEY_PREFIX}{RED}The amount you entered is invalid."
       small: "{MONEY_PREFIX}{RED}The amount you entered is too small."
       large: "{MONEY_PREFIX}{RED}The amount you entered is too large."
+      same: "{MONEY_PREFIX}{RED}The amount you entered is the same as the current balance."
     rich:
       no_records: "{MONEY_PREFIX}{RED}There are no records to display."
     pay:

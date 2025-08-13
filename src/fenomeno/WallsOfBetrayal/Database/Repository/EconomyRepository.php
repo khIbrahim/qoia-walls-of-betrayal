@@ -13,10 +13,10 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Economy\SubtractEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TopEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TransferEconomyPayload;
 use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
+use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyBalanceIsSameException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordMissingDatException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordNotFoundException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\InsufficientFundsException;
-use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\SqlThread;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
@@ -73,7 +73,7 @@ class EconomyRepository implements EconomyRepositoryInterface
                         return;
                     }
 
-                    $resolve();
+                    $resolve($affectedRows);
                 },
                 fn(Throwable $e) => $reject(new DatabaseException(Statements::ADD_ECONOMY . " failed", 0, $e))
             );
@@ -92,51 +92,57 @@ class EconomyRepository implements EconomyRepositoryInterface
                         return;
                     }
 
-                    $resolve();
+                    $resolve($affectedRows);
                 },
                 fn(Throwable $e) => $reject(new DatabaseException(Statements::SUBTRACT_ECONOMY . " failed", 0, $e))
             );
         });
     }
 
-    public function transfer(TransferEconomyPayload $payload): Generator {
+    public function transfer(TransferEconomyPayload $payload): \Generator {
         return Await::promise(function ($resolve, $reject) use ($payload): void {
             $db = $this->main->getDatabaseManager();
 
-            $db->executeChange(
-                Statements::TRANSFER_ECONOMY,
-                $payload->jsonSerialize(),
-                function (int $affectedRows) use ($resolve, $reject, $payload): void {
-                    if ($affectedRows >= 2) {
-                        $resolve();
+            $db->executeGeneric(Statements::TRANSFER_BEGIN, [], function () use ($db, $payload, $resolve, $reject): void {
+
+                $db->executeChange(Statements::TRANSFER_DEBIT_SENDER, [
+                    's_uuid' => $payload->senderUuid,
+                    's_name' => $payload->senderUsername,
+                    'amount' => $payload->amount
+                ], function (int $affectedRows) use ($db, $payload, $resolve, $reject): void {
+                    if ($affectedRows < 1) {
+                        $db->executeGeneric(Statements::TRANSFER_ROLLBACK);
+                        $reject(new InsufficientFundsException("Insufficient funds or sender not found"));
                         return;
                     }
 
-                    Await::g2c(
-                        $this->get(new GetEconomyPayload(username: null, uuid: $payload->senderUuid)),
-                        function (EconomyEntry $sender) use ($payload, $resolve, $reject): void {
-                            if ($sender->amount < $payload->amount) {
-                                $reject(new InsufficientFundsException("Insufficient funds"));
-                                return;
-                            }
-
-                            Await::g2c(
-                                $this->get(new GetEconomyPayload(username: null, uuid: $payload->receiverUuid)),
-                                function (EconomyEntry $_receiver) use ($reject): void {
-                                    $reject(new DatabaseException(Statements::TRANSFER_ECONOMY . " failed for unknown reason"));
-                                },
-                                function (Throwable $_e) use ($reject): void {
-                                    $reject(new EconomyRecordNotFoundException("Receiver not found"));
-                                }
-                            );
-                        },
-                        function (Throwable $_e) use ($reject): void {
-                            $reject(new EconomyRecordNotFoundException("Sender not found"));
+                    $db->executeChange(Statements::CREDIT_RECEIVER, [
+                        'r_uuid' => $payload->receiverUuid,
+                        'r_name' => $payload->receiverUsername,
+                        'amount' => $payload->amount
+                    ], function (int $affectedRows) use ($db, $resolve, $reject): void {
+                        if ($affectedRows < 1) {
+                            $db->executeGeneric(Statements::TRANSFER_ROLLBACK);
+                            $reject(new EconomyRecordNotFoundException("Receiver not found"));
+                            return;
                         }
-                    );
-                },
-                fn (Throwable $e) => $reject(new DatabaseException(Statements::TRANSFER_ECONOMY . " failed", 0, $e))
-            );
+
+                        $db->executeGeneric(Statements::TRANSFER_COMMIT, [], function () use ($resolve): void {
+                            $resolve();
+                        }, function (\Throwable $e) use ($reject): void {
+                            $reject(new DatabaseException(Statements::TRANSFER_COMMIT . " failed", 0, $e));
+                        });
+                    }, function (\Throwable $e) use ($db, $reject): void {
+                        $db->executeGeneric(Statements::TRANSFER_ROLLBACK);
+                        $reject(new DatabaseException(Statements::CREDIT_RECEIVER . " failed", 0, $e));
+                    });
+                }, function (\Throwable $e) use ($db, $reject): void {
+                    $db->executeGeneric(Statements::TRANSFER_ROLLBACK);
+                    $reject(new DatabaseException(Statements::TRANSFER_DEBIT_SENDER . " failed", 0, $e));
+                });
+            }, function (\Throwable $e) use ($reject): void {
+                $reject(new DatabaseException(Statements::TRANSFER_BEGIN . " failed", 0, $e));
+            });
         });
     }
 
@@ -163,6 +169,7 @@ class EconomyRepository implements EconomyRepositoryInterface
         });
     }
 
+    /** @throws */
     public function set(SetEconomyPayload $payload): Generator
     {
         return Await::promise(function ($resolve, $reject) use ($payload): void {
@@ -170,14 +177,28 @@ class EconomyRepository implements EconomyRepositoryInterface
                 Statements::SET_ECONOMY,
                 $payload->jsonSerialize(),
                 function (int $affectedRows) use ($resolve, $payload, $reject): void {
-                    if ($affectedRows === 0) {
-                        $reject(new EconomyRecordNotFoundException("Account not found for uuid " . ($payload->uuid ?? 'null') . " or username " . ($payload->username ?? 'null')));
-                        return;
-                    }
-                    $resolve();
+                    $this->resolveSetResult($affectedRows, $payload, $resolve, $reject);
                 },
-                fn(Throwable $e) => $reject(new DatabaseException(Statements::ADD_ECONOMY . " failed", 0, $e))
+                fn(Throwable $e) => $reject(new DatabaseException(Statements::SET_ECONOMY . " failed", 0, $e))
             );
         });
+    }
+
+    /** @throws */
+    private function resolveSetResult(int $affectedRows, SetEconomyPayload $payload, callable $resolve, callable $reject): void {
+        if ($affectedRows > 0) {
+            $resolve();
+            return;
+        }
+
+        Await::g2c(
+            $this->get(new GetEconomyPayload($payload->username)),
+            function (EconomyEntry $_) use ($payload, $reject) {
+                $reject(new EconomyBalanceIsSameException("Balance is already set to " . $payload->amount . " for user " . $payload->username));
+            },
+            function (Throwable $_) use ($payload, $reject) {
+                $reject(new EconomyRecordNotFoundException("Account not found for " . $payload->username));
+            }
+        );
     }
 }

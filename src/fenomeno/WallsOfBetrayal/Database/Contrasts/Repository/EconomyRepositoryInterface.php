@@ -10,6 +10,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Economy\SubtractEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TopEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TransferEconomyPayload;
 use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
+use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyBalanceIsSameException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordAlreadyExistsException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordMissingDatException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordNotFoundException;
@@ -53,6 +54,10 @@ interface EconomyRepositoryInterface
 
     public function top(TopEconomyPayload $payload): Generator;
 
+    /**
+     * @throws EconomyBalanceIsSameException
+     * @throws EconomyRecordNotFoundException
+     */
     public function set(SetEconomyPayload $payload): Generator;
 
 }

@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Economy;
 
+use Closure;
 use fenomeno\WallsOfBetrayal\Cache\EconomyEntry;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\AddEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\GetEconomyPayload;
@@ -11,9 +12,14 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Economy\SubtractEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TopEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TransferEconomyPayload;
 use fenomeno\WallsOfBetrayal\Economy\Currency\Currency;
+use fenomeno\WallsOfBetrayal\Events\Economy\AddBalanceEvent;
+use fenomeno\WallsOfBetrayal\Events\Economy\EconomyEvent;
+use fenomeno\WallsOfBetrayal\Events\Economy\InsertBalanceEvent;
+use fenomeno\WallsOfBetrayal\Events\Economy\SetBalanceEvent;
+use fenomeno\WallsOfBetrayal\Events\Economy\SubtractBalanceEvent;
+use fenomeno\WallsOfBetrayal\Events\Economy\TransferBalanceEvent;
 use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordAlreadyExistsException;
-use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordMissingDatException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordNotFoundException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\InsufficientFundsException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\InvalidEconomyAmount;
@@ -22,26 +28,222 @@ use fenomeno\WallsOfBetrayal\Main;
 use Generator;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
+use Throwable;
 
 class EconomyManager
 {
-
     private Currency $currency;
-    private Config $config;
 
-    /** @var EconomyEntry[] */
-    private array $cached = [];
+    /** @var array<string, EconomyEntry> */
+    private array $cache = [];
 
-    public function __construct(private readonly Main $main){
-        $this->main->saveResource('economy.yml');
-        $this->config = new Config($this->main->getDataFolder() . 'economy.yml', Config::YAML);
+    private bool $dirty = false;
 
+    public function __construct(private readonly Main $main)
+    {
         $this->initCurrency();
+    }
+
+    /**
+     * @return Generator<EconomyEntry>
+     * @throws
+     */
+    public function get(Player|string $name, ?string $uuid = null, bool $safe = false): Generator
+    {
+        $key = $this->normalizeKey($name);
+
+        if ($this->isInCache($name)){
+            return $this->cache[$key];
+        }
+
+        try {
+            $entry = yield from $this->main->getDatabaseManager()
+                ->getEconomyRepository()
+                ->get(new GetEconomyPayload($key, $uuid));
+
+            $this->cache[$key] = $entry;
+            $this->dirty = true;
+            $this->sort();
+
+            return $entry;
+        } catch (Throwable $e) {
+            if ($safe) {
+                $this->main->getLogger()->logException($e);
+                return new EconomyEntry($name instanceof Player ? $name->getName() : $name, $uuid, 0);
+            }
+            throw $e;
+        }
+    }
+
+    public function insert(string $name, string $uuid, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
+    {
+        $key = strtolower($name);
+        $event = new InsertBalanceEvent($name, $uuid);
+
+        $onSuccess ??= static function(): void {};
+        $onFailure ??= function(Throwable $e) use ($event): void {
+            $event->cancel();
+            throw $e;
+        };
+
+        $event->call();
+        if ($event->isCancelled()) return;
+
+        try {
+            Await::g2c(
+                $this->main->getDatabaseManager()->getEconomyRepository()->insert(
+                    new InsertEconomyPayload($event->getUsername(), $event->getUuid())
+                ),
+                function() use ($event, $key, $onSuccess): void {
+                    $entry = new EconomyEntry($event->getUsername(), $event->getUuid(), $this->currency->defaultAmount);
+                    $this->cache[$key] = $entry;
+                    $this->dirty = true;
+                    $this->sort();
+                    $onSuccess();
+                },
+                $onFailure
+            );
+        } catch (DatabaseException $e) {
+            $event->cancel();
+            $this->main->getLogger()->info("ECONOMY - Failed to insert {$event->getUsername()}: " . $e->getPrevious()?->getMessage());
+            $this->main->getLogger()->logException($e);
+        } catch (EconomyRecordAlreadyExistsException $e) {
+            $event->cancel();
+            $this->main->getLogger()->warning($e->getMessage());
+        } catch (Throwable) {
+            $event->cancel();
+        }
+    }
+
+    /**
+     * @throws InvalidEconomyAmount|EconomyRecordNotFoundException|DatabaseException|Throwable
+     */
+    public function add(string|Player $player, int $amount): Generator
+    {
+        if ($amount <= 0) throw new InvalidEconomyAmount();
+
+        [$username, $uuid] = $this->extractPlayerData($player);
+        $key = $this->normalizeKey($player);
+
+        $event = new AddBalanceEvent($username, $uuid, $amount);
+
+        yield from $this->handleEvent($event, function(?AddBalanceEvent $ev) use ($key) {
+            if($ev){
+                yield from $this->main->getDatabaseManager()
+                    ->getEconomyRepository()
+                    ->add(new AddEconomyPayload(
+                        amount: $ev->getAmount(),
+                        username: $ev->getUsername(),
+                        uuid: $ev->getUuid()
+                    ));
+
+                $this->modifyCache($key, $ev->getAmount());
+                $this->sort();
+            }
+        });
+    }
+
+    /**
+     * @throws InvalidEconomyAmount|EconomyRecordNotFoundException|InsufficientFundsException|Throwable
+     */
+    public function subtract(Player|string $player, int $amount): Generator
+    {
+        if ($amount <= 0) throw new InvalidEconomyAmount();
+
+        [$username, $uuid] = $this->extractPlayerData($player);
+        $key = $this->normalizeKey($player);
+
+        $event = new SubtractBalanceEvent($username, $uuid, $amount);
+
+        yield from $this->handleEvent($event, function(?SubtractBalanceEvent $ev) use ($key) {
+            if ($ev){
+                yield from $this->main->getDatabaseManager()
+                    ->getEconomyRepository()
+                    ->subtract(new SubtractEconomyPayload(
+                        amount: $ev->getAmount(),
+                        username: $ev->getUsername(),
+                        uuid: $ev->getUuid()
+                    ));
+
+                $this->modifyCache($key, -$ev->getAmount());
+                $this->sort();
+            }
+        });
+    }
+
+    /**
+     * @throws InvalidEconomyAmount|EconomyRecordNotFoundException|InsufficientFundsException|DatabaseException|Throwable
+     */
+    public function transfer(string|Player $from, string|Player $to, int $amount): Generator
+    {
+        if ($amount <= 0) throw new InvalidEconomyAmount();
+
+        [$senderName, $senderUuid] = $this->extractPlayerData($from);
+        [$receiverName, $receiverUuid] = $this->extractPlayerData($to);
+
+        $senderKey = $this->normalizeKey($from);
+        $receiverKey = $this->normalizeKey($to);
+
+        $event = new TransferBalanceEvent($senderName, $receiverName, $senderUuid, $receiverUuid, $amount);
+
+        yield from $this->handleEvent($event, function(?TransferBalanceEvent $ev) use ($senderKey, $receiverKey) {
+            if($ev){
+                yield from $this->main->getDatabaseManager()
+                    ->getEconomyRepository()
+                    ->transfer(new TransferEconomyPayload(
+                        $ev->getSenderUuid(),
+                        $ev->getSenderUsername(),
+                        $ev->getReceiverUuid(),
+                        $ev->getReceiverUsername(),
+                        $ev->getAmount()
+                    ));
+
+                $this->modifyCache($senderKey, -$ev->getAmount());
+                $this->modifyCache($receiverKey, $ev->getAmount());
+                $this->sort();
+            }
+        });
+    }
+
+    /**
+     * @throws InvalidEconomyAmount|Throwable
+     */
+    public function set(Player|string $player, int $amount): Generator
+    {
+        if ($amount < 0) throw new InvalidEconomyAmount();
+
+        [$username, $uuid] = $this->extractPlayerData($player);
+        $key = $this->normalizeKey($player);
+
+        $event = new SetBalanceEvent($username, $uuid, $amount);
+
+        yield from $this->handleEvent($event, function(?SetBalanceEvent $ev) use ($key) {
+            if($ev){
+                yield from $this->main->getDatabaseManager()
+                    ->getEconomyRepository()
+                    ->set(new SetEconomyPayload($ev->getAmount(), $ev->getUsername()));
+
+                $this->updateCache($key, $ev->getAmount());
+                $this->sort();
+            }
+        });
+    }
+
+    /**
+     * @return Generator<EconomyEntry[]>
+     */
+    public function getTop(int $limit = 10, int $offset = 0): Generator
+    {
+        return yield from $this->main->getDatabaseManager()
+            ->getEconomyRepository()
+            ->top(new TopEconomyPayload($limit, $offset));
     }
 
     private function initCurrency(): void
     {
-        $currencyConfig = $this->config->get('currency');
+        $this->main->saveResource('economy.yml');
+        $config = new Config($this->main->getDataFolder() . 'economy.yml', Config::YAML);
+        $currencyConfig = $config->get('currency');
 
         $this->currency = new Currency(
             name: $currencyConfig['name'] ?? 'United States Dollar',
@@ -55,197 +257,87 @@ class EconomyManager
     }
 
     /**
-     * @throws EconomyRecordNotFoundException
-     * @throws EconomyRecordMissingDatException
-     * @throws DatabaseException
-     * @return Generator<EconomyEntry>
+     * @template T of EconomyEvent
+     * @param EconomyEvent $event
+     * @param Closure(T): Generator $action
+     * @return Generator
+     * @throws Throwable
      */
-    public function get(Player|string $name, ?string $uuid = null): Generator
-    {
-        if($name instanceof Player){
-            $name = strtolower($name->getName());
+    private function handleEvent(EconomyEvent $event, Closure $action): Generator {
+        $event->call();
+
+        if ($event->isCancelled()) {
+            return yield from Await::all([]);
         }
-
-        if (isset($this->cached[$name])) {
-            return $this->cached[$name];
-        }
-
-        $entry = yield from $this->main->getDatabaseManager()
-                ->getEconomyRepository()
-                ->get(new GetEconomyPayload($name, $uuid));
-
-        $this->cached[$name] = $entry;
-
-        return $entry;
-    }
-
-    public function insert(string $name, string $uuid, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void {
-        $name = strtolower($name);
-        $onSuccess ??= static function(EconomyEntry $e): void {};
-        $onFailure ??= static function(\Throwable $e): void { throw $e; };
 
         try {
-            Await::g2c(
-                $this->main->getDatabaseManager()->getEconomyRepository()->insert(new InsertEconomyPayload($name, $uuid)),
-                function () use ($uuid, $name, $onSuccess): void {
-                    $entry = new EconomyEntry($name, $uuid, 0);
-                    $this->cached[$entry->username] = $entry;
-                    $this->sort();
-                    $onSuccess($entry);
-                },
-                $onFailure
-            );
-        } catch (DatabaseException $e) {
-            $this->main->getLogger()->info("ECONOMY - Failed to insert name: $name, uuid: $uuid: " . $e->getPrevious()->getMessage());
-            $this->main->getLogger()->logException($e);
-        } catch (EconomyRecordAlreadyExistsException $e) {
-            $this->main->getLogger()->warning($e->getMessage());
+            return yield from $action($event);
+        } catch (Throwable $e) {
+            $event->cancel();
+            throw $e;
         }
     }
 
-    /**
-     * @throws InvalidEconomyAmount
-     * @throws EconomyRecordNotFoundException|DatabaseException
-     */
-    public function add(string|Player $player, int $amount): Generator {
-        if ($amount <= 0) {
-            throw new InvalidEconomyAmount();
-        }
-
-        [$username, $uuid] = $this->payloadPlayerData($player);
-
-        yield from $this->main->getDatabaseManager()
-            ->getEconomyRepository()
-            ->add(new AddEconomyPayload(amount: $amount, username: $username, uuid: $uuid));
-
-        $this->cached[$username]->amount += $amount;
-
-        $this->sort();
-    }
-
-    /**
-     * @throws InvalidEconomyAmount
-     * @throws EconomyRecordNotFoundException|InsufficientFundsException
-     */
-    public function subtract(Player|string $player, int $amount): Generator
+    private function updateCache(string $key, int $newAmount): void
     {
-        if ($amount <= 0) {
-            throw new InvalidEconomyAmount();
+        if (isset($this->cache[$key])) {
+            $this->cache[$key]->amount = $newAmount;
         }
-
-        [$username, $uuid] = $this->payloadPlayerData($player);
-
-        yield from $this->main->getDatabaseManager()
-            ->getEconomyRepository()
-            ->subtract(new SubtractEconomyPayload(amount: $amount, username: $username, uuid: $uuid));
-
-        $this->cached[$username]->amount -= $amount;
-
-        $this->sort();
+        $this->dirty = true;
     }
 
-    public function sort(): void
+    private function modifyCache(string $key, int $delta): void
     {
-        uasort($this->cached, static fn (EconomyEntry $a, EconomyEntry $b) => $b->amount <=> $a->amount);
-
-        $i = 1;
-
-        foreach ($this->cached as $key => $entry) {
-            $this->cached[$key]->position = $i;
-            $i++;
+        if (isset($this->cache[$key])) {
+            $this->cache[$key]->amount += $delta;
+            $this->dirty = true;
         }
     }
 
-    /**
-     * @throws InvalidEconomyAmount
-     * @throws EconomyRecordNotFoundException
-     * @throws InsufficientFundsException
-     * @throws EconomyRecordMissingDatException
-     * @throws DatabaseException
-     */
-    public function transfer(string|Player $from, string|Player $to, int $amount): \Generator {
-        if ($amount <= 0) throw new InvalidEconomyAmount();
-
-        [$sName, $sUuid] = $this->payloadPlayerData($from);
-        [$rName, $rUuid] = $this->payloadPlayerData($to);
-
-        if (! isset($this->cached[$sName])) {
-            try { yield from $this->get($sName, $sUuid);} catch (EconomyRecordNotFoundException){$this->insert($sName, $sUuid, fn() => yield from $this->add($from, $amount));}
-        }
-        if (! isset($this->cached[$rName])) {
-            try { yield from $this->get($rName, $rUuid);} catch (EconomyRecordNotFoundException){$this->insert($rName, $rUuid, fn() => yield from $this->add($to, $amount));}
-        }
-
-        yield from $this->main->getDatabaseManager()->getEconomyRepository()->transfer(
-            new TransferEconomyPayload($sUuid, $rUuid, $amount)
-        );
-
-        $this->cached[$sName]->amount -= $amount;
-        $this->cached[$rName]->amount += $amount;
-        $this->sort();
-    }
-
-    /**
-     * @throws InvalidEconomyAmount
-     */
-    public function set(Player|string $player, int $amount): Generator
+    private function sort(): void
     {
-        if ($amount < 0) {
-            throw new InvalidEconomyAmount();
+        if (! $this->dirty) return;
+
+        uasort($this->cache, static fn(EconomyEntry $a, EconomyEntry $b) => $b->amount <=> $a->amount);
+
+        $position = 1;
+        foreach ($this->cache as $entry) {
+            $entry->position = $position++;
         }
 
-        [$username, $uuid] = $this->payloadPlayerData($player);
-
-        yield from $this->main->getDatabaseManager()
-            ->getEconomyRepository()
-            ->set(new SetEconomyPayload($amount, $uuid, $username));
-
-        $this->cached[$username]->amount = $amount;
-        $this->sort();
+        $this->dirty = false;
     }
 
-    /**
-     * Récupère le leaderboard paginé (et met à jour le cache local pour ces entrées).
-     *
-     * @return Generator<EconomyEntry[]>
-     */
-    public function getTop(int $limit = 10, int $offset = 0): Generator {
-        $entries = yield from $this->main->getDatabaseManager()
-            ->getEconomyRepository()
-            ->top(new TopEconomyPayload($limit, $offset));
-
-        /** @var EconomyEntry $e */
-        foreach ($entries as $e) {
-            $key = strtolower($e->uuid);
-            $this->cached[$key] = $e;
-        }
-
-        return $entries;
-    }
-
-    private function payloadPlayerData(string|Player $player): array
+    private function normalizeKey(string|Player $player): string
     {
-        if($player instanceof Player){
-            return [
-                strtolower($player->getName()),
-                $player->getUniqueId()->toString()
-            ];
-        } else {
-            $playerExact = $this->main->getServer()->getPlayerExact($player);
-            if ($playerExact instanceof Player){
-                return [
-                    strtolower($playerExact->getName()),
-                    $playerExact->getUniqueId()->toString()
-                ];
-            } else {
-                return [$player, $player];
-            }
+        return strtolower($player instanceof Player ? $player->getName() : $player);
+    }
+
+    private function extractPlayerData(string|Player $player): array
+    {
+        if ($player instanceof Player) {
+            return [strtolower($player->getName()), $player->getUniqueId()->toString()];
         }
+
+        $exact = $this->main->getServer()->getPlayerExact($player);
+        return $exact instanceof Player
+            ? [strtolower($exact->getName()), $exact->getUniqueId()->toString()]
+            : [strtolower($player), $player];
+    }
+
+    public function isInCache(string|Player $player): bool
+    {
+        return isset($this->cache[$this->normalizeKey($player)]);
+    }
+
+    public function clearCache(): void
+    {
+        $this->cache = [];
+        $this->dirty = false;
     }
 
     public function getCurrency(): Currency
     {
         return $this->currency;
     }
-
 }

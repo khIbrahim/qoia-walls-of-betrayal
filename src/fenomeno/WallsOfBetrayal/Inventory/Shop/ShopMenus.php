@@ -2,8 +2,11 @@
 
 namespace fenomeno\WallsOfBetrayal\Inventory\Shop;
 
+use fenomeno\WallsOfBetrayal\Cache\EconomyEntry;
 use fenomeno\WallsOfBetrayal\Class\Shop\ShopItem;
 use fenomeno\WallsOfBetrayal\Handlers\ShopTransactionHandler;
+use fenomeno\WallsOfBetrayal\Language\ExtraTags;
+use fenomeno\WallsOfBetrayal\Language\MessagesIds;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\CustomForm;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\CustomFormResponse;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\element\Input;
@@ -11,10 +14,12 @@ use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\element\Label;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\MenuForm;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\MenuOption;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
+use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
+use Throwable;
 
 final class ShopMenus {
 
@@ -42,36 +47,43 @@ final class ShopMenus {
         $player->sendForm($menu);
     }
 
+    /** @throws */
     private static function sendBuyMenu(Player $player, ShopItem $shopItem): void {
-        $balance = Utils::formatBalance($player);
-        $form = new CustomForm(
-            title: MessagesUtils::getMessage('shop.buy-menu.title', ['{SHOP_ITEM}' => $shopItem->getDisplayName()]),
-            elements: [
-                new Label('info', MessagesUtils::getMessage('shop.buy-menu.label', [
-                    '{SHOP_ITEM}'  => $shopItem->getDisplayName(),
-                    '{UNIT_PRICE}' => Utils::formatCurrency($shopItem->getBuyPrice()),
-                    '{BALANCE}'    => $balance
-                ])),
-                new Input('qty', MessagesUtils::getMessage('shop.buy-menu.input'), "1")
-            ],
-            onSubmit: function(Player $player, CustomFormResponse $res) use ($shopItem): void {
-                $qty = Utils::parseQty($res->getString('qty'));
-                if ($qty === null) { MessagesUtils::sendTo($player, 'shop.invalidQuantity'); return; }
+        Await::g2c(
+            Main::getInstance()->getEconomyManager()->get($player),
+            function (EconomyEntry $entry) use ($player, $shopItem): void {
+                $balance = $entry->amount;
+                $form = new CustomForm(
+                    title: MessagesUtils::getMessage('shop.buy-menu.title', ['{SHOP_ITEM}' => $shopItem->getDisplayName()]),
+                    elements: [
+                        new Label('info', MessagesUtils::getMessage('shop.buy-menu.label', [
+                            '{SHOP_ITEM}'  => $shopItem->getDisplayName(),
+                            '{UNIT_PRICE}' => Utils::formatCurrency($shopItem->getBuyPrice()),
+                            '{BALANCE}'    => $balance
+                        ])),
+                        new Input('qty', MessagesUtils::getMessage('shop.buy-menu.input'), "1")
+                    ],
+                    onSubmit: function(Player $player, CustomFormResponse $res) use ($shopItem): void {
+                        $qty = Utils::parseQty($res->getString('qty'));
+                        if ($qty === null) { MessagesUtils::sendTo($player, 'shop.invalidQuantity'); return; }
 
-                Await::g2c(ShopTransactionHandler::buy(player: $player, shopItem: $shopItem, count: $qty),
-                    function ($total) use ($shopItem, $qty, $player) {
-                        if($total){
-                            MessagesUtils::sendTo($player, 'shop.bought', [
-                                '{ITEM}'        => TextFormat::clean($shopItem->getDisplayName()),
-                                '{QTY}'         => (string) $qty,
-                                '{TOTAL_PRICE}' => (string) $total
-                            ]);
-                        }
-                    }, fn ($er) => MessagesUtils::sendTo($player, 'shop.txnFailed', ['{ERR}' => (string) $er])
+                        Await::g2c(ShopTransactionHandler::buy(player: $player, shopItem: $shopItem, count: $qty),
+                            function ($total) use ($shopItem, $qty, $player) {
+                                if($total){
+                                    MessagesUtils::sendTo($player, 'shop.bought', [
+                                        '{ITEM}'        => TextFormat::clean($shopItem->getDisplayName()),
+                                        '{QTY}'         => (string) $qty,
+                                        '{TOTAL_PRICE}' => (string) $total
+                                    ]);
+                                }
+                            }, fn ($er) => MessagesUtils::sendTo($player, 'shop.txnFailed', ['{ERR}' => (string) $er])
+                        );
+                    }
                 );
-            }
+                $player->sendForm($form);
+            },
+            fn(Throwable $e) => MessagesUtils::sendTo($player, MessagesIds::ERROR, [ExtraTags::ERROR => $e->getMessage()])
         );
-        $player->sendForm($form);
     }
 
     private static function sendSellMenu(Player $player, ShopItem $shopItem): void {

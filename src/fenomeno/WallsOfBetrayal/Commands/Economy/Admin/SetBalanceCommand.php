@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
 use fenomeno\WallsOfBetrayal\Constants\Limits;
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
+use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyBalanceIsSameException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordNotFoundException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\InvalidEconomyAmount;
 use fenomeno\WallsOfBetrayal\Language\MessagesIds;
@@ -75,6 +76,8 @@ class SetBalanceCommand extends WCommand
                     ]);
                 } catch (EconomyRecordNotFoundException) {
                     MessagesUtils::sendTo($sender, MessagesIds::BALANCE_ACCOUNT_NONEXISTENT);
+                } catch (EconomyBalanceIsSameException) {
+                    MessagesUtils::sendTo($sender, MessagesIds::BALANCE_SAME_BALANCE);
                 } catch (DatabaseException $exception) {
                     MessagesUtils::sendTo($sender, MessagesIds::BALANCE_ERR_DATABASE, [ExtraTags::ERROR => $exception->getMessage()]);
                     $this->getOwningPlugin()->getLogger()->logException($exception);

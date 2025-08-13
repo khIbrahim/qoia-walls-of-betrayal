@@ -2,7 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Handlers;
 
-use cooldogedev\BedrockEconomy\api\BedrockEconomyAPI;
+use fenomeno\WallsOfBetrayal\Cache\EconomyEntry;
 use fenomeno\WallsOfBetrayal\Class\Shop\ShopItem;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
@@ -16,13 +16,15 @@ class ShopTransactionHandler
 
     private static array $locks = [];
 
+    /** @throws */
     public static function buy(Player $player, ShopItem $shopItem, int $count): Generator
     {
         $unit = $shopItem->getBuyPrice();
         $total = $unit * $count;
 
-        $rawBal = Utils::rawBalance($player);
-        if ($rawBal < $total) {
+        /** @var EconomyEntry $entry */
+        $entry = yield from Main::getInstance()->getEconomyManager()->get($player, $player->getUniqueId()->toString(), true);
+        if ($entry->amount < $total) {
             MessagesUtils::sendTo($player, 'shop.notEnoughMoney', [
                 '{PRICE}' => (string)$total
             ]);
@@ -39,10 +41,8 @@ class ShopTransactionHandler
         if (isset(self::$locks[$name])) { MessagesUtils::sendTo($player, 'shop.txnBusy'); return null; }
         self::$locks[$name] = true;
 
-        [$balance, $decimals] = Utils::getBalanceAndDecimals($total);
-
         try {
-            yield from BedrockEconomyAPI::ASYNC()->subtract($player->getName(), $player->getName(), $balance, $decimals);
+            yield from Main::getInstance()->getEconomyManager()->subtract($player, $total);
 
             Utils::giveStacked($player->getInventory(), $base, $count);
 
@@ -77,8 +77,7 @@ class ShopTransactionHandler
         try {
             Utils::takeStacked($player->getInventory(), $base, $count);
 
-            [$balance, $decimals] = Utils::getBalanceAndDecimals($total);
-            yield from BedrockEconomyAPI::ASYNC()->add($player->getName(), $player->getName(), $balance, $decimals);
+            yield from Main::getInstance()->getEconomyManager()->add($player, $total);
 
             return $total;
         } catch (Throwable $e) {

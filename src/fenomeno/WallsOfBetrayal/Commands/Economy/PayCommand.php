@@ -80,14 +80,6 @@ class PayCommand extends WCommand
                         ExtraTags::PLAYER => $player,
                         ExtraTags::BALANCE => $this->main->getEconomyManager()->getCurrency()->formatter->format($amount),
                     ]);
-
-                    $target = $sender->getServer()->getPlayerExact($player);
-                    if ($target !== null) {
-                        MessagesUtils::sendTo($target, MessagesIds::BALANCE_PAY_RECEIVE, [
-                            ExtraTags::PLAYER => $sender->getName(),
-                            ExtraTags::BALANCE => $this->main->getEconomyManager()->getCurrency()->formatter->format($amount),
-                        ]);
-                    }
                 } catch (EconomyRecordNotFoundException) {
                     MessagesUtils::sendTo($sender, MessagesIds::BALANCE_ACCOUNT_NONEXISTENT);
                 } catch (InsufficientFundsException) {
@@ -99,7 +91,7 @@ class PayCommand extends WCommand
                     MessagesUtils::sendTo($sender, MessagesIds::BALANCE_ACCOUNT_MISSING_DATA);
                 } catch (InvalidEconomyAmount) {
                     MessagesUtils::sendTo($sender, MessagesIds::BALANCE_ERR_AMOUNT_INVALID);
-                } catch (Throwable $e) {$sender->sendMessage($e->getMessage()); $this->main->getLogger()->logException($e);}
+                } catch (Throwable $e) {var_dump($e->getMessage());  $sender->sendMessage($e->getMessage()); $this->main->getLogger()->logException($e);}
             }
         );
     }
