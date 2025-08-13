@@ -16,6 +16,8 @@ use pocketmine\player\Player;
 class KingdomListener implements Listener
 {
 
+    public function __construct(private readonly Main $main){}
+
     public function onJoin(PlayerJoinEvent $event): void
     {
         $event->setJoinMessage("");
@@ -40,25 +42,27 @@ class KingdomListener implements Listener
 
     public function onChat(PlayerChatEvent $event): void
     {
-        if(! Session::get($event->getPlayer())->isLoaded()){
+        $player = $event->getPlayer();
+        if(! Session::get($player)->isLoaded()){
             $event->cancel();
+            return;
         }
-        $event->setFormatter(new WobChatFormatter(Session::get($event->getPlayer())));
 
-//        $message = $event->getMessage();
-//        if (str_starts_with($message, 'portal')){
-//            $parts = explode(" ", $message);
-//            if(count($parts) === 2){
-//                $kingdomId = $parts[1];
-//                $kingdom = Main::getInstance()->getKingdomManager()->getKingdomById($kingdomId);
-//                if ($kingdom){
-//                    $player = $event->getPlayer();
-//                    $entity = new PortalEntity($player->getLocation(), $kingdom->portalId);
-//                    $entity->spawnToAll();
-//                    $player->sendMessage("§aPORTAIL SPAWN");
-//                }
-//            }
-//        }
+        $event->setFormatter(new WobChatFormatter($player, $this->main));
+
+        $message = $event->getMessage();
+        if (str_starts_with($message, 'portal')){
+            $parts = explode(" ", $message);
+            if(count($parts) === 2){
+                $kingdomId = $parts[1];
+                $kingdom = Main::getInstance()->getKingdomManager()->getKingdomById($kingdomId);
+                if ($kingdom){
+                    $entity = new PortalEntity($player->getLocation(), $kingdom->portalId);
+                    $entity->spawnToAll();
+                    $player->sendMessage("§aPORTAIL SPAWN");
+                }
+            }
+        }
     }
 
 }

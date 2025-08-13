@@ -1,0 +1,64 @@
+roles:
+  nomade:
+    displayName: "§7Nomade"
+    color: "§7"
+    icon: "✧"
+    inherits: []
+    permissions:
+      - "wob.kit.starter"
+      - "wob.chat.basic"               # peut écrire dans le chat global
+      - "wob.chat.channel.local"       # canal local (RP proximité)
+      - "wob.tpa.use"                  # /tpa de base
+      - "wob.home.max.1"               # 1 home
+      - "wob.spawn"                    # /spawn
+    chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+    nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
+    perks: {}
+    default: true
+
+  sentinel:
+    displayName: "§6Sentinel"
+    color: "§6"
+    icon: "⛨"
+    inherits: ["default"]
+    permissions:
+      - "wob.kit.sentinel"
+      - "wob.chat.emotes"              # emotes stylisées
+      - "wob.chat.channel.trade"       # canal commerce
+      - "wob.queue.priority.1"         # légère priorité file
+      - "wob.tpa.priority.1"           # priorité /tpa
+      - "wob.home.max.2"               # 2 homes
+      - "wob.shop.discount.05"         # -5% shop
+      - "wob.ability.cooldown.multiplier.0.95"  # -5% CD abilités
+      - "wob.quest.boost.1"            # petit boost progression quêtes
+    chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+    nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
+    perks: {}
+
+  warlord:
+    displayName: "§4Warlord"
+    color: "§4"
+    icon: "⚔"
+    inherits: ["sentinel"]             # hérite aussi de default via sentinel
+    permissions:
+      - "wob.kit.warlord"
+      - "wob.shop.discount.10"         # -10% shop
+      - "wob.queue.priority.2"         # forte priorité
+      - "wob.tpa.priority.2"
+      - "wob.home.max.3"
+      - "wob.chat.channel.allies"      # canal alliés (avant trahison)
+      - "wob.chat.shout"               # /shout (cooldown côté plugin)
+      - "wob.ability.cooldown.multiplier.0.90"  # -10% CD abilités
+      - "wob.war.banner.place"         # poser bannière de guerre (RP)
+      - "wob.war.banner.break"
+      - "wob.betray.mark"              # marquer une cible de trahison (RP futur)
+    chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+    nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
+    perks: {}
+
+defaults:
+  role: "nomade"
+  chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+  nameTagFormat: "{COLOR}{PLAYER}{ROLE} §7[{KINGDOM}§7]"
+  permissions:
+    - "wob.kit.starter"

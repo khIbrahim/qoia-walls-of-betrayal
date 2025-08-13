@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Repository;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
+use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\IncrementKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\InsertKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\LoadKitRequirementPayload;
@@ -17,11 +18,11 @@ use Throwable;
 class KitRequirementRepository implements KitRequirementRepositoryInterface
 {
 
-    public function __construct(private readonly Main $main){$this->init();}
+    public function __construct(private readonly Main $main){}
 
-    public function init(): void
+    public function init(DatabaseManager $database): void
     {
-        $this->main->getDatabaseManager()->executeGeneric(Statements::INIT_KIT_REQUIREMENT, [], function (){
+        $database->executeGeneric(Statements::INIT_KIT_REQUIREMENT, [], function (){
             $this->main->getLogger()->info("§aTable `kit_requirement` has been successfully init");
         });
     }

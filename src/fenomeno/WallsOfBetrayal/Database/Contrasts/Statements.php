@@ -35,5 +35,7 @@ interface Statements
     public const TRANSFER_DEBIT_SENDER          = 'economy.transfer.debitSender';
     public const CREDIT_RECEIVER                = 'economy.transfer.creditReceiver';
     public const INIT_ROLES                     = 'roles.init';
+    public const GET_PLAYER_ROLE                = 'roles.get';
+    public const INSERT_PLAYER_ROLE             = 'roles.assign';
 
 }

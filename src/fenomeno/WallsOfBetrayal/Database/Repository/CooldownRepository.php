@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Repository;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\CooldownRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
+use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\GetActiveCooldownsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\RemoveCooldownPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\UpsertCooldownPayload;
@@ -13,11 +14,11 @@ use fenomeno\WallsOfBetrayal\Main;
 class CooldownRepository implements CooldownRepositoryInterface
 {
 
-    public function __construct(private readonly Main $main){$this->init();}
+    public function __construct(private readonly Main $main){}
 
-    public function init(): void
+    public function init(DatabaseManager $database): void
     {
-        $this->main->getDatabaseManager()->executeGeneric(Statements::INIT_COOLDOWNS, [], function (){
+        $database->executeGeneric(Statements::INIT_COOLDOWNS, [], function (){
             $this->main->getLogger()->info("§aTable `cooldowns` has been successfully init");
         });
     }

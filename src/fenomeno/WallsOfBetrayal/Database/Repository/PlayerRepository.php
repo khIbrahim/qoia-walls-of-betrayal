@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Repository;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
+use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
@@ -18,11 +19,11 @@ use Throwable;
 class PlayerRepository implements PlayerRepositoryInterface
 {
 
-    public function __construct(private readonly Main $main){$this->init();}
+    public function __construct(private readonly Main $main){}
 
-    public function init(): void
+    public function init(DatabaseManager $database): void
     {
-        $this->main->getDatabaseManager()->executeGeneric(Statements::INIT_PLAYERS, [], function (){
+        $database->executeGeneric(Statements::INIT_PLAYERS, [], function (){
             $this->main->getLogger()->info("§aTable `players` has been successfully init");
         });
     }

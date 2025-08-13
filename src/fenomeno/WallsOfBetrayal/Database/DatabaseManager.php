@@ -5,11 +5,12 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\CooldownRepositoryInt
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
-use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\RolesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\RolesRepository;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\libasynql;
 use fenomeno\WallsOfBetrayal\Main;
@@ -27,6 +28,7 @@ class DatabaseManager
     private KitRequirementRepositoryInterface $kitRequirementRepository;
     private CooldownRepositoryInterface $cooldownRepository;
     private EconomyRepositoryInterface $economyRepository;
+    private RolesRepositoryInterface $rolesRepository;
 
     public function __construct(
         private readonly Main $main
@@ -37,16 +39,23 @@ class DatabaseManager
                 "mysql"  => "queries/mysql.sql"
             ]);
 
-            $this->database->executeGeneric(Statements::INIT_ROLES, [], function (){
-                $this->main->getLogger()->info("§aTable `player_roles` has been successfully init");
-            });
+            $this->playerRepository = new PlayerRepository($this->main);
+            $this->playerRepository->init($this);
 
-            $this->playerRepository         = new PlayerRepository($this->main);
             $this->kitRequirementRepository = new KitRequirementRepository($this->main);
-            $this->cooldownRepository       = new CooldownRepository($this->main);
-            $this->economyRepository        = new EconomyRepository($this->main);
+            $this->kitRequirementRepository->init($this);
+
+            $this->cooldownRepository = new CooldownRepository($this->main);
+            $this->cooldownRepository->init($this);
+
+            $this->economyRepository = new EconomyRepository($this->main);
+            $this->economyRepository->init($this);
+
+            $this->rolesRepository = new RolesRepository($this->main);
+            $this->rolesRepository->init($this);
         } catch (Throwable $e){
             $this->main->getLogger()->error("§cAn error occurred while init database: " . $e->getMessage());
+            $this->main->getLogger()->logException($e);
         }
     }
 
@@ -68,6 +77,11 @@ class DatabaseManager
     public function getEconomyRepository(): EconomyRepositoryInterface
     {
         return $this->economyRepository;
+    }
+
+    public function getRolesRepository(): RolesRepositoryInterface
+    {
+        return $this->rolesRepository;
     }
 
     public function __call(string $name, array $arguments)

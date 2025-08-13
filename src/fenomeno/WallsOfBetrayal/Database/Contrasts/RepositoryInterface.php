@@ -2,9 +2,11 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Contrasts;
 
+use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
+
 interface RepositoryInterface
 {
 
-    public function init(): void;
+    public function init(DatabaseManager $database): void;
 
 }

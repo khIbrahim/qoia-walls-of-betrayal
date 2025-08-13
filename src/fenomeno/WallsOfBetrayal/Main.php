@@ -26,9 +26,11 @@ use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
+use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
+use fenomeno\WallsOfBetrayal\Roles\RolesManager;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
 use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
 use pocketmine\plugin\PluginBase;
@@ -46,6 +48,7 @@ class Main extends PluginBase
     private ShopManager     $shopManager;
     private CooldownManager $cooldownManager;
     private EconomyManager  $economyManager;
+    private RolesManager    $rolesManager;
 
     protected function onLoad(): void
     {
@@ -68,14 +71,15 @@ class Main extends PluginBase
             PacketHooker::register($this);
         }
 
+        $this->databaseManager = new DatabaseManager($this);
         $this->abilityManager  = new AbilityManager($this);
         $this->kingdomManager  = new KingdomManager($this);
-        $this->databaseManager = new DatabaseManager($this);
         $this->phaseManager    = new PhaseManager($this);
         $this->kitsManager     = new KitsManager($this);
         $this->shopManager     = new ShopManager($this);
         $this->cooldownManager = new CooldownManager($this);
         $this->economyManager  = new EconomyManager($this);
+        $this->rolesManager    = new RolesManager($this);
 
         $this->getServer()->getCommandMap()->registerAll('wob', [
             new ChooseCommand($this),
@@ -92,11 +96,12 @@ class Main extends PluginBase
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new KingdomListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new KingdomListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new ScoreboardUpdateListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new KitsListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new AbilitiesListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EconomyListener($this), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new RolesListener($this), $this);
     }
 
     public function getDatabaseManager(): DatabaseManager
@@ -137,6 +142,11 @@ class Main extends PluginBase
     public function getEconomyManager(): EconomyManager
     {
         return $this->economyManager;
+    }
+
+    public function getRolesManager(): RolesManager
+    {
+        return $this->rolesManager;
     }
 
     protected function onDisable(): void

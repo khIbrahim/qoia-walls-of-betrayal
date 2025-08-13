@@ -255,9 +255,12 @@
     -- # { init
         CREATE TABLE IF NOT EXISTS player_roles(
             uuid VARCHAR(36) NOT NULL PRIMARY KEY,
+            username VARCHAR(64),
             role_id VARCHAR(64) NOT NULL,
+            subRoles JSON,
             assigned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             expires_at BIGINT DEFAULT NULL,
+            permissions JSON,
             INDEX idx_role_id(role_id),
             INDEX idx_expires_at(expires_at)
         );
@@ -265,10 +268,13 @@
 
     -- # { assign
     -- # :uuid string
+    -- # :username ?string
     -- # :role_id string
-    -- é :expires_at ?int
-        INSERT INTO player_roles(uuid, role_id, expires_at)
-        VALUES (:uuid, :role_id, :expires_at)
+    -- # :subRoles ?string
+    -- # :permissions ?string
+    -- # :expires_at ?int
+        INSERT INTO player_roles(uuid, role_id, expires_at, username, subRoles, permissions)
+        VALUES (:uuid, :role_id, :expires_at, :username, :subRoles, :permissions)
         ON DUPLICATE KEY UPDATE
             role_id = VALUES(role_id),
             assigned_at = CURRENT_TIMESTAMP,
@@ -277,7 +283,8 @@
 
     -- # { get
     -- # :uuid string
-        SELECT * FROM player_roles WHERE uuid = :uuid;
+    -- # :username ?string
+        SELECT * FROM player_roles WHERE (uuid = :uuid OR username = :username);
     -- # }
 
     -- # { remove

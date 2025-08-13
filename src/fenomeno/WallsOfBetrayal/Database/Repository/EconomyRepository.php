@@ -5,6 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Repository;
 use fenomeno\WallsOfBetrayal\Cache\EconomyEntry;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
+use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\AddEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\GetEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\InsertEconomyPayload;
@@ -25,11 +26,11 @@ use Throwable;
 class EconomyRepository implements EconomyRepositoryInterface
 {
 
-    public function __construct(private readonly Main $main){$this->init();}
+    public function __construct(private readonly Main $main){}
 
-    public function init(): void
+    public function init(DatabaseManager $database): void
     {
-        $this->main->getDatabaseManager()->executeGeneric(Statements::INIT_ECONOMY, [], function (){
+        $database->executeGeneric(Statements::INIT_ECONOMY, [], function (){
             $this->main->getLogger()->info("§aTable `economy` has been successfully init");
         });
     }

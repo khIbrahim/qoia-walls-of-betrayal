@@ -32,6 +32,10 @@ class ScoreboardManager {
     }
 
     public function addScoreboard(string $displayName, string $objective): void {
+        if(! $this->getSender()?->isConnected()){
+            return;
+        }
+
         $packet = new SetDisplayObjectivePacket();
         $packet->displaySlot = "sidebar";
         $packet->objectiveName = $objective;
@@ -42,6 +46,10 @@ class ScoreboardManager {
     }
 
     public function setLine(string $objective, int $line, string $message): void {
+        if(! $this->getSender()?->isConnected()){
+            return;
+        }
+
         $entry = new ScorePacketEntry();
         $entry->scoreboardId = $line;
         $entry->objectiveName = $objective;
@@ -55,6 +63,10 @@ class ScoreboardManager {
     }
 
     public function removeLine(string $objective, int $line): void {
+        if(! $this->getSender()?->isConnected()){
+            return;
+        }
+
         $entry = new ScorePacketEntry();
         $entry->scoreboardId = $line;
         $entry->objectiveName = $objective;
@@ -67,6 +79,10 @@ class ScoreboardManager {
     }
 
     public function removeScoreboard(string $objective): void {
+        if(! $this->getSender()?->isConnected()){
+            return;
+        }
+
         $packet = new RemoveObjectivePacket();
         $packet->objectiveName = $objective;
         $this->getSender()?->getNetworkSession()->sendDataPacket($packet);
