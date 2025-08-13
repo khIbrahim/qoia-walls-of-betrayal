@@ -27,3 +27,7 @@ permissions:
     default: op
   wob.command.setbalance:
     default: op
+  wob.command.feed:
+    default: op
+  wob.kit.warlord:
+    default: op

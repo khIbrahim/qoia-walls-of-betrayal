@@ -78,3 +78,8 @@ set-balance:
   usage: "§cUsage /setbalance <player: string> <amount: number>"
   aliases:
     - "setmoney"
+
+feed:
+  name: feed
+  description: Feeds a player
+  usage: "§cUsage /feed <player: string>"

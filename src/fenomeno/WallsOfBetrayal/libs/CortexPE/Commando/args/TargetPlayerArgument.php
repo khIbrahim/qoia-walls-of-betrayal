@@ -9,8 +9,8 @@ use function is_null;
 use function preg_match;
 use function strtolower;
 
-class TargetPlayerArgument extends BaseArgument{
-	public function __construct(bool $optional = false, ?string $name = null){
+class TargetPlayerArgument extends TextArgument {
+	public function __construct(?string $name = null, bool $optional = false){
 		$name = is_null($name) ? "player" : $name;
 
 		parent::__construct($name, $optional);

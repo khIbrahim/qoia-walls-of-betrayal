@@ -48,7 +48,7 @@ final class KitClaimHandler
         }
 
         Utils::giveItemSet($player, $kit->getInventory());
-        Utils::giveItemSet($player, $kit->getArmor());
+        Utils::giveItemSet($player, $kit->getArmor(), true);
 
         Main::getInstance()->getCooldownManager()->setCooldown($kit->getId(), $player->getName(), $kit->getCooldown());
         MessagesUtils::sendTo($player, 'kits.claimed', ['{KIT}' => $kit->getId()]);

@@ -35,6 +35,7 @@ common:
   errorOnInvTransaction: "{GLOBAL_PREFIX}{RED}An error occurred, contact a staff: {ERR}"
   invNotPageable: "{GLOBAL_PREFIX}{RED}This inventory is not pageable."
   logicError: "{RED}An error occurred, try later: {ERR}"
+  playerNotFound: "{GLOBAL_PREFIX}{RED}Player not found: {PLAYER}"
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
 # ---------------------------------------------------------------------------
@@ -207,6 +208,12 @@ economy:
     header: "{MONEY_PREFIX}{GREEN}Top balances:"
     entry: "{YELLOW}{BALANCE_POSITION}. {GREEN}{PLAYER} - {YELLOW}{BALANCE}"
     footer: "{GREEN}You are currently ranked {YELLOW}#{BALANCE_POSITION}{GREEN}."
+
+# ---------------------------------------------------------------------------
+commands:
+  feed:
+    restored: "{GLOBAL_PREFIX}{GREEN}You have been fed."
+    restoredForPlayer: "{GLOBAL_PREFIX}{GREEN}You have fed {PLAYER}."
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

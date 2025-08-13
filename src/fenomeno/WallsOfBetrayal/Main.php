@@ -9,6 +9,7 @@ use fenomeno\WallsOfBetrayal\Commands\Economy\PayCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\RichCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\AbilitiesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
+use fenomeno\WallsOfBetrayal\Commands\Player\FeedCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
@@ -86,7 +87,8 @@ class Main extends PluginBase
             new RichCommand($this),
             new AddBalanceCommand($this),
             new SetBalanceCommand($this),
-            new RemoveBalanceCommand($this)
+            new RemoveBalanceCommand($this),
+            new FeedCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);

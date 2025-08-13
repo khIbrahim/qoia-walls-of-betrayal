@@ -15,6 +15,7 @@ final class CommandsIds
     public const ADD_BALANCE = 'add-balance';
     public const REMOVE_BALANCE = 'remove-balance';
     public const SET_BALANCE = 'set-balance';
+    public const FEED = 'feed';
 
 
 }

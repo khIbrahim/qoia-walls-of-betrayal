@@ -30,5 +30,9 @@ final class MessagesIds
     public const BALANCE_ACCOUNT_MISSING_DATA = 'economy.errors.account.missingData';
     public const ERROR = 'common.logicError';
     public const BALANCE_SAME_BALANCE = 'economy.errors.amount.same';
+    public const NO_PLAYER = 'common.notPlayer';
+    public const PLAYER_NOT_FOUND = 'common.playerNotFound';
+    public const HUNGER_RESTORED = 'commands.feed.restored';
+    public const HUNGER_RESTORED_FOR_PLAYER = 'commands.feed.restoredForPlayer';
 
 }

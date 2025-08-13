@@ -2,7 +2,6 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
-use fenomeno\WallsOfBetrayal\Cache\EconomyEntry;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordNotFoundException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
@@ -24,17 +23,13 @@ class EconomyListener implements Listener
 
         Await::f2c(function () use ($networkSession, $uuid, $name) {
             try {
-                /** @var EconomyEntry $entry */
-                $entry = yield from $this->main->getEconomyManager()->get($name, $uuid);
-
-                $position = $entry->position ?? 'N/A';
-                $this->main->getLogger()->info("§aECONOMY - $name (#$position) has been successfully loaded");
+                yield from $this->main->getEconomyManager()->get($name, $uuid);
             } catch (EconomyRecordNotFoundException){
                 $this->main->getEconomyManager()->insert(
                     $name,
                     $uuid,
                     function () use ($name) {
-                        $this->main->getLogger()->info("§aECONOMY - Record for $name successfully inserted.");
+                        $this->main->getLogger()->debug("§aECONOMY - Record for $name successfully inserted.");
                     },
                     function (Throwable $e) use ($name, $networkSession) {
                         $networkSession->disconnect("An error occurred while creating your account. Please try again later.");

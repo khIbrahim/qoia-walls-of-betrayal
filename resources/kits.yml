@@ -200,3 +200,80 @@ starter:
       2: { item: "bread", count: 14 }
     armor:
       1: { item: "leather_chestplate", enchantments: { protection: 1 } }
+
+warlord:
+  id: "warlord"
+  permission: "wob.kit.warlord"
+  displayName: "§r§4Warlord Kit"
+  description: "Designed for war, betrayal, and elite combat. Usable every 7 days."
+  cooldown: 604800 # 7 days
+  icon: "diamond_chestplate"
+  contents:
+    inv:
+      0:
+        item: "diamond_sword"
+        display-name: "§r§fWarlord Blade"
+        enchantments:
+          sharpness: 4
+          fire_aspect: 2
+      1:
+        item: "diamond_pickaxe"
+        display-name: "§r§fWarlord Pick"
+        enchantments:
+          efficiency: 5
+          unbreaking: 3
+          fortune: 3
+      2:
+        item: "diamond_axe"
+        display-name: "§r§fWarlord Axe"
+        enchantments:
+          efficiency: 4
+          unbreaking: 3
+          fortune: 2
+      3:
+        item: "diamond_shovel"
+        display-name: "§r§fWarlord Shovel"
+        enchantments:
+          efficiency: 4
+          unbreaking: 3
+      4:
+        item: "shears"
+        display-name: "§r§fWarlord Shears"
+        enchantments:
+          efficiency: 4
+          unbreaking: 2
+      5:
+        item: "ender_pearl"
+        count: 32
+      6:
+        item: "potion"
+        display-name: "§r§bSpeed II Potion"
+        description: "§7Speed II §f(3:00)"
+        count: 3
+      7:
+        item: "cobblestone"
+        count: 64
+      8:
+        item: "cobblestone"
+        count: 64
+    armor:
+      0:
+        item: "diamond_helmet"
+        enchantments:
+          protection: 4
+          unbreaking: 2
+      1:
+        item: "diamond_chestplate"
+        enchantments:
+          protection: 4
+          unbreaking: 2
+      2:
+        item: "diamond_leggings"
+        enchantments:
+          protection: 4
+          unbreaking: 2
+      3:
+        item: "diamond_boots"
+        enchantments:
+          protection: 4
+          unbreaking: 2

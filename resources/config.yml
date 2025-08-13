@@ -4,11 +4,11 @@ database:
   sqlite:
     file: qoia_wob.sqlite
   mysql:
-    host: gamesnj44.bisecthosting.com
-    port: 3306
-    username: u567075_tVBWvXQeRe
-    password: "sQnTHaXucsbZ4OnjLXfp9yWI"
-    schema: s567075_qoia
+    host: dd
+    port: 3
+    username: a
+    password: b
+    schema: c
   worker-limit: 1
 
 kit_requirements_flush_interval: 5
