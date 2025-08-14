@@ -1,6 +1,6 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Language;
+namespace fenomeno\WallsOfBetrayal\Utils\Messages;
 
 final class ExtraTags
 {
@@ -15,5 +15,11 @@ final class ExtraTags
     const RANK = '{ROLE}';
     const KINGDOM = '{KINGDOM}';
     const MESSAGE = '{MESSAGE}';
+    const AVAILABLE_ROLES = '{AVAILABLE_ROLES}';
+    const DURATION = '{DURATION}';
+    const PERMISSION = '{PERMISSION}';
+    const PERMISSIONS = '{PERMISSIONS}';
+    const SUBROLES = '{SUBROLES}';
+    const SUBROLE = '{SUBROLE}';
 
 }

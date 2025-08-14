@@ -3,7 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Game\Abilities;
 
 use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 use pocketmine\player\Player;
 use pocketmine\world\sound\NoteInstrument;

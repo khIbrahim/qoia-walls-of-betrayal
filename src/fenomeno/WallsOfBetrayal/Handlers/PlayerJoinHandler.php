@@ -4,7 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Handlers;
 
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinWobEvent;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\player\Player;
 use pocketmine\world\sound\PopSound;
 

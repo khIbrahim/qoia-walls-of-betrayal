@@ -5,12 +5,12 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\CooldownRepositoryInt
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
-use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\RolesRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
-use fenomeno\WallsOfBetrayal\Database\Repository\RolesRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRolesRepository;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\libasynql;
 use fenomeno\WallsOfBetrayal\Main;
@@ -28,7 +28,7 @@ class DatabaseManager
     private KitRequirementRepositoryInterface $kitRequirementRepository;
     private CooldownRepositoryInterface $cooldownRepository;
     private EconomyRepositoryInterface $economyRepository;
-    private RolesRepositoryInterface $rolesRepository;
+    private PlayerRolesRepositoryInterface $rolesRepository;
 
     public function __construct(
         private readonly Main $main
@@ -51,7 +51,7 @@ class DatabaseManager
             $this->economyRepository = new EconomyRepository($this->main);
             $this->economyRepository->init($this);
 
-            $this->rolesRepository = new RolesRepository($this->main);
+            $this->rolesRepository = new PlayerRolesRepository($this->main);
             $this->rolesRepository->init($this);
         } catch (Throwable $e){
             $this->main->getLogger()->error("§cAn error occurred while init database: " . $e->getMessage());
@@ -79,7 +79,7 @@ class DatabaseManager
         return $this->economyRepository;
     }
 
-    public function getRolesRepository(): RolesRepositoryInterface
+    public function getRolesRepository(): PlayerRolesRepositoryInterface
     {
         return $this->rolesRepository;
     }

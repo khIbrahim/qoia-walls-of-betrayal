@@ -40,7 +40,7 @@ use function strtolower;
 
 abstract class StringEnumArgument extends BaseArgument {
 
-	protected const VALUES = [];
+    public static array $VALUES = [];
 
 	public function __construct(string $name, bool $optional = false) {
 		parent::__construct($name, $optional);
@@ -63,10 +63,10 @@ abstract class StringEnumArgument extends BaseArgument {
 	public abstract function getEnumName(): string;
 
 	public function getValue(string $string) {
-		return static::VALUES[strtolower($string)];
+		return static::$VALUES[strtolower($string)];
 	}
 
 	public function getEnumValues(): array {
-		return array_keys(static::VALUES);
+		return array_keys(static::$VALUES);
 	}
 }

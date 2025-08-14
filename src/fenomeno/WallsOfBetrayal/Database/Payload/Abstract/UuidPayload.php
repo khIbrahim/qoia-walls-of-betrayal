@@ -8,10 +8,10 @@ abstract readonly class UuidPayload implements PayloadInterface
 {
 
     public function __construct(
-        public string $uuid
+        public ?string $uuid
     ) {}
 
-    public function getUuid(): string
+    public function getUuid(): ?string
     {
         return $this->uuid;
     }

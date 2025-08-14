@@ -14,7 +14,7 @@ use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\constraint\InGameRequiredConstraint;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\command\CommandSender;
 use pocketmine\item\StringToItemParser;

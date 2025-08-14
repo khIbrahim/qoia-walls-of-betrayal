@@ -10,7 +10,7 @@ use fenomeno\WallsOfBetrayal\Inventory\Traits\InventoryPaginatorTrait;
 use fenomeno\WallsOfBetrayal\Inventory\Types\PageableInventory;
 use fenomeno\WallsOfBetrayal\Inventory\WInventory;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;

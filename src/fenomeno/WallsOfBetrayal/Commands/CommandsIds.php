@@ -16,6 +16,13 @@ final class CommandsIds
     public const REMOVE_BALANCE = 'remove-balance';
     public const SET_BALANCE = 'set-balance';
     public const FEED = 'feed';
-
+    public const SET_ROLE = 'set-role';
+    public const ADD_PERMISSION = 'add-permission';
+    public const REMOVE_PERMISSION = 'remove-permission';
+    public const PLAYER_ROLE_INFO = 'player-role-info';
+    public const ADD_SUB_ROLE = 'add-sub-role';
+    public const REMOVE_SUB_ROLE = 'remove-sub-role';
+    public const CREATE_ROLE = 'create-role';
+    public const LIST_ROLES = 'list-roles';
 
 }

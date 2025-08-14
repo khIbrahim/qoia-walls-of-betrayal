@@ -7,7 +7,7 @@ use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomEvent;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\particle\EndermanTeleportParticle;

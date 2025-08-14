@@ -6,11 +6,11 @@ use fenomeno\WallsOfBetrayal\Commands\CommandsIds;
 use fenomeno\WallsOfBetrayal\Commands\WCommand;
 use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
-use fenomeno\WallsOfBetrayal\Language\ExtraTags;
-use fenomeno\WallsOfBetrayal\Language\MessagesIds;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\TargetPlayerArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\command\CommandSender;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;
 

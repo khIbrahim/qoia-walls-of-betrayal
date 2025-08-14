@@ -34,7 +34,7 @@ use pocketmine\command\CommandSender;
 
 class BooleanArgument extends StringEnumArgument {
 
-	protected const VALUES = [
+	public static array $VALUES = [
 		"true" => true,
 		"false" => false,
 	];

@@ -3,14 +3,32 @@
 namespace fenomeno\WallsOfBetrayal\Roles;
 
 use Closure;
+use Exception;
 use fenomeno\WallsOfBetrayal\Class\Roles\Role;
 use fenomeno\WallsOfBetrayal\Class\Roles\RolePlayer;
+use fenomeno\WallsOfBetrayal\Commands\Arguments\RoleArgument;
+use fenomeno\WallsOfBetrayal\Database\Payload\Roles\GetPermissionsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Roles\GetPlayerRolePayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Roles\GetSubRolesPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Roles\InsertRolePlayerPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Roles\UpdatePermissionsPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Roles\UpdatePlayerRoleRolePayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Roles\UpdateSubRolesPayload;
 use fenomeno\WallsOfBetrayal\DTO\RolePlayerDTO;
-use fenomeno\WallsOfBetrayal\Language\ExtraTags;
+use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
+use fenomeno\WallsOfBetrayal\Exceptions\Roles\PlayerAlreadyHasPermissionException;
+use fenomeno\WallsOfBetrayal\Exceptions\Roles\PlayerAlreadyHasRoleException;
+use fenomeno\WallsOfBetrayal\Exceptions\Roles\PlayerAlreadyHasSubRoleException;
+use fenomeno\WallsOfBetrayal\Exceptions\Roles\PlayerDontHasPermissionException;
+use fenomeno\WallsOfBetrayal\Exceptions\Roles\PlayerDontHaveSubRoleException;
+use fenomeno\WallsOfBetrayal\Exceptions\Roles\RoleNotFoundException;
+use fenomeno\WallsOfBetrayal\Exceptions\Roles\RolePlayerNotFoundException;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
+use fenomeno\WallsOfBetrayal\Task\RolesTask;
+use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
+use Generator;
 use pocketmine\player\Player;
 use pocketmine\utils\Config;
 use Symfony\Component\Filesystem\Path;
@@ -33,8 +51,8 @@ class RolesManager
 
     public function __construct(private readonly Main $main){
         $fileName = 'roles.yml';
+        $this->main->saveResource($fileName, true); // TODO on remplace pas ici, si jamais je veux l'update.
         $filePath = Path::join($this->main->getDataFolder(), $fileName);
-        $this->main->saveResource($fileName); // on remplace pas ici, si jamais je veux l'update.
         $this->config = new Config($filePath, Config::YAML);
         $this->loadRoles();
 
@@ -43,9 +61,11 @@ class RolesManager
 
         $this->initDefaultRole();
         $this->initDefaultProps();
+
+        $this->main->getScheduler()->scheduleDelayedRepeatingTask(new RolesTask($this->main), 20 * 5, (int) $this->config->getNested('parameters.nametag-task-tick', 20));
     }
 
-    public function loadPlayer(string $uuid, string $username, Closure $onSuccess, Closure $onFailure): void
+    public function loadPlayer(?string $uuid, ?string $username, Closure $onSuccess, Closure $onFailure): void
     {
         $this->main->getDatabaseManager()
             ->getRolesRepository()
@@ -74,6 +94,12 @@ class RolesManager
             );
     }
 
+    public function getPlayer(string|Player $player): ?RolePlayer
+    {
+        $key = $this->normalizeKey($player);
+        return $this->players[$key] ?? null;
+    }
+
     public function insertPlayer(string $uuid, string $username, Closure $onSuccess, Closure $onFailure): void
     {
         $username = $this->normalizeKey($username);
@@ -82,8 +108,8 @@ class RolesManager
             uuid: $uuid,
             username: $username,
             roleId: $this->defaultRole->getId(),
-            subRoles: $this->defaultRole->getSubRoles(),
-            permissions: array_merge($this->defaultRole->getPermissions(), $this->defaultPermissions),
+            subRoles: $this->defaultRole->getInherits(),
+            permissions: $this->defaultPermissions,
             expiresAt: null
         );
 
@@ -92,7 +118,8 @@ class RolesManager
                 role: $payload->roleId,
                 subRoles: $payload->subRoles,
                 permissions: $payload->permissions,
-                expiresAt: $payload->expiresAt,
+                assignedAt: time(),
+                expiresAt: $payload->expiresAt
             );
             $onSuccess($rolePlayer);
         };
@@ -100,6 +127,346 @@ class RolesManager
         $this->main->getDatabaseManager()
             ->getRolesRepository()
             ->insert($payload, $onSuccess, $onFailure);
+    }
+
+    /**
+     * @throws RoleNotFoundException
+     * @throws RolePlayerNotFoundException
+     * @throws DatabaseException
+     * @throws PlayerAlreadyHasRoleException
+     */
+    public function setPlayerRole(Player|string $player, Role|string $role, ?int $expiresAt = null): Generator
+    {
+        return Await::promise(function ($resolve, $reject) use ($expiresAt, $role, $player) {
+            $roleId = $role instanceof Role ? $role->getId() : $role;
+            if (! isset($this->roles[$roleId])) {
+                $reject(new RoleNotFoundException("Role with ID $roleId does not exist."));
+                return;
+            }
+
+            $key = $this->normalizeKey($player);
+            if (isset($this->players[$key])) {
+                $rolePlayer = $this->getPlayer($player);
+
+                if ($rolePlayer->getRole()->getId() === $role->getId()) {
+                    $reject(new PlayerAlreadyHasRoleException("Player " . (is_string($player) ? $player : $player->getName()) . " already has the role " . $role->getDisplayName()));
+                    return;
+                }
+
+                $rolePlayer->setRole($roleId);
+                $rolePlayer->setAssignedAt(time());
+                $rolePlayer->setExpiresAt($expiresAt);
+                if($player instanceof Player){
+                    $rolePlayer->applyTo($player);
+                }
+                $this->players[$this->normalizeKey($player)] = $rolePlayer;
+            }
+
+            [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower($player)];
+
+            $this->main->getDatabaseManager()
+                ->getRolesRepository()
+                ->updateRole(
+                    new UpdatePlayerRoleRolePayload(
+                        uuid: $uuid,
+                        username: $username,
+                        roleId: $roleId,
+                        expiresAt: $expiresAt
+                    ),
+                    function () use ($resolve) {
+                        $resolve();
+                    },
+                    function (Throwable $e) use ($reject, $player) {
+                        $reject($e);
+                    }
+                );
+        });
+    }
+
+    /**
+     * @param Player|string $player
+     * @return Generator
+     * @throws RolePlayerNotFoundException
+     */
+    public function handleExpiredRole(Player|string $player): Generator
+    {
+        return Await::promise(function ($resolve, $reject) use ($player) {
+            $key = $this->normalizeKey($player);
+            $rp = $this->players[$key] ?? null;
+            if ($rp === null) {
+                $reject(new RolePlayerNotFoundException());
+                return;
+            }
+
+            $fallbackRoleId = $this->defaultRole->getId();
+            $subRoles = array_values($rp->getSubRoles());
+            if (! empty($subRoles)) {
+                $first = $subRoles[0];
+                $fallbackRoleId = $first instanceof Role ? $first->getId() : (string)$first;
+            }
+
+            $rp->setRole($fallbackRoleId);
+            $rp->setAssignedAt(time());
+            $rp->setExpiresAt(null);
+
+            if ($player instanceof Player) {
+                $rp->applyTo($player);
+            }
+            $this->players[$key] = $rp;
+
+            [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower((string)$player)];
+
+            $this->main->getDatabaseManager()->getRolesRepository()->updateRole(
+                new UpdatePlayerRoleRolePayload(
+                    uuid: $uuid,
+                    username: $username,
+                    roleId: $fallbackRoleId,
+                    expiresAt: null
+                ),
+                function () use ($fallbackRoleId, $resolve) { $resolve($this->getRoleById($fallbackRoleId)); },
+                function (Throwable $e) use ($reject) { $reject($e); }
+            );
+        });
+    }
+
+    /**
+     * @throws PlayerAlreadyHasPermissionException
+     * @throws RolePlayerNotFoundException
+     */
+    public function addPermission(string|Player $player, string $permission): Generator
+    {
+        return Await::promise(function ($resolve, $reject) use ($permission, $player) {
+            Await::f2c(function () use ($reject, $permission, $player, $resolve) {
+                try {
+                    $key = $this->normalizeKey($player);
+
+                    if (isset($this->players[$key])) {
+                        $rolePlayer = $this->getPlayer($player);
+                        if ($rolePlayer->hasPermission($permission)){
+                            $reject(new PlayerAlreadyHasPermissionException());
+                            return;
+                        }
+
+                        $rolePlayer->addPermission($permission);
+                        if ($player instanceof Player) {
+                            $rolePlayer->applyTo($player);
+                        }
+
+                        $this->players[$key] = $rolePlayer;
+                        $permissions = $rolePlayer->getPermissions();
+                    } else {
+                        $permissions = yield from $this->main->getDatabaseManager()
+                            ->getRolesRepository()
+                            ->getPermissions(new GetPermissionsPayload(
+                                uuid: $player instanceof Player ? $player->getUniqueId()->toString() : null,
+                                username: $key
+                            ));
+
+                        if (in_array($permission, $permissions, true)) {
+                            $reject(new PlayerAlreadyHasPermissionException());
+                            return;
+                        }
+
+                        $permissions[] = $permission;
+                    }
+
+                    [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower((string)$player)];
+                    $this->main->getDatabaseManager()
+                        ->getRolesRepository()
+                        ->updatePermissions(
+                            new UpdatePermissionsPayload(
+                                uuid: $uuid,
+                                username: $username,
+                                permissions: array_values($permissions)
+                            ),
+                            function () use ($resolve) {
+                                $resolve();
+                            },
+                            function (Throwable $e) use ($reject, $player) {
+                                $reject(new Exception("Failed to add permission for player " . (is_string($player) ? $player : $player->getName()) . ": " . $e->getMessage()));
+                            }
+                        );
+                    } catch (Throwable $e){
+                        $reject(new DatabaseException($e->getMessage(), $e->getCode(), $e));
+                    }
+                }
+            );
+        });
+    }
+
+    public function removePermission(string|Player $player, string $permission): Generator
+    {
+        return Await::promise(function ($resolve, $reject) use ($permission, $player) {
+            Await::f2c(function () use ($reject, $permission, $player, $resolve) {
+                try {
+                    $key = $this->normalizeKey($player);
+                    if (isset($this->players[$key])) {
+                        $rolePlayer  = $this->getPlayer($player);
+                        $permissions = $rolePlayer->getPermissions();
+                        if (! $rolePlayer->hasPermission($permission)) {
+                            throw new PlayerDontHasPermissionException();
+                        }
+
+                        $rolePlayer->removePermission($permission);
+                        if ($player instanceof Player) {
+                            $rolePlayer->applyTo($player);
+                        }
+                        $this->players[$key] = $rolePlayer;
+                    } else {
+                        $permissions = yield from $this->main->getDatabaseManager()
+                            ->getRolesRepository()
+                            ->getPermissions(new GetPermissionsPayload(
+                                uuid: $player instanceof Player ? $player->getUniqueId()->toString() : null,
+                                username: $key
+                            ));
+
+                        if (! in_array($permission, $permissions, true)) {
+                            throw new PlayerDontHasPermissionException();
+                        }
+
+                    }
+
+                    unset($permissions[array_search($permission, $permissions, true)]);
+                    [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower((string)$player)];
+                    $this->main->getDatabaseManager()
+                        ->getRolesRepository()
+                        ->updatePermissions(
+                            new UpdatePermissionsPayload(
+                                uuid: $uuid,
+                                username: $username,
+                                permissions: array_values($permissions)
+                            ),
+                            function () use ($resolve) { $resolve(); },
+                            function (Throwable $e) use ($reject, $player) {
+                                $reject(new DatabaseException("Failed to remove permission for player " . (is_string($player) ? $player : $player->getName()) . ": " . $e->getMessage()));
+                                $this->main->getLogger()->logException($e);
+                            }
+                        );
+                } catch (Throwable $e){
+                    $reject($e);
+                }
+            });
+        });
+
+    }
+
+    public function addSubRole(string|Player $player, Role|false $role): Generator
+    {
+        return Await::promise(function ($resolve, $reject) use ($player, $role) {
+            Await::f2c(function () use ($reject, $role, $player, $resolve) {
+                try {
+                    $key = $this->normalizeKey($player);
+                    $roleId = $role instanceof Role ? $role->getId() : $role;
+
+                    if (isset($this->players[$key])) {
+                        $rolePlayer = $this->getPlayer($key);
+                        if ($rolePlayer->hasSubRole($role)){
+                            $reject(new PlayerAlreadyHasSubRoleException());
+                            return;
+                        }
+
+                        $rolePlayer->addSubRole($role);
+                        if ($player instanceof Player) {
+                            $rolePlayer->applyTo($player);
+                        }
+
+                        $this->players[$key] = $rolePlayer;
+                        $subRoles = $rolePlayer->getSubRoles();
+                    } else {
+                        $subRoles = yield from $this->main->getDatabaseManager()
+                            ->getRolesRepository()
+                            ->getSubRoles(new GetSubRolesPayload(
+                                uuid: $player instanceof Player ? $player->getUniqueId()->toString() : null,
+                                username: $key
+                            ));
+
+                        if (in_array($roleId, $subRoles, true)) {
+                            $reject(new PlayerAlreadyHasSubRoleException());
+                            return;
+                        }
+
+                        $subRoles[] = $roleId;
+                    }
+
+                    [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower((string)$player)];
+                    $this->main->getDatabaseManager()
+                        ->getRolesRepository()
+                        ->updateSubRoles(
+                            new UpdateSubRolesPayload(
+                                uuid: $uuid,
+                                username: $username,
+                                subRoles: array_values($subRoles)
+                            ),
+                            function () use ($resolve) {
+                                $resolve();
+                            },
+                            function (Throwable $e) use ($reject, $player) {
+                                $reject(new Exception("Failed to add subrole for player " . (is_string($player) ? $player : $player->getName()) . ": " . $e->getMessage()));
+                            }
+                        );
+                } catch (Throwable $e){
+                    $reject($e);
+                }
+            }
+            );
+        });
+    }
+
+    public function removeSubRole(string|Player $player, Role|false $role): Generator
+    {
+        return Await::promise(function ($resolve, $reject) use ($player, $role) {
+            Await::f2c(function () use ($reject, $role, $player, $resolve) {
+                try {
+                    $key = $this->normalizeKey($player);
+                    $roleId = $role instanceof Role ? $role->getId() : $role;
+
+                    if (isset($this->players[$key])) {
+                        $rolePlayer = $this->getPlayer($key);
+                        if (! $rolePlayer->hasSubRole($role)){
+                            throw new PlayerDontHaveSubRoleException();
+                        }
+
+                        $rolePlayer->removeSubRole($role);
+                        if ($player instanceof Player) {
+                            $rolePlayer->applyTo($player);
+                        }
+
+                        $this->players[$key] = $rolePlayer;
+                        $subRoles = $rolePlayer->getSubRoles();
+                    } else {
+                        $subRoles = yield from $this->main->getDatabaseManager()
+                            ->getRolesRepository()
+                            ->getSubRoles(new GetSubRolesPayload(
+                                uuid: $player instanceof Player ? $player->getUniqueId()->toString() : null,
+                                username: $key
+                            ));
+
+                        if (! in_array($roleId, $subRoles, true)) {
+                            throw new PlayerDontHaveSubRoleException();
+                        }
+
+                        unset($subRoles[array_search($roleId, $subRoles, true)]);
+                    }
+
+                    [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower((string)$player)];
+                    $this->main->getDatabaseManager()
+                        ->getRolesRepository()
+                        ->updateSubRoles(
+                            new UpdateSubRolesPayload(
+                                uuid: $uuid,
+                                username: $username,
+                                subRoles: array_values($subRoles)
+                            ),
+                            function () use ($resolve) { $resolve(); },
+                            function (Throwable $e) use ($reject, $player) {
+                                $reject(new Exception("Failed to remove subrole for player " . (is_string($player) ? $player : $player->getName()) . ": " . $e->getMessage()));
+                            }
+                        );
+                } catch (Throwable $e){
+                    $reject($e);
+                }
+            });
+        });
     }
 
     private function normalizeKey(string|Player $player): string
@@ -127,7 +494,7 @@ class RolesManager
                 $heritages     = (array) ($roleData['inherits'] ?? []);
                 $default       = (bool) ($roleData['default'] ?? false);
 
-                $this->roles[$roleId] = new Role(
+                $this->roles[$roleId] = $role = new Role(
                     id: $roleId,
                     displayName: $displayName,
                     permissions: $permissions,
@@ -138,6 +505,7 @@ class RolesManager
                     color: $color,
                     default: $default
                 );
+                RoleArgument::$VALUES[$roleId] = $role;
             } catch (Throwable $e){
                 $this->main->getLogger()->error("§cFailed to load role $roleId: " . $e->getMessage());
                 $this->main->getLogger()->logException($e);
@@ -147,9 +515,6 @@ class RolesManager
 
     private function initDefaultRole(): void
     {
-        // step 1 : check si un role est par défaut
-        // step 2 : check si un role est défini dans la config
-        // step 3 : check si on a des roles, sinon on log une erreur //TODO gérer les crash autour de ça en vrai elles sont juste dans l'insert
         foreach ($this->roles as $role) {
             if ($role->isDefault()) {
                 $this->defaultRole = $role;
@@ -185,38 +550,115 @@ class RolesManager
         $this->defaultNameTag = (string) $this->config->getNested('defaults.nameTagFormat', "{RANK_COLOR}{RANK} {USERNAME}");
     }
 
-    public function getPlayer(string|Player $player): ?RolePlayer
+    private function preparePlayerData(Player $player): Generator
     {
-        $key = $this->normalizeKey($player);
-        return $this->players[$key] ?? null;
+        return Await::promise(function ($resolve, $reject) use ($player) {
+            $rolePlayer = $this->getPlayer($player);
+            if (!$rolePlayer) {
+                $reject(new Exception("RolePlayer not found for player " . $player->getName()));
+                return;
+            }
+
+            $role = $rolePlayer->getRole();
+            if (!$role) {
+                $reject(new Exception("Role not found for role ID for " . $player->getName()));
+                return;
+            }
+
+            $session = Session::get($player);
+            if (! $session->isLoaded()) {
+                $reject(new Exception("Session not loaded or kingdom not found for player " . $player->getName()));
+                return;
+            }
+
+            $kingdom = $session->getKingdom() !== null ? $session->getKingdom()->getDisplayName() : "No Kingdom";
+
+            $resolve([
+                'role' => $role,
+                'kingdom' => $kingdom,
+            ]);
+        });
     }
 
-    public function formatChatMessage(Player $player, string $message): string
+    public function formatNameTag(Player $player): Generator
     {
-        var_dump($this->getPlayer($player)?->getRole()?->getChatFormat());
-        var_dump(($this->getPlayer($player)?->getRole()?->getChatFormat()) ?: $this->defaultChatFormat);
-        return str_replace(
-            [
-                ExtraTags::COLOR,
-                ExtraTags::ROLE,
-                ExtraTags::PLAYER,
-                ExtraTags::KINGDOM,
-                ExtraTags::MESSAGE
-            ],
-            [
-                $this->defaultRole->getColor(),
-                $this->defaultRole->getDisplayName(),
-                $player->getDisplayName(),
-                (Session::get($player)->isLoaded() && Session::get($player)->getKingdom() !== null) ? Session::get($player)->getKingdom()->getDisplayName() : "No Kingdom",
-                $message
-            ],
-            ($this->getPlayer($player)?->getRole()?->getChatFormat()) ?: $this->defaultChatFormat
-        );
+        return Await::promise(function ($resolve, $reject) use ($player) {
+            Await::g2c(
+                $this->preparePlayerData($player),
+                function (array $data) use ($resolve, $player) {
+                    $formattedNameTag = str_replace(
+                        [
+                            ExtraTags::COLOR,
+                            ExtraTags::ROLE,
+                            ExtraTags::PLAYER,
+                            ExtraTags::KINGDOM
+                        ],
+                        [
+                            $data['role']->getColor(),
+                            $data['role']->getDisplayName(),
+                            $player->getDisplayName(),
+                            $data['kingdom']
+                        ],
+                        $data['role']->getNameTagFormat() ?: $this->defaultNameTag
+                    );
+
+                    $resolve($formattedNameTag);
+                },
+                function (Throwable $e) use ($reject, $player) {
+                    $reject(new Exception("Failed to prepare player data for name tag: " . $e->getMessage()));
+                }
+            );
+        });
+    }
+
+    public function formatChatMessage(Player $player, string $message): Generator
+    {
+        return Await::promise(function ($resolve, $reject) use ($player, $message) {
+            Await::g2c(
+                $this->preparePlayerData($player),
+                function (array $data) use ($resolve, $player, $message) {
+                    $formattedMessage = str_replace(
+                        [
+                            ExtraTags::COLOR,
+                            ExtraTags::ROLE,
+                            ExtraTags::PLAYER,
+                            ExtraTags::KINGDOM,
+                            ExtraTags::MESSAGE
+                        ],
+                        [
+                            $data['role']->getColor(),
+                            $data['role']->getDisplayName(),
+                            $player->getDisplayName(),
+                            $data['kingdom'],
+                            $message
+                        ],
+                        $data['role']->getChatFormat() ?: $this->defaultChatFormat
+                    );
+
+                    $resolve($formattedMessage);
+                },
+                function (Throwable $e) use ($reject, $player) {
+                    $reject(new Exception("Failed to prepare player data for chat message: " . $e->getMessage()));
+                }
+            );
+        });
     }
 
     public function getRoleById(string $role): ?Role
     {
         return $this->roles[$role] ?? null;
+    }
+
+    /** @return string[] -> roleName */
+    public function getRolesNames(): array
+    {
+        return array_map(fn(Role $role) => $role->getDisplayName(), $this->roles);
+    }
+
+    /** @return Role[] */
+    public function getRoles(): array
+    {
+        return $this->roles;
     }
 
 }

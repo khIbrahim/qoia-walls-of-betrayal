@@ -20,7 +20,7 @@ class Role
     public function getDisplayName(): string {return $this->displayName;}
     public function isDefault(): bool{return $this->default;}
     public function getId(): string {return $this->id;}
-    public function getSubRoles(): array{return $this->heritages;}
+    public function getInherits(): array{return $this->heritages;}
     public function getPermissions(): array {return $this->permissions;}
     public function getChatFormat(): string {return $this->chatFormat;}
     public function getNameTagFormat(): string {return $this->nameTagFormat;}

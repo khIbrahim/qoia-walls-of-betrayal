@@ -5,7 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Game\Handlers;
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\player\Player;
 

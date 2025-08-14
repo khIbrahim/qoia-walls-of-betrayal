@@ -3,9 +3,10 @@
 namespace fenomeno\WallsOfBetrayal\Game\Abilities\Ability;
 
 use fenomeno\WallsOfBetrayal\Enum\AbilityRarity;
+use fenomeno\WallsOfBetrayal\Game\Abilities\BaseAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\KillAbilityInterface;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\Item;
@@ -14,7 +15,6 @@ use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
 use pocketmine\world\particle\LavaParticle;
 use pocketmine\world\particle\RedstoneParticle;
-use fenomeno\WallsOfBetrayal\Game\Abilities\BaseAbility;
 
 class BloodRageAbility extends BaseAbility implements KillAbilityInterface
 {

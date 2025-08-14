@@ -7,7 +7,7 @@ use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\Game\Handlers\JoinKingdomHandler;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;
 use pocketmine\network\mcpe\protocol\PlaySoundPacket;

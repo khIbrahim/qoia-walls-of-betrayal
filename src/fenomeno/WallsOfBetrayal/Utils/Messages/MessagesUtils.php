@@ -1,6 +1,6 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Utils;
+namespace fenomeno\WallsOfBetrayal\Utils\Messages;
 
 use pocketmine\command\CommandSender;
 use pocketmine\console\ConsoleCommandSender;
@@ -157,6 +157,7 @@ final class MessagesUtils {
                 '{ABILITIES_PREFIX}' => (string)($prefixes['abilities'] ?? ''),
                 '{SHOP_PREFIX}'      => (string)($prefixes['shop']      ?? ''),
                 '{MONEY_PREFIX}'     => (string)($prefixes['money']     ?? ''),
+                '{ROLES_PREFIX}'     => (string)($prefixes['roles']     ?? ''),
             ];
             foreach ($map as $k => $v) {
                 if ($v !== '') self::$themeTags[$k] = $v;

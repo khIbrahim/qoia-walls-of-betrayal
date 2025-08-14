@@ -28,13 +28,6 @@ categories:
         count: 16
         buy: 800
         sell: 0
-      - item: "cooked_
-      
-      porkchop"
-        display-name: "§r§dCooked Pork x16"
-        count: 16
-        buy: 800
-        sell: 192
       - item: "cooked_mutton"
         display-name: "§r§dCooked Mutton x16"
         count: 16

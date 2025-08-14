@@ -7,7 +7,7 @@ use fenomeno\WallsOfBetrayal\Game\Abilities\BaseAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\ConditionalAbilityInterface;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\UseAbilityInterface;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\entity\effect\EffectInstance;
 use pocketmine\entity\effect\VanillaEffects;
 use pocketmine\item\Item;

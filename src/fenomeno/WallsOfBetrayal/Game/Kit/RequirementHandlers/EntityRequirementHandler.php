@@ -4,7 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Game\Kit\RequirementHandlers;
 
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitRequirement;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\entity\Entity;
 use pocketmine\player\Player;
 

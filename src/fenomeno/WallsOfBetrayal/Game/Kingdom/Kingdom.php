@@ -3,7 +3,7 @@ namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pocketmine\Server;

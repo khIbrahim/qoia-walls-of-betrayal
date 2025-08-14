@@ -31,3 +31,19 @@ permissions:
     default: op
   wob.kit.warlord:
     default: op
+  wob.command.setrole:
+    default: op
+  wob.command.addpermission:
+    default: op
+  wob.command.removepermission:
+    default: op
+  wob.command.role:
+    default: true
+  wob.command.addsubrole:
+    default: op
+  wob.command.removesubrole:
+    default: op
+  wob.command.createrole:
+    default: op
+  wob.command.listroles:
+    default: op

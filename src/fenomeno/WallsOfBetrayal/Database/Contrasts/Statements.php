@@ -37,5 +37,10 @@ interface Statements
     public const INIT_ROLES                     = 'roles.init';
     public const GET_PLAYER_ROLE                = 'roles.get';
     public const INSERT_PLAYER_ROLE             = 'roles.assign';
+    public const UPDATE_PLAYER_ROLE_ROLE        = 'roles.updateRole';
+    public const GET_PLAYER_PERMISSIONS         = 'roles.getPermissions';
+    public const UPDATE_PLAYER_PERMISSIONS      = 'roles.updatePermissions';
+    public const GET_PLAYER_SUBROLES            = 'roles.getSubRoles';
+    public const UPDATE_PLAYER_SUBROLES         = 'roles.updateSubRoles';
 
 }

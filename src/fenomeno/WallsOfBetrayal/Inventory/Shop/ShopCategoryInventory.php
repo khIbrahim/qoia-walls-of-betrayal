@@ -7,7 +7,7 @@ use fenomeno\WallsOfBetrayal\Config\ShopConfig;
 use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\Inventory\WInventory;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 

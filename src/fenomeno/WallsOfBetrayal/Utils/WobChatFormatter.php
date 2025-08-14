@@ -10,12 +10,12 @@ use pocketmine\player\Player;
 class WobChatFormatter implements ChatFormatter
 {
 
-    public function __construct(private readonly Player $player, private readonly Main $main)
+    public function __construct(private readonly string $message)
     {
     }
 
     public function format(string $username, string $message): Translatable|string
     {
-        return $this->main->getRolesManager()->formatChatMessage($this->player, $message);
+        return $this->message;
     }
 }

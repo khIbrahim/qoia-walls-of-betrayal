@@ -5,7 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Inventory\Actions\Types\Page;
 use fenomeno\WallsOfBetrayal\Inventory\Actions\InventoryActionInterface;
 use fenomeno\WallsOfBetrayal\Inventory\Types\PageableInventory;
 use fenomeno\WallsOfBetrayal\Inventory\WInventory;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 

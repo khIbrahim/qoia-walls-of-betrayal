@@ -7,6 +7,7 @@ theme:
     abilities: "§r§5§lAbilities §8»§r "
     shop: "§r§6§lShop §8»§r "
     money: "§r§a§lBalance§8»§r "
+    roles: "§r§7§lRoles §8»§r "
 
   colors:
     RED: "§c"
@@ -210,10 +211,60 @@ economy:
     footer: "{GREEN}You are currently ranked {YELLOW}#{BALANCE_POSITION}{GREEN}."
 
 # ---------------------------------------------------------------------------
+
 commands:
   feed:
     restored: "{GLOBAL_PREFIX}{GREEN}You have been fed."
     restoredForPlayer: "{GLOBAL_PREFIX}{GREEN}You have fed {PLAYER}."
+
+# ---------------------------------------------------------------------------
+
+roles:
+  errors:
+    rolePlayer:
+        notFound: "{ROLES_PREFIX}{RED}Player role for {PLAYER} not found."
+    role:
+      notFound: "{ROLES_PREFIX}{RED}Role not found. {GRAY}Available: {AVAILABLE_ROLES}"
+      alreadyHasRole: "{ROLES_PREFIX}{RED}{PLAYER} already has role {ROLE}."
+    permission:
+      invalid: "{ROLES_PREFIX}{RED}Invalid permission node: {PERMISSION}"
+      notGranted: "{ROLES_PREFIX}{RED}{PLAYER} doesn't have {PERMISSION} as a personal grant."
+      already_has: "{ROLES_PREFIX}{RED}{PLAYER} already has {PERMISSION} as a personal grant."
+    subrole:
+      notFound: "{ROLES_PREFIX}{RED}Subrole not found: {SUBROLE}"
+      alreadyHas: "{ROLES_PREFIX}{RED}{PLAYER} already has subrole {SUBROLE}."
+      notOwned: "{ROLES_PREFIX}{RED}{PLAYER} doesn't have subrole {SUBROLE}."
+
+  role:
+    playerSet:
+      message: "{ROLES_PREFIX}{GREEN}You set {PLAYER} to {ROLE}{GREEN} for {DURATION}."
+      type: "chat"
+    set:
+      message: "{ROLES_PREFIX}{GREEN}You are now {ROLE}{GREEN} for {DURATION}."
+      type: "toast"
+    expiredToDefault:
+      message: "{ROLES_PREFIX}{YELLOW}Your role expired. You are now {ROLE}{YELLOW}."
+      type: "toast"
+    expiredToSubrole:
+      message: "{ROLES_PREFIX}{YELLOW}Your role expired. You have been set to {ROLE_FROM_SUBROLE}."
+      type: "toast"
+
+  permission:
+    added: "{ROLES_PREFIX}{GREEN}+ {PERMISSION}{GREEN} granted to {PLAYER}." #TODO {DURATION_OPT}
+    removed: "{ROLES_PREFIX}{GREEN}- {PERMISSION}{GREEN} revoked from {PLAYER}."
+
+  subrole:
+    added: "{ROLES_PREFIX}{GREEN}Subrole {SUBROLE}{GREEN} added to {PLAYER}{GREEN}."
+    set: "{ROLES_PREFIX}{GREEN}You have now subrole {SUBROLE}{GREEN}."
+    removed: "{ROLES_PREFIX}{GREEN}Subrole {SUBROLE}{GREEN} removed from {PLAYER}."
+
+  info:
+    self: "{ROLES_PREFIX}{GRAY}Your role: {ROLE} {DURATION}\n{GRAY}Subroles: {SUBROLES}\n{GRAY}Grants: {PERMISSIONS}"
+    other: "{ROLES_PREFIX}{GRAY}{PLAYER}'s role: {ROLE} {DURATION}\n{GRAY}Subroles: {SUBROLES}\n{GRAY}Grants: {PERMISSIONS}"
+
+  list:
+    header: "{ROLES_PREFIX}{WHITE}Available roles:"
+    line: " - {COLOR}{ROLE_ID}{RESET}: {DISPLAY}"
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

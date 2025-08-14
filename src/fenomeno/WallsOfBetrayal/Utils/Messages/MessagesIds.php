@@ -1,6 +1,6 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Language;
+namespace fenomeno\WallsOfBetrayal\Utils\Messages;
 
 final class MessagesIds
 {
@@ -34,5 +34,23 @@ final class MessagesIds
     public const PLAYER_NOT_FOUND = 'common.playerNotFound';
     public const HUNGER_RESTORED = 'commands.feed.restored';
     public const HUNGER_RESTORED_FOR_PLAYER = 'commands.feed.restoredForPlayer';
+    public const ROLE_NOT_FOUND = "roles.errors.role.notFound";
+    public const ALREADY_HAS_ROLE = "roles.errors.role.alreadyHasRole";
+    public const ROLE_SET = 'roles.role.set';
+    public const ROLE_PLAYER_SET = 'roles.role.playerSet';
+    public const PLAYER_ROLE_NOT_FOUND = 'roles.errors.rolePlayer.notFound';
+    public const ROLES_EXPIRED_TO_DEFAULT = 'roles.role.expiredToDefault';
+    public const ALREADY_HAS_PERMISSION = 'roles.errors.permission.already_has';
+    public const PERMISSION_PLAYER_SET = 'roles.permission.added';
+    public const PERMISSION_PLAYER_REMOVED = 'roles.permission.removed';
+    public const PLAYER_DONT_HAVE_PERMISSION = 'roles.errors.permission.notGranted';
+    public const PLAYER_ROLE_INFO_SELF = 'roles.info.self';
+    public const PLAYER_ROLE_INFO_OTHER = 'roles.info.other';
+    public const SUBROLE_PLAYER_SET = 'roles.subrole.added';
+    public const SUBROLE_SET = 'roles.subrole.set';
+    public const SUBROLE_REMOVED = 'roles.subrole.removed';
+    public const PLAYER_DONT_HAVE_SUBROLE = 'roles.errors.subrole.notOwned';
+    public const ALREADY_HAS_SUBROLE = 'roles.errors.subrole.alreadyHas';
+    public const SUBROLE_NOT_FOUND = 'roles.errors.subrole.notFound';
 
 }

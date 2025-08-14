@@ -5,7 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Handlers;
 use fenomeno\WallsOfBetrayal\Cache\EconomyEntry;
 use fenomeno\WallsOfBetrayal\Class\Shop\ShopItem;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use Generator;
 use pocketmine\player\Player;

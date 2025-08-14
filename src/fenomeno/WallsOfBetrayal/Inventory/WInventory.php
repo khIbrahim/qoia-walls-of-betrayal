@@ -8,7 +8,7 @@ use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenu;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\transaction\InvMenuTransaction;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\transaction\InvMenuTransactionResult;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\Item;

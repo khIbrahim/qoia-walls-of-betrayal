@@ -12,6 +12,14 @@ use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\FeedCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\CreateRoleCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\ListRolesCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\Permission\AddPermissionCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\Permission\RemovePermissionCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\PlayerRoleInfoCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\SetRoleCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\SubRole\AddSubRoleCommand;
+use fenomeno\WallsOfBetrayal\Commands\Roles\SubRole\RemoveSubRoleCommand;
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Economy\EconomyManager;
@@ -32,7 +40,7 @@ use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Roles\RolesManager;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
-use fenomeno\WallsOfBetrayal\Utils\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 
@@ -92,7 +100,15 @@ class Main extends PluginBase
             new AddBalanceCommand($this),
             new SetBalanceCommand($this),
             new RemoveBalanceCommand($this),
-            new FeedCommand($this)
+            new FeedCommand($this),
+            new SetRoleCommand($this),
+            new AddPermissionCommand($this),
+            new RemovePermissionCommand($this),
+            new PlayerRoleInfoCommand($this),
+            new AddSubRoleCommand($this),
+            new RemoveSubRoleCommand($this),
+            new CreateRoleCommand($this),
+            new ListRolesCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);

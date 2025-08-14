@@ -83,3 +83,67 @@ feed:
   name: feed
   description: Feeds a player
   usage: "§cUsage /feed <player: string>"
+
+set-role:
+  name: setrole
+  description: Sets the role of a player
+  usage: "§cUsage /setrole <player: string> <role: string> <duration: number|permanent>"
+  aliases:
+      - "setrank"
+
+add-permission: #TODO expiring permissions
+  name: addpermission
+  description: Adds a permission to a player
+  usage: "§cUsage /addpermission <player: string> <permission: string>"
+  aliases:
+      - "addperm"
+      - "setpermission"
+      - "setperm"
+
+remove-permission:
+  name: removepermission
+  description: Removes a permission from a player
+  usage: "§cUsage /removepermission <player: string> <permission: string>"
+  aliases:
+    - "removeperm"
+    - "delpermission"
+    - "delperm"
+
+player-role-info:
+  name: role
+  description: Displays the role of a player
+  usage: "§cUsage /role <player: string>"
+  aliases:
+      - "roleinfo"
+      - "role"
+
+add-sub-role:
+  name: addsubrole
+  description: Adds a sub-role to a player
+  usage: "§cUsage /addsubrole <player: string> <sub-role: string>"
+  aliases:
+      - "setsubrole"
+
+remove-sub-role:
+  name: removesubrole
+  description: Removes a sub-role from a player
+  usage: "§cUsage /removesubrole <player: string> <sub-role: string>"
+  aliases:
+    - "delsubrole"
+
+create-role:
+  name: createrole
+  description: Creates a new role
+  usage: "§cUsage /createrole"
+  aliases:
+      - "newrole"
+      - "createrank"
+      - "addrank"
+
+list-roles:
+  name: listroles
+  description: Lists all roles
+  usage: "§cUsage /listroles"
+  aliases:
+      - "roles"
+      - "ranks"

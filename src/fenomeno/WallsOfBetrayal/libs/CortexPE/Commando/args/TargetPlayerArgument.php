@@ -9,7 +9,7 @@ use function is_null;
 use function preg_match;
 use function strtolower;
 
-class TargetPlayerArgument extends TextArgument {
+class TargetPlayerArgument extends RawStringArgument {
 	public function __construct(?string $name = null, bool $optional = false){
 		$name = is_null($name) ? "player" : $name;
 

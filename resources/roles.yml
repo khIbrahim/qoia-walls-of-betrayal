@@ -56,9 +56,79 @@ roles:
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: {}
 
+  helper:
+    displayName: "§bHelper"
+    color: "§b"
+    icon: "❖"
+    inherits: [ "nomade" ]
+    permissions:
+      - "wob.staff.chat"
+      - "wob.report.view"
+      - "wob.mute.temp"
+      - "wob.warn"
+      - "wob.chat.clear.local"
+    chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+    nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
+    perks: { }
+
+  moderator:
+    displayName: "§9Moderator"
+    color: "§9"
+    icon: "⚖"
+    inherits: [ "helper" ]
+    permissions:
+      - "wob.mute"
+      - "wob.kick"
+      - "wob.tempban"
+      - "wob.vanish"
+      - "wob.tp.to"
+      - "wob.tp.here"
+      - "wob.invsee"
+      - "wob.chat.clear.global"
+    chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+    nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
+    perks: { }
+
+  builder:
+    displayName: "§dBuilder"
+    color: "§d"
+    icon: "⛏"
+    inherits: [ "nomade" ]
+    permissions:
+      - "wob.builder.creative"
+      - "wob.builder.fly"
+      - "wob.world.edit"
+      - "wob.region.bypass"
+      - "wob.builder.clipboard"
+    chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+    nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
+    perks: { }
+
+  admin:
+    displayName: "§cAdmin"
+    color: "§c"
+    icon: "⚙"
+    inherits: [ "moderator", "builder" ]
+    permissions:
+      - "wob.ban"
+      - "wob.unban"
+      - "wob.economy.set"
+      - "wob.role.set"
+      - "wob.perm.grant"
+      - "wob.perm.revoke"
+      - "wob.reload"
+      - "wob.staff.alert"
+      - "wob.kit.*"
+    chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
+    nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
+    perks: { }
+
 defaults:
   role: "nomade"
   chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
   nameTagFormat: "{COLOR}{PLAYER}{ROLE} §7[{KINGDOM}§7]"
   permissions:
     - "wob.kit.starter"
+
+parameters:
+  nametag-task-tick: 20

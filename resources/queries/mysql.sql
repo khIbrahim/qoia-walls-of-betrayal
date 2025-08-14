@@ -8,7 +8,8 @@
             abilities JSON,
 
             PRIMARY KEY (uuid),
-            INDEX idx_uuid(uuid)
+            INDEX idx_uuid(uuid),
+            INDEX idx_username(name)
         );
     -- # }
 
@@ -155,7 +156,8 @@
             amount DECIMAL(64, 2) NOT NULL DEFAULT 0,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 
-            INDEX uuid_idx(uuid)
+            INDEX idx_uuid(uuid),
+            INDEX idx_username(username)
         );
     -- # }
 
@@ -262,7 +264,9 @@
             expires_at BIGINT DEFAULT NULL,
             permissions JSON,
             INDEX idx_role_id(role_id),
-            INDEX idx_expires_at(expires_at)
+            INDEX idx_expires_at(expires_at),
+            INDEX idx_username(username),
+            INDEX idx_uuid(uuid)
         );
     -- # }
 
@@ -282,7 +286,7 @@
     -- # }
 
     -- # { get
-    -- # :uuid string
+    -- # :uuid ?string
     -- # :username ?string
         SELECT * FROM player_roles WHERE (uuid = :uuid OR username = :username);
     -- # }
@@ -290,5 +294,49 @@
     -- # { remove
     -- # :uuid string
         DELETE FROM player_roles WHERE uuid = :uuid;
+    -- # }
+
+    -- # { updateRole
+    -- # :uuid ?string
+    -- # :username ?string
+    -- # :role_id string
+    -- # :expires_at ?int
+        UPDATE player_roles
+        SET role_id = :role_id,
+            expires_at = :expires_at,
+            assigned_at = CURRENT_TIMESTAMP
+        WHERE (uuid = :uuid OR username = :username);
+    -- # }
+
+    -- # { getPermissions
+    -- # :uuid ?string
+    -- # :username ?string
+        SELECT permissions FROM player_roles
+        WHERE (uuid = :uuid OR username = :username);
+    -- # }
+
+    -- # { updatePermissions
+    -- # :uuid ?string
+    -- # :username ?string
+    -- # :permissions string
+        UPDATE player_roles
+        SET permissions = :permissions
+        WHERE (uuid = :uuid OR username = :username);
+    -- # }
+
+    -- # { getSubRoles
+    -- # :uuid ?string
+    -- # :username ?string
+        SELECT subRoles FROM player_roles
+        WHERE (uuid = :uuid OR username = :username);
+    -- # }
+
+    -- # { updateSubRoles
+    -- # :uuid ?string
+    -- # :username ?string
+    -- # :subRoles string
+        UPDATE player_roles
+        SET subRoles = :subRoles
+        WHERE (uuid = :uuid OR username = :username);
     -- # }
 -- # }
