@@ -21,5 +21,7 @@ final class ExtraTags
     const PERMISSIONS = '{PERMISSIONS}';
     const SUBROLES = '{SUBROLES}';
     const SUBROLE = '{SUBROLE}';
+    const MAX = '{MAX}';
+    const NUMBER = '{NUMBER}';
 
 }

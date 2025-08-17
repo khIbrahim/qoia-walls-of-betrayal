@@ -47,3 +47,17 @@ permissions:
     default: op
   wob.command.listroles:
     default: op
+  wob.command.vault:
+    default: true
+  wob.command.vault.1:
+    default: true
+  wob.command.vault.2:
+    default: op
+  wob.command.vault.3:
+    default: op
+  wob.command.vault.4:
+    default: op
+  wob.command.vault.5:
+    default: op
+  wob.command.vault.other:
+    default: op

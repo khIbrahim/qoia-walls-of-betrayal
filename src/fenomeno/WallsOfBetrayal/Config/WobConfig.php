@@ -11,12 +11,16 @@ class WobConfig
     private const DEFAULT_REQUIREMENTS_FLUSH_INTERVAL = 5;
     private const DEFAULT_DAY_LENGTH                  = 10; // 1 heure
     private const DEFAULT_TOTAL_DAYS                  = 14;
+    private const DEFAULT_VAULT_SIZE                  = 27;
+    private const DEFAULT_MAX_VAULT_NUMBER            = 5;
 
     public const SCOREBOARD_NAME = "wob.scoreboard";
 
     private static int $kit_requirements_flush_interval = self::DEFAULT_REQUIREMENTS_FLUSH_INTERVAL;
     private static int $day_length                      = self::DEFAULT_DAY_LENGTH;
     private static int $totalDays                       = self::DEFAULT_TOTAL_DAYS;
+    private static int $vault_size                      = self::DEFAULT_VAULT_SIZE;
+    private static int $max_vault_number                = self::DEFAULT_MAX_VAULT_NUMBER;
 
     private static array $phaseLengths = [];
 
@@ -32,6 +36,8 @@ class WobConfig
         self::$day_length                      = (int) ($config['day_length'] ?? self::DEFAULT_DAY_LENGTH);
         self::$totalDays                       = (int) ($config['total_days'] ?? self::DEFAULT_TOTAL_DAYS);
         self::$phaseLengths                    = self::loadPhases($config['phase_lengths'] ?? []);
+        self::$vault_size                      = (int) ($config['vault_size'] ?? self::DEFAULT_VAULT_SIZE);
+        self::$max_vault_number                = (int) ($config['max_vault_number'] ?? self::DEFAULT_MAX_VAULT_NUMBER);
     }
 
     public static function getKitRequirementsFlushInterval(): int
@@ -52,6 +58,16 @@ class WobConfig
     public static function getPhaseLengths(): array
     {
         return self::$phaseLengths;
+    }
+
+    public static function getVaultSize(): int
+    {
+        return self::$vault_size;
+    }
+
+    public static function getMaxVaultNumber(): int
+    {
+        return self::$max_vault_number;
     }
 
     private static function loadPhases(array $data): array

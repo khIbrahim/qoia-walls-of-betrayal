@@ -42,5 +42,8 @@ interface Statements
     public const UPDATE_PLAYER_PERMISSIONS      = 'roles.updatePermissions';
     public const GET_PLAYER_SUBROLES            = 'roles.getSubRoles';
     public const UPDATE_PLAYER_SUBROLES         = 'roles.updateSubRoles';
+    public const INIT_VAULT                     = 'vaults.init';
+    public const OPEN_VAULT                     = 'vaults.open';
+    public const CLOSE_VAULT                    = 'vaults.close';
 
 }

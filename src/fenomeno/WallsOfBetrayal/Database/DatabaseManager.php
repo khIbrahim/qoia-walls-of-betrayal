@@ -6,11 +6,13 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInte
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\VaultRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRolesRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\VaultRepository;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\libasynql;
 use fenomeno\WallsOfBetrayal\Main;
@@ -29,6 +31,7 @@ class DatabaseManager
     private CooldownRepositoryInterface $cooldownRepository;
     private EconomyRepositoryInterface $economyRepository;
     private PlayerRolesRepositoryInterface $rolesRepository;
+    private VaultRepositoryInterface $vaultRepository;
 
     public function __construct(
         private readonly Main $main
@@ -53,6 +56,9 @@ class DatabaseManager
 
             $this->rolesRepository = new PlayerRolesRepository($this->main);
             $this->rolesRepository->init($this);
+
+            $this->vaultRepository = new VaultRepository($this->main);
+            $this->vaultRepository->init($this);
         } catch (Throwable $e){
             $this->main->getLogger()->error("§cAn error occurred while init database: " . $e->getMessage());
             $this->main->getLogger()->logException($e);
@@ -82,6 +88,11 @@ class DatabaseManager
     public function getRolesRepository(): PlayerRolesRepositoryInterface
     {
         return $this->rolesRepository;
+    }
+
+    public function getVaultRepository(): VaultRepositoryInterface
+    {
+        return $this->vaultRepository;
     }
 
     public function __call(string $name, array $arguments)

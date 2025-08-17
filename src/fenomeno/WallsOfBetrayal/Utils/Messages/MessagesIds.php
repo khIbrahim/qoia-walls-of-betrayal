@@ -52,5 +52,13 @@ final class MessagesIds
     public const PLAYER_DONT_HAVE_SUBROLE = 'roles.errors.subrole.notOwned';
     public const ALREADY_HAS_SUBROLE = 'roles.errors.subrole.alreadyHas';
     public const SUBROLE_NOT_FOUND = 'roles.errors.subrole.notFound';
+    public const VAULT_NUMBER_TOO_HIGH = 'commands.vault.errors.numberTooHigh';
+    public const VAULT_NO_PERMISSION = 'commands.vault.errors.noPermission';
+    public const VAULT_NUMBER_TOO_LOW = 'commands.vault.errors.numberTooLow';
+    public const VAULT_OPENING = 'commands.vault.opening';
+    public const VAULT_OPENED = 'commands.vault.opened';
+    public const VAULT_CLOSED = 'commands.vault.closed';
+    public const VAULT_NO_PERMISSION_OTHER = 'commands.vault.errors.noPermissionOther';
+    public const VAULT_NOT_FOUND = 'commands.vault.errors.notFound';
 
 }

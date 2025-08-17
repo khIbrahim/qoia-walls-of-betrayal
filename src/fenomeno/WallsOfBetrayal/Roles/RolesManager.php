@@ -271,6 +271,7 @@ class RolesManager
                     }
 
                     [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower((string)$player)];
+
                     $this->main->getDatabaseManager()
                         ->getRolesRepository()
                         ->updatePermissions(
@@ -279,7 +280,13 @@ class RolesManager
                                 username: $username,
                                 permissions: array_values($permissions)
                             ),
-                            function () use ($resolve) {
+                            function () use ($username, $resolve) {
+                                //double apply:
+                                $p = $this->main->getServer()->getPlayerExact($username);
+                                if($p instanceof Player) {
+                                    $rolePlayer = $this->getPlayer($p);
+                                    $rolePlayer?->applyTo($p);
+                                }
                                 $resolve();
                             },
                             function (Throwable $e) use ($reject, $player) {
@@ -336,7 +343,15 @@ class RolesManager
                                 username: $username,
                                 permissions: array_values($permissions)
                             ),
-                            function () use ($resolve) { $resolve(); },
+                            function () use ($username, $resolve) {
+                                //double apply
+                                $p = $this->main->getServer()->getPlayerExact($username);
+                                if($p instanceof Player) {
+                                    $rolePlayer = $this->getPlayer($p);
+                                    $rolePlayer?->applyTo($p);
+                                }
+                                $resolve();
+                            },
                             function (Throwable $e) use ($reject, $player) {
                                 $reject(new DatabaseException("Failed to remove permission for player " . (is_string($player) ? $player : $player->getName()) . ": " . $e->getMessage()));
                                 $this->main->getLogger()->logException($e);

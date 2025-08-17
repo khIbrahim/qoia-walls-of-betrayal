@@ -12,6 +12,7 @@ use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\FeedCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
+use fenomeno\WallsOfBetrayal\Commands\Player\VaultCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\CreateRoleCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\ListRolesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\Permission\AddPermissionCommand;
@@ -108,7 +109,8 @@ class Main extends PluginBase
             new AddSubRoleCommand($this),
             new RemoveSubRoleCommand($this),
             new CreateRoleCommand($this),
-            new ListRolesCommand($this)
+            new ListRolesCommand($this),
+            new VaultCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);

@@ -147,3 +147,11 @@ list-roles:
   aliases:
       - "roles"
       - "ranks"
+
+vault:
+  name: "vault"
+  description: "§7§oOpen the vault to view your items"
+  usage: "§e/vault <number> <player:admin> §8– §7Ope vault"
+  aliases:
+    - "chest"
+    - "enderchest"

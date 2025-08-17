@@ -216,6 +216,17 @@ commands:
   feed:
     restored: "{GLOBAL_PREFIX}{GREEN}You have been fed."
     restoredForPlayer: "{GLOBAL_PREFIX}{GREEN}You have fed {PLAYER}."
+  vault:
+    errors:
+      numberTooHigh: "{GLOBAL_PREFIX}{RED}Vault number is too high, maximum is {MAX}."
+      noPermission: "{GLOBAL_PREFIX}{RED}You don't have permission to open this vault."
+      numberTooLow: "{GLOBAL_PREFIX}{RED}Vault number is too low, minimum is 1."
+      noPermissionOther: "{GLOBAL_PREFIX}{RED}You don't have permission to open another player's vault."
+      notFound: "{GLOBAL_PREFIX}{RED}Vault #{NUMBER} for {PLAYER} not found."
+    opened: "{GLOBAL_PREFIX}{GREEN}You have opened vault #{NUMBER} for {PLAYER}."
+    openedForPlayer: "{GLOBAL_PREFIX}{GREEN}You have opened {PLAYER}'s vault."
+    opening: "{GLOBAL_PREFIX}{GRAY}Opening vault {WHITE}{NUMBER}{GRAY} for {PLAYER}..."
+    closed: "{GLOBAL_PREFIX}{GREEN}You have closed vault #{NUMBER} for {PLAYER}."
 
 # ---------------------------------------------------------------------------
 

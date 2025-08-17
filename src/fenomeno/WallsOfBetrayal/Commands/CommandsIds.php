@@ -24,5 +24,6 @@ final class CommandsIds
     public const REMOVE_SUB_ROLE = 'remove-sub-role';
     public const CREATE_ROLE = 'create-role';
     public const LIST_ROLES = 'list-roles';
+    public const VAULT = 'vault';
 
 }
