@@ -8,6 +8,8 @@ final class PermissionIds
     public const FEED  = 'wob.command.feed';
     public const VAULT = 'wob.command.vault';
     public const VAULT_OTHER = 'wob.command.vault.other';
+    public const BUILDER_GRACE = 'wob.abilities.builder_grace';
+    public const GIVE_KIT = 'wob.command.givekit';
 
     public static function getVaultPerm(int $number): string
     {

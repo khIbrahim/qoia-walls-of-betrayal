@@ -37,6 +37,7 @@ common:
   invNotPageable: "{GLOBAL_PREFIX}{RED}This inventory is not pageable."
   logicError: "{RED}An error occurred, try later: {ERR}"
   playerNotFound: "{GLOBAL_PREFIX}{RED}Player not found: {PLAYER}"
+  invalidNumber: "{GLOBAL_PREFIX}{RED}Invalid number: {NUMBER}, expected a number between {MIN} and {MAX}."
   item:
     locked: "{GLOBAL_PREFIX}{RED}This item ({ITEM}) is locked and cannot be used."
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
@@ -94,6 +95,7 @@ kits:
   requirementsNotAchieved: "{KITS_PREFIX}{RED}Kits requirements are not achieved."
   noPermission: "{KITS_PREFIX}{RED}You don't have permission to claim {KIT}."
   notSameKingdom: "{KITS_PREFIX}{RED}This kit is reserved for kingdom {KINGDOM}."
+  given: "{KITS_PREFIX}{GREEN}You have given the kit {WHITE}{KIT}{GREEN} to {WHITE}{PLAYER}."
 
 # ---------------------------------------------------------------------------
 
@@ -229,6 +231,9 @@ commands:
     openedForPlayer: "{GLOBAL_PREFIX}{GREEN}You have opened {PLAYER}'s vault."
     opening: "{GLOBAL_PREFIX}{GRAY}Opening vault {WHITE}{NUMBER}{GRAY} for {PLAYER}..."
     closed: "{GLOBAL_PREFIX}{GREEN}You have closed vault #{NUMBER} for {PLAYER}."
+  spawner:
+    added: "{GLOBAL_PREFIX}{GREEN}You have added a spawner {NUMBER}x {SPAWNER} for {PLAYER}."
+    notFound: "{GLOBAL_PREFIX}{RED}Spawner not found: {SPAWNER}"
 
 # ---------------------------------------------------------------------------
 

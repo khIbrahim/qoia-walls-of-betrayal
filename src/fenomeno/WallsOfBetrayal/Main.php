@@ -1,6 +1,9 @@
 <?php
 namespace fenomeno\WallsOfBetrayal;
 
+use fenomeno\WallsOfBetrayal\Blocks\BlockManager;
+use fenomeno\WallsOfBetrayal\Commands\Admin\GiveKitCommand;
+use fenomeno\WallsOfBetrayal\Commands\Admin\SpawnerCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\AddBalanceCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\RemoveBalanceCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\SetBalanceCommand;
@@ -24,6 +27,7 @@ use fenomeno\WallsOfBetrayal\Commands\Roles\SubRole\RemoveSubRoleCommand;
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Economy\EconomyManager;
+use fenomeno\WallsOfBetrayal\Entities\EntityManager;
 use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
@@ -33,6 +37,7 @@ use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
+use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
@@ -41,6 +46,7 @@ use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Roles\RolesManager;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
+use fenomeno\WallsOfBetrayal\Tiles\TileManager;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
@@ -90,6 +96,10 @@ class Main extends PluginBase
         $this->economyManager  = new EconomyManager($this);
         $this->rolesManager    = new RolesManager($this);
 
+        EntityManager::getInstance()->startup($this);
+        TileManager::getInstance()->startup();
+        BlockManager::getInstance()->startup();
+
         $this->getServer()->getCommandMap()->registerAll('wob', [
             new ChooseCommand($this),
             new KitCommand($this),
@@ -110,7 +120,9 @@ class Main extends PluginBase
             new RemoveSubRoleCommand($this),
             new CreateRoleCommand($this),
             new ListRolesCommand($this),
-            new VaultCommand($this)
+            new VaultCommand($this),
+            new GiveKitCommand($this),
+            new SpawnerCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -120,6 +132,7 @@ class Main extends PluginBase
         $this->getServer()->getPluginManager()->registerEvents(new AbilitiesListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EconomyListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new RolesListener($this), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new EntitiesListener(), $this);
     }
 
     public function getDatabaseManager(): DatabaseManager
@@ -174,6 +187,10 @@ class Main extends PluginBase
 
         $this->databaseManager->waitAll();
         $this->databaseManager->close();
+    }
+
+    public function getFile(): string{
+        return parent::getFile();
     }
 
 }

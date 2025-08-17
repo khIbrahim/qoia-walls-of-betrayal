@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Commands\Player;
 
+use fenomeno\WallsOfBetrayal\Commands\Arguments\KitArgument;
 use fenomeno\WallsOfBetrayal\Commands\CommandsIds;
 use fenomeno\WallsOfBetrayal\Commands\WCommand;
 use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
@@ -25,7 +26,7 @@ class KitCommand extends WCommand
      */
     protected function prepare(): void
     {
-        $this->registerArgument(0, new RawStringArgument(self::KIT_ARGUMENT, true));
+        $this->registerArgument(0, new KitArgument(self::KIT_ARGUMENT, true));
         $this->addConstraint(new InGameRequiredConstraint($this));
     }
 

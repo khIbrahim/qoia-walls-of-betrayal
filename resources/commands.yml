@@ -155,3 +155,16 @@ vault:
   aliases:
     - "chest"
     - "enderchest"
+
+give-kit:
+  name: "givekit"
+  description: "§7§oGive a kit to a player"
+  usage: "§e/givekit <player> <kitId> §8– §7Give a kit to a player"
+
+spawner:
+  name: "spawner"
+  description: "§7§oOpen the spawner menu | give spawner to a player"
+  usage: "§e/spawner <player=optionnal> <spawner_id> <count> §8– §7Open the spawner menu"
+  aliases:
+      - "spawners"
+      - "mobspawner"

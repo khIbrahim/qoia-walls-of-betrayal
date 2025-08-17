@@ -14,6 +14,7 @@ final class RoleArgument extends StringEnumArgument {
     public static function register(string $id, Role $role): void {
         self::$VALUES[strtolower($id)] = $role;
     }
+
     public static function reset(): void {
         self::$VALUES = [];
     }

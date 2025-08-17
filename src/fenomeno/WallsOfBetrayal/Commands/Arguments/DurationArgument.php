@@ -6,7 +6,7 @@ use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\Utils\DurationParser;
 use pocketmine\command\CommandSender;
 
-class DurationArgument extends RawStringArgument
+final class DurationArgument extends RawStringArgument
 {
 
     public function canParse(string $testString, CommandSender $sender): bool

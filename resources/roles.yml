@@ -23,14 +23,16 @@ roles:
     inherits: ["default"]
     permissions:
       - "wob.kit.sentinel"
-      - "wob.chat.emotes"              # emotes stylisées
-      - "wob.chat.channel.trade"       # canal commerce
-      - "wob.queue.priority.1"         # légère priorité file
-      - "wob.tpa.priority.1"           # priorité /tpa
-      - "wob.home.max.2"               # 2 homes
-      - "wob.shop.discount.05"         # -5% shop
+      - "wob.chat.emotes"
+      - "wob.chat.channel.trade"
+      - "wob.queue.priority.1"
+      - "wob.tpa.priority.1"
+      - "wob.home.max.2"
+      - "wob.shop.discount.05"
       - "wob.ability.cooldown.multiplier.0.95"  # -5% CD abilités
       - "wob.quest.boost.1"            # petit boost progression quêtes
+      - "wob.abilities.builder_grace"  # no fall damage from your placed blocks for 60s
+      - "wob.command.vault.2"          # accès vault 2
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: {}
@@ -52,6 +54,7 @@ roles:
       - "wob.war.banner.place"         # poser bannière de guerre (RP)
       - "wob.war.banner.break"
       - "wob.betray.mark"              # marquer une cible de trahison (RP futur)
+      - "wob.command.vault.3"          # accès vault 3
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: {}

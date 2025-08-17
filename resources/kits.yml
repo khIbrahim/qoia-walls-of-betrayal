@@ -277,3 +277,160 @@ warlord:
         enchantments:
           protection: 4
           unbreaking: 2
+
+earth_breaker:
+  id: "earth_breaker"
+  kingdom: "gorvok"
+  displayName: "§r§6EarthBreaker Kit"
+  description: "Base digger & trap-layer specialist. Built for siege, mining and traps."
+  unlock_day: 0
+  cooldown: 864000
+  icon: "diamond_pickaxe"
+  contents:
+    inv:
+      0:
+        item: "diamond_pickaxe"
+        display-name: "§r§bEarthbreaker Pick"
+        enchantments:
+          efficiency: 5
+          fortune: 3
+          unbreaking: 3
+      1:
+        item: "lava_bucket"
+      2:
+        item: "flint_and_steel"
+      3:
+        item: "cobblestone"
+        count: 128
+      4:
+        item: "redstone"
+        count: 32
+      5:
+        item: "tnt"
+        count: 16
+      6:
+        item: "potion"
+        display-name: "§r§bSpeed II (2:00)"
+        count: 5
+        description: "§7Gain Speed II for 2 minutes."
+    armor:
+      0:
+        item: "diamond_helmet"
+        enchantments:
+          blast_protection: 4
+          unbreaking: 2
+      1:
+        item: "diamond_chestplate"
+        enchantments:
+          blast_protection: 4
+          unbreaking: 2
+      2:
+        item: "diamond_leggings"
+        enchantments:
+          blast_protection: 4
+          unbreaking: 2
+      3:
+        item: "diamond_boots"
+        enchantments:
+          blast_protection: 4
+          unbreaking: 2
+  requirements:
+    - type: "break"
+      target: "wheat_block"
+      amount: 17000
+    - type: "break"
+      target: "carrot_block"
+      amount: 17000
+    - type: "kill"
+      target: "minecraft:cow"
+      amount: 1750
+    - type: "kill"
+      target: "minecraft:sheep"
+      amount: 1750
+
+shadow_raid:
+  id: "shadow_raid"
+  kingdom: "thragmar"
+  displayName: "§r§8ShadowRaid Kit"
+  description: "Stealth & infiltration package: vanish, scout, strike and escape."
+  unlock_day: 0
+  cooldown: 604800
+  icon: "ender_pearl"
+  contents:
+    inv:
+      0:
+        item: "diamond_sword"
+        display-name: "§r§8Shadow Fang"
+        enchantments:
+          sharpness: 4
+          fire_aspect: 2
+          knockback: 1
+      1:
+        item: "diamond_pickaxe"
+        enchantments:
+          efficiency: 5
+          unbreaking: 3
+          silk_touch: 1
+      2:
+        item: "diamond_shovel"
+        enchantments:
+          efficiency: 4
+          unbreaking: 3
+      3:
+        item: "potion"
+        display-name: "§r§7Invisibility (6:00)"
+        count: 3
+        description: "§7Turn invisible for 6 minutes."
+      4:
+        item: "ender_pearl"
+        count: 32
+      5:
+        item: "potion"
+        display-name: "§r§9Night Vision (8:00)"
+        count: 2
+        description: "§7See in the dark for 8 minutes."
+      6:
+        item: "black_wool"
+        count: 64
+      7:
+        item: "bow"
+        display-name: "§r§8Silent Bow"
+        enchantments:
+          power: 4
+          infinity: 1
+      8:
+        item: "arrow"
+        count: 1
+        description: "§7Required for Infinity."
+    armor:
+      0:
+        item: "diamond_helmet"
+        enchantments:
+          projectile_protection: 4
+          unbreaking: 2
+          respiration: 1
+      1:
+        item: "diamond_chestplate"
+        enchantments:
+          projectile_protection: 4
+          unbreaking: 2
+      2:
+        item: "diamond_leggings"
+        enchantments:
+          projectile_protection: 4
+          unbreaking: 2
+      3:
+        item: "diamond_boots"
+        enchantments:
+          projectile_protection: 4
+          unbreaking: 2
+  requirements:
+    - type: "break"
+      target: "wheat_block"
+      amount: 15000
+    - type: "break"
+      target: "carrot_block"
+      amount: 10000
+    - type: "kill"
+      target: "minecraft:cow"
+      amount: 1750

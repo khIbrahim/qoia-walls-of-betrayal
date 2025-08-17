@@ -24,5 +24,9 @@ final class ExtraTags
     const MAX = '{MAX}';
     const NUMBER = '{NUMBER}';
     const ITEM = '{ITEM}';
+    const KIT = '{KIT}';
+    const TIME = '{TIME}';
+    const SPAWNER = '{SPAWNER}';
+    const MIN = '{MIN}';
 
 }

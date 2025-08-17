@@ -25,5 +25,7 @@ final class CommandsIds
     public const CREATE_ROLE = 'create-role';
     public const LIST_ROLES = 'list-roles';
     public const VAULT = 'vault';
+    public const GIVE_KIT = 'give-kit';
+    public const SPAWNER = 'spawner';
 
 }

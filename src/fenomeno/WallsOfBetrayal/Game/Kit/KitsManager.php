@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Game\Kit;
 
 use Closure;
+use fenomeno\WallsOfBetrayal\Commands\Arguments\KitArgument;
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\InsertKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\LoadKitRequirementPayload;
@@ -43,6 +44,7 @@ class KitsManager
             $noKingdomKits = [];
             foreach ($kingdoms as $kingdom) {
                 foreach ($this->kits as $kit) {
+                    KitArgument::$VALUES[strtolower($kit->getId())] = $kit;
                     if(! $kit->getKingdom()) {
                         $noKingdomKits[$kit->getId()] = $kit;
                         continue;
@@ -57,7 +59,7 @@ class KitsManager
                                     foreach ($kit->getRequirements() as $id => $requirement){
                                         $this->main->getDatabaseManager()->getKitRequirementRepository()->insert(
                                             new InsertKitRequirementPayload($id, $kingdom->getId(), $kit->getId()),
-                                            fn() => $this->main->getLogger()->info("§l" . $kingdom->getDisplayName() . " §ainserted kit §6(" . $kit->getDisplayName() . "§6)"),
+                                            fn() => $this->main->getLogger()->info("§l" . $kingdom->getDisplayName() . " §ainserted for kit §6(" . $kit->getDisplayName() . "§6) §arequirement " . $id),
                                             fn(Throwable $e) => $this->main->getLogger()->error('failed to create requirement ' . $id . ' for kingdom ' . $kingdom->getId() . ' & kit ' . $kit->getId()),
                                         );
                                     }

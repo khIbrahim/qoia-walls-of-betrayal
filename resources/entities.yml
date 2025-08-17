@@ -1,0 +1,22 @@
+parameters:
+  one-shot: false
+  nametag: "§l§d{COUNT}x §f{NAME}"
+
+mobs:
+  chicken: true
+  cow: true
+  pig: true
+  sheep: true
+  enderman: true
+  iron_golem: true
+  piglin: true
+  polar_bear: true
+  spider: true
+  blaze: true
+  creeper: true
+  guardian: true
+  skeleton: true
+  slime: true
+  witch: true
+  zombie: true
+  turtle: true
