@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Config;
 
 use fenomeno\WallsOfBetrayal\Enum\PhaseEnum;
 use fenomeno\WallsOfBetrayal\Main;
+use pocketmine\item\StringToItemParser;
 
 class WobConfig
 {
@@ -21,6 +22,7 @@ class WobConfig
     private static int $totalDays                       = self::DEFAULT_TOTAL_DAYS;
     private static int $vault_size                      = self::DEFAULT_VAULT_SIZE;
     private static int $max_vault_number                = self::DEFAULT_MAX_VAULT_NUMBER;
+    private static array $lockedItems                   = [];
 
     private static array $phaseLengths = [];
 
@@ -38,6 +40,8 @@ class WobConfig
         self::$phaseLengths                    = self::loadPhases($config['phase_lengths'] ?? []);
         self::$vault_size                      = (int) ($config['vault_size'] ?? self::DEFAULT_VAULT_SIZE);
         self::$max_vault_number                = (int) ($config['max_vault_number'] ?? self::DEFAULT_MAX_VAULT_NUMBER);
+
+        self::parseLockedItems($config['locked_items'] ?? []);
     }
 
     public static function getKitRequirementsFlushInterval(): int
@@ -89,6 +93,28 @@ class WobConfig
         }
 
         return $phases;
+    }
+
+    private static function parseLockedItems(array $itemsData): void
+    {
+        $items = [];
+        foreach ($itemsData as $itemId) {
+            $item = StringToItemParser::getInstance()->parse($itemId);
+            if(! $item){
+                Main::getInstance()->getLogger()->warning("§cINVALID ITEM: Impossible to parse $itemId");
+                continue;
+            }
+
+            $items[] = $item;
+        }
+
+        self::$lockedItems = $items;
+    }
+
+    public static function isItemLocked(string $itemId): bool
+    {
+        $item = StringToItemParser::getInstance()->parse($itemId);
+        return in_array($item, self::$lockedItems, true);
     }
 
 }

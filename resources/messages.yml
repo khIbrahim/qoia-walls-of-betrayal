@@ -37,6 +37,8 @@ common:
   invNotPageable: "{GLOBAL_PREFIX}{RED}This inventory is not pageable."
   logicError: "{RED}An error occurred, try later: {ERR}"
   playerNotFound: "{GLOBAL_PREFIX}{RED}Player not found: {PLAYER}"
+  item:
+    locked: "{GLOBAL_PREFIX}{RED}This item ({ITEM}) is locked and cannot be used."
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
 # ---------------------------------------------------------------------------

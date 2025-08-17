@@ -76,7 +76,7 @@ class VaultCommand extends WCommand
                 $contents = yield from $this->main->getDatabaseManager()->getVaultRepository()->open(new VaultOpenPayload($uuid, strtolower($player), $number));
 
                 MessagesUtils::sendTo($sender, MessagesIds::VAULT_OPENED, [ExtraTags::NUMBER => $number, ExtraTags::PLAYER => $player]);
-                (new VaultInventory($contents, $number))->send($sender);
+                (new VaultInventory($contents, strtolower($player), $uuid, $number))->send($sender);
             } catch (Throwable $e) {
                 MessagesUtils::sendTo($sender, MessagesIds::ERROR, [ExtraTags::ERROR => $e->getMessage()]);
                 $this->main->getLogger()->error("Failed to load vault for player $player: " . $e->getMessage());

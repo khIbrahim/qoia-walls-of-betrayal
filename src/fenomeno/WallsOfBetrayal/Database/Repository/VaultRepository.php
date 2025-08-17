@@ -56,7 +56,7 @@ class VaultRepository implements VaultRepositoryInterface
                 continue;
             }
 
-            $items = $this->read($row["items"]);
+            $items = $this->read($this->main->getDatabaseManager()->getBinaryStringParser()->decode($row["items"]));
         }
 
         return $items;
@@ -95,7 +95,7 @@ class VaultRepository implements VaultRepositoryInterface
             $payload = new CloseVaultPayload(
                 $payload->uuid,
                 $payload->username,
-                $this->write($items),
+                $this->main->getDatabaseManager()->getBinaryStringParser()->encode($this->write($items)),
                 $payload->number
             );
         }

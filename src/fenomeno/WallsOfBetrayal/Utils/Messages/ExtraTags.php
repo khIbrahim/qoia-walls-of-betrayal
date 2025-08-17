@@ -23,5 +23,6 @@ final class ExtraTags
     const SUBROLE = '{SUBROLE}';
     const MAX = '{MAX}';
     const NUMBER = '{NUMBER}';
+    const ITEM = '{ITEM}';
 
 }

@@ -348,6 +348,7 @@
             name VARCHAR(64) NOT NULL,
             number TINYINT UNSIGNED NOT NULL,
             items BLOB NOT NULL,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             PRIMARY KEY (uuid, name, number),
             INDEX idx_uuid(uuid),
             INDEX idx_name(name)

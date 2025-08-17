@@ -1,6 +1,8 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Database;
 
+use fenomeno\WallsOfBetrayal\Database\BinaryParser\MySQLBinaryStringParser;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\BinaryStringParserInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\CooldownRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
@@ -33,6 +35,8 @@ class DatabaseManager
     private PlayerRolesRepositoryInterface $rolesRepository;
     private VaultRepositoryInterface $vaultRepository;
 
+    private BinaryStringParserInterface $binaryStringParser;
+
     public function __construct(
         private readonly Main $main
     ){
@@ -41,6 +45,9 @@ class DatabaseManager
                 "sqlite" => "queries/sqlite.sql",
                 "mysql"  => "queries/mysql.sql"
             ]);
+
+            // je garde en mysql pour le moment, je ferai plus tard une vérification du type la base de données
+            $this->binaryStringParser = new MySQLBinaryStringParser();
 
             $this->playerRepository = new PlayerRepository($this->main);
             $this->playerRepository->init($this);
@@ -98,6 +105,11 @@ class DatabaseManager
     public function __call(string $name, array $arguments)
     {
         return call_user_func_array([$this->database, $name], $arguments);
+    }
+
+    public function getBinaryStringParser(): BinaryStringParserInterface
+    {
+        return $this->binaryStringParser;
     }
 
 }

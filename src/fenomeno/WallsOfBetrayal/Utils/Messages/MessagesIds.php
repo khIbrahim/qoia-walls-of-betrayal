@@ -60,5 +60,6 @@ final class MessagesIds
     public const VAULT_CLOSED = 'commands.vault.closed';
     public const VAULT_NO_PERMISSION_OTHER = 'commands.vault.errors.noPermissionOther';
     public const VAULT_NOT_FOUND = 'commands.vault.errors.notFound';
+    public const ITEM_LOCKED = 'common.item.locked';
 
 }
