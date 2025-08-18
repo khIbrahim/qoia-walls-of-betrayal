@@ -28,5 +28,10 @@ final class ExtraTags
     const TIME = '{TIME}';
     const SPAWNER = '{SPAWNER}';
     const MIN = '{MIN}';
+    const LEFTOVER = '{LEFTOVER}';
+    const PACK_SIZE = '{PACK_SIZE}';
+    const NEEDED = '{NEEDED}';
+    const QTY = '{QTY}';
+    const TOTAL_PRICE = '{TOTAL_PRICE}';
 
 }

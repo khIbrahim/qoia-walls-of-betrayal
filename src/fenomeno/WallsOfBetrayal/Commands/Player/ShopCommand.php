@@ -14,6 +14,8 @@ use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\constraint\InGameRequiredConstraint;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
+use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\command\CommandSender;
@@ -97,19 +99,30 @@ class ShopCommand extends WCommand
                         );
                     } else {
                         Await::g2c(
-                            ShopTransactionHandler::sell(
-                                player: $sender,
-                                shopItem: $shopItem,
-                                count: $qty
-                            ), function ($total) use ($qty, $shopItem, $sender) {
-                                if($total){
-                                    MessagesUtils::sendTo($sender, 'shop.sold', [
-                                        '{ITEM}' => TextFormat::clean($shopItem->getDisplayName()),
-                                        '{QTY}' => (string)$qty,
-                                        '{TOTAL_PRICE}' => (string)$total
+                            ShopTransactionHandler::sell($sender, $shopItem, $qty),
+                            function ($total) use ($qty, $shopItem, $sender) {
+                                if ($total) {
+                                    $packSize = $shopItem->getPackSize();
+                                    $packs    = intdiv($qty, $packSize);
+                                    $soldQty  = $packs * $packSize;
+
+                                    MessagesUtils::sendTo($sender, MessagesIds::SHOP_SOLD, [
+                                        ExtraTags::ITEM        => TextFormat::clean($shopItem->getDisplayName()),
+                                        ExtraTags::QTY         => (string) $soldQty,
+                                        ExtraTags::TOTAL_PRICE => (string) $total
                                     ]);
+
+                                    $leftover = $qty - $soldQty;
+                                    if ($leftover > 0) {
+                                        MessagesUtils::sendTo($sender, MessagesIds::SELL_LEFTOVER, [
+                                            ExtraTags::ITEM      => TextFormat::clean($shopItem->getDisplayName()),
+                                            ExtraTags::LEFTOVER  => (string)$leftover,
+                                            ExtraTags::PACK_SIZE => (string)$packSize
+                                        ]);
+                                    }
                                 }
-                            }, fn ($er) => MessagesUtils::sendTo($sender, 'shop.txnFailed', ['{ERR}' => (string) $er])
+                            },
+                            fn ($er) => MessagesUtils::sendTo($sender, 'shop.txnFailed', ['{ERR}' => (string)$er])
                         );
                     }
 

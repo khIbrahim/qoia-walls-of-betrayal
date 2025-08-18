@@ -66,5 +66,11 @@ final class MessagesIds
     const SPAWNER_ADDED = 'commands.spawner.added';
     const SPAWNER_NOT_FOUND = 'commands.spawner.notFound';
     public const INVALID_NUMBER = 'common.invalidNumber';
+    public const INVALID_SELL_ARGUMENT = 'commands.sell.errors.invalidArgument';
+    public const SELL_NOTHING_TO_SELL = 'commands.sell.errors.nothingToSell';
+    public const SELL_ALL_SUCCESS = 'commands.sell.all.success';
+    public const ITEM_NOT_SELLABLE = 'commands.sell.errors.itemNotSellable';
+    public const SELL_LEFTOVER = 'commands.sell.hand.leftover';
+    public const SHOP_SOLD = 'shop.sold';
 
 }

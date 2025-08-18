@@ -65,6 +65,7 @@ final class ShopManager {
                             $this->main->getLogger()->warning("SHOP - Item #$i in '$categoryId': count=$count out of [1..64], clamped.");
                             $count = max(1, min(64, $count));
                         }
+
                         $item->setCount($count);
 
                         $buy  = max(0, (int)$itemData['buy']);

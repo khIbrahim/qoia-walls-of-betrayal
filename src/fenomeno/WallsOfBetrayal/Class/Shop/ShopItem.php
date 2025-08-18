@@ -23,6 +23,7 @@ final class ShopItem {
     public function getBuyPrice(): int { return $this->buyPrice; }
     public function getSellPrice(): int { return $this->sellPrice; }
     public function getCategoryId(): string { return $this->categoryId; }
+    public function getPackSize(): int { return $this->item->getCount(); }
 
     public function getDisplayItem(): Item
     {

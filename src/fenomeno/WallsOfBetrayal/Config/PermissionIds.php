@@ -10,6 +10,7 @@ final class PermissionIds
     public const VAULT_OTHER = 'wob.command.vault.other';
     public const BUILDER_GRACE = 'wob.abilities.builder_grace';
     public const GIVE_KIT = 'wob.command.givekit';
+    public const SELL     = 'wob.command.sell';
 
     public static function getVaultPerm(int $number): string
     {

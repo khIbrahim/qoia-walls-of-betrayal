@@ -20,9 +20,9 @@ final class ShopItemsInventory extends WInventory implements PageableInventory
     use InventoryPaginatorTrait;
 
     public function __construct(
-        private readonly ShopCategory $category,
-        int $page = 0,
-        ?int $batch = null
+        private ShopCategory $category,
+        int                  $page = 0,
+        ?int                 $batch = null
     ){
         $this->setPage($page);
         if ($batch !== null) $this->setBatch($batch);

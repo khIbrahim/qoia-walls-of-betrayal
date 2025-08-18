@@ -67,3 +67,5 @@ permissions:
     default: op
   wob.command.spawner:
     default: op
+  wob.command.sell:
+    default: op

@@ -168,3 +168,8 @@ spawner:
   aliases:
       - "spawners"
       - "mobspawner"
+
+sell:
+  name: "sell"
+  description: "§7§oSell items from your inventory"
+  usage: "§e/sell <all|hand> §8– §7Sell items from your inventory"

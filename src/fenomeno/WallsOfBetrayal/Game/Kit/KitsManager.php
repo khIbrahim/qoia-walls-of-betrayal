@@ -76,7 +76,7 @@ class KitsManager
                                     $requirement->setProgress((int) $requirementProgress);
                                 }
 
-                                $this->main->getLogger()->info("§l§6KINGDOM KIT §7-" . $kingdom->getDisplayName() . " §akit loaded §6(" . $kit->getDisplayName() . "§6)");
+                                $this->main->getLogger()->info("§l§6KINGDOM KIT §7- " . $kingdom->getDisplayName() . " §akit loaded §6(" . $kit->getDisplayName() . "§6)");
                         }, fn() => $this->main->getLogger()->error("Failed to load kit requirements for kingdom {$kingdom->getId()} & kit {$kit->getId()}"));
 
                     }

@@ -234,6 +234,17 @@ commands:
   spawner:
     added: "{GLOBAL_PREFIX}{GREEN}You have added a spawner {NUMBER}x {SPAWNER} for {PLAYER}."
     notFound: "{GLOBAL_PREFIX}{RED}Spawner not found: {SPAWNER}"
+  sell:
+    errors:
+      invalidArgument: "{GLOBAL_PREFIX}{RED}Invalid argument. Usage: /sell <all|hand>."
+      nothingToSell: "{GLOBAL_PREFIX}{RED}You have nothing to sell."
+      itemNotSellable: "{GLOBAL_PREFIX}{RED}This item ({ITEM}) is not sellable."
+    all:
+      success:
+        message: "{GLOBAL_PREFIX}{GREEN}You have sold all items for {YELLOW}{BALANCE}{GREEN}."
+        type: "toast"
+    hand:
+      leftover: "{GLOBAL_PREFIX}{YELLOW}You have sold {ITEM}, but you have {LEFTOVER} left over (pack size: {PACK_SIZE})."
 
 # ---------------------------------------------------------------------------
 
