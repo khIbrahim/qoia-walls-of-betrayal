@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
 use Closure;
+use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Entities\PortalEntity;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\EntityFactoryUtils;
@@ -64,6 +65,16 @@ class KingdomManager
                 $abilities = array_filter((array) $kingdomData['abilities'] ?? [], fn($abilityId) => is_string($abilityId) && $this->main->getAbilityManager()->getAbilityById($abilityId) !== null);
                 $this->main->getLogger()->info("Abilities of : $displayName are §6(" . implode(', ', $abilities) . ")");
 
+                $enchantments = [];
+                foreach ((array) ($kingdomData['enchantments'] ?? []) as $enchantmentData) {
+                    try {
+                        $enchantment = KingdomEnchantment::fromArray($enchantmentData);
+                        $enchantments[] = $enchantment;
+                    } catch (Throwable $e) {
+                        $this->main->getLogger()->error("§cFailed to load enchantment for kingdom $id: " . $e->getMessage());
+                    }
+                }
+
                 $kingdom = new Kingdom(
                     id: $id,
                     displayName: $displayName,
@@ -72,7 +83,8 @@ class KingdomManager
                     item: $item,
                     spawn: $position,
                     abilities: $abilities,
-                    portalId: $kingdomData['portal'] ?? ""
+                    portalId: $kingdomData['portal'] ?? "",
+                    enchantments: $enchantments
                 );
                 $kingdoms[$id] = $kingdom;
             } catch (Throwable $e){

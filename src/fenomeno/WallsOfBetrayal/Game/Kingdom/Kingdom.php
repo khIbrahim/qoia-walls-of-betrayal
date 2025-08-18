@@ -1,6 +1,7 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
+use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
@@ -13,16 +14,6 @@ use pocketmine\world\sound\Sound;
 class Kingdom
 {
 
-    /**
-     * @param string $id
-     * @param string $displayName
-     * @param string $color
-     * @param string $description
-     * @param Item|null $item
-     * @param Position|null $spawn
-     * @param Kit[] $kits
-     * @param string[] $abilities -> abilityId[]
-     */
     public function __construct(
         public string $id,
         public string $displayName,
@@ -32,7 +23,8 @@ class Kingdom
         public ?Position $spawn = null,
         public array $kits = [],
         public array $abilities = [],
-        public string $portalId = ""
+        public string $portalId = "",
+        public array $enchantments = [],
     ){}
 
     public function broadcastMessage(string $message, array $extraTags = [], ?string $default = null): void
@@ -78,6 +70,34 @@ class Kingdom
     public function getKits(): array
     {
         return $this->kits;
+    }
+
+    /** @return KingdomEnchantment[] */
+    public function getEnchantments(): array
+    {
+        return $this->enchantments;
+    }
+
+    /**
+     * TODO
+     *
+     * @param Player $player
+     * @param KingdomEnchantment $enchantment
+     * @return void
+     */
+    public function applyEnchantmentToPlayer(Player $player, KingdomEnchantment $enchantment): void
+    {
+        $item = clone $player->getInventory()->getItemInHand();
+        if ($item->isNull()) {
+            MessagesUtils::sendTo($player, "You must hold an item to enchant it.");
+            return;
+        }
+
+        $enchantmentInstance = $enchantment->getEnchantmentInstance();
+        $item->addEnchantment($enchantmentInstance);
+
+        $player->getInventory()->setItemInHand($item);
+        $player->sendMessage("TODO");
     }
 
 }

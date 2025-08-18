@@ -69,9 +69,19 @@ kingdoms:
     unstable: "{KINGDOMS_PREFIX}{RED}Your connection is unstable, please reconnect."
     alreadyInKingdom: "{KINGDOMS_PREFIX}{RED}You are already in a kingdom!"
     unknownKingdom: "{KINGDOMS_PREFIX}{RED}Unknown Kingdom: {KINGDOM}"
+    notInKingdom: "{KINGDOMS_PREFIX}{RED}You are not in a kingdom."
     cantCloseChooseInventory:
       message: "{KINGDOMS_PREFIX}{RED}You need to choose a kingdom to start your adventure."
       type: "title"
+  enchantingTable:
+    errors:
+      noEnchantments: "{KINGDOMS_PREFIX}{RED}No enchantments available for this kingdom ({KINGDOM})."
+      notEnoughResources: "{KINGDOMS_PREFIX}{RED}Not enough resources to apply this enchantment, needed: {YELLOW}{COST} XP."
+      invalidEnchantment: "{KINGDOMS_PREFIX}{RED}Invalid enchantment."
+    default-menu:
+      title: "{KINGDOMS_PREFIX}{KINGDOM} Enchanting Table"
+      text: "{GRAY}Available enchantments for {KINGDOM}:\n{GRAY}Select an enchantment to apply."
+      button: "{EMOJI} {COLOR}{ENCHANTMENT} {LEVEL}\n{GREEN}{COST} XP"
 
 # ---------------------------------------------------------------------------
 

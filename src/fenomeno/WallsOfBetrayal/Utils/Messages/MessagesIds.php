@@ -72,5 +72,12 @@ final class MessagesIds
     public const ITEM_NOT_SELLABLE = 'commands.sell.errors.itemNotSellable';
     public const SELL_LEFTOVER = 'commands.sell.hand.leftover';
     public const SHOP_SOLD = 'shop.sold';
+    public const NOT_IN_KINGDOM = 'kingdoms.errors.notInKingdom';
+    public const ENCHANTING_TABLE_NO_ENCHANTMENTS_FOR_KINGDOM = 'kingdoms.enchantingTable.errors.noEnchantments';
+    public const ENCHANTING_TABLE_TITLE = 'kingdoms.enchantingTable.default-menu.title';
+    public const ENCHANTING_TABLE_TEXT = 'kingdoms.enchantingTable.default-menu.text';
+    public const ENCHANTING_TABLE_BUTTON = 'kingdoms.enchantingTable.default-menu.button';
+    const ENCHANTING_TABLE_NOT_ENOUGH_RESOURCES = 'kingdoms.enchantingTable.errors.notEnoughResources';
+    const ENCHANTING_TABLE_INVALID_ENCHANTMENT = 'kingdoms.enchantingTable.errors.invalidEnchantment';
 
 }

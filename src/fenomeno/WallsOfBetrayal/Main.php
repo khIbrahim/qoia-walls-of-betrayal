@@ -37,6 +37,7 @@ use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\HookAlreadyRegiste
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
+use fenomeno\WallsOfBetrayal\Listeners\BlocksListener;
 use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
@@ -135,6 +136,7 @@ class Main extends PluginBase
         $this->getServer()->getPluginManager()->registerEvents(new EconomyListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new RolesListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EntitiesListener(), $this);
+        $this->getServer()->getPluginManager()->registerEvents(new BlocksListener(), $this);
     }
 
     public function getDatabaseManager(): DatabaseManager

@@ -23,6 +23,35 @@ gorvok:
     - brute_force
     - earth_breaker
   portal: "nephelia:portal_nether"
+  enchantments:
+    - id: "fire_aspect"
+      level: 2
+      cost: 2500
+      description: "Burn enemies alive on hit"
+    - id: "sharpness"
+      level: 5
+      cost: 4000
+      description: "Max melee damage for warriors"
+    - id: "protection"
+      level: 4
+      cost: 3500
+      description: "Superior defense in PvP"
+    - id: "unbreaking"
+      level: 3
+      cost: 2000
+      description: "Gear lasts longer under pressure"
+    - id: "blast_protection"
+      level: 4
+      cost: 3200
+      description: "Survive TNT raids and ambushes"
+    - id: "efficiency"
+      level: 4
+      cost: 1800
+      description: "Farm & dig faster before war"
+    - id: "thorns"
+      level: 2
+      cost: 2200
+      description: "Return damage to attackers"
 
 thragmar:
   display_name: "§9Thrag'Mar Legion"
@@ -49,3 +78,32 @@ thragmar:
     - shadow_raid
     - cursed_blade
   portal: "nephelia:portal_end"
+  enchantments:
+    - id: "sharpness"
+      level: 4
+      cost: 3000
+      description: "Agile assassin strike boost"
+    - id: "projectile_protection"
+      level: 4
+      cost: 2700
+      description: "For ranged ambush survivability"
+    - id: "feather_falling"
+      level: 4
+      cost: 2200
+      description: "Escape cliffs and tower traps"
+    - id: "unbreaking"
+      level: 3
+      cost: 2000
+      description: "Keep stealth gear alive longer"
+    - id: "silk_touch"
+      level: 1
+      cost: 2500
+      description: "Grab strategic blocks for base traps"
+    - id: "vanishing"
+      level: 1
+      cost: 0
+      description: "Free, for high-risk rogue builds"
+    - id: "power"
+      level: 4
+      cost: 3200
+      description: "Heavy bow damage for ambush shots"

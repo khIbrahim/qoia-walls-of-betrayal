@@ -33,5 +33,9 @@ final class ExtraTags
     const NEEDED = '{NEEDED}';
     const QTY = '{QTY}';
     const TOTAL_PRICE = '{TOTAL_PRICE}';
+    const ENCHANTMENT = '{ENCHANTMENT}';
+    const LEVEL = '{LEVEL}';
+    const EMOJI = '{EMOJI}';
+    const COST = '{COST}';
 
 }
