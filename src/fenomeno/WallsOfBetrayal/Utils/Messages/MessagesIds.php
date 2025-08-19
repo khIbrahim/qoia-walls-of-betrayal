@@ -99,5 +99,6 @@ final class MessagesIds
     public const NICK_LOG_ENTRY = 'commands.nick.log.entry';
     public const NICK_LOG_EMPTY = 'commands.nick.log.empty';
     public const NICK_LOG_LIST_HEADER = 'commands.nick.log.listHeader';
+    const ENCHANTING_TABLE_NOT_ENOUGH_XP = 'kingdoms.enchantingTable.errors.notEnoughXp';
 
 }

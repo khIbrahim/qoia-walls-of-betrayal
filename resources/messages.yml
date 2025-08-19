@@ -83,6 +83,7 @@ kingdoms:
       noEnchantments: "{KINGDOMS_PREFIX}{RED}No enchantments available for this kingdom ({KINGDOM})."
       notEnoughResources: "{KINGDOMS_PREFIX}{RED}Not enough resources to apply this enchantment, needed: {YELLOW}{COST} XP."
       invalidEnchantment: "{KINGDOMS_PREFIX}{RED}Invalid enchantment."
+      notEnoughXp: "{KINGDOMS_PREFIX}{RED}You don't have enough XP to apply this enchantment, needed: {YELLOW}{COST} XP."
     default-menu:
       title: "{KINGDOMS_PREFIX}{KINGDOM} Enchanting Table"
       text: "{GRAY}Available enchantments for {KINGDOM}:\n{GRAY}Select an enchantment to apply."

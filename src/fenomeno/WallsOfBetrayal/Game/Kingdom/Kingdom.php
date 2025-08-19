@@ -97,6 +97,13 @@ class Kingdom
 
     public function applyEnchantmentToPlayer(Player $player, KingdomEnchantment $enchantment): void
     {
+        if ($player->getXpManager()->getXpLevel() < $enchantment->cost){
+            MessagesUtils::sendTo($player, MessagesIds::ENCHANTING_TABLE_NOT_ENOUGH_XP, [
+                ExtraTags::COST => $enchantment->cost
+            ]);
+            return;
+        }
+
         $item = clone $player->getInventory()->getItemInHand();
         if ($item->isNull()) {
             MessagesUtils::sendTo($player, MessagesIds::NO_ITEM_IN_HAND);
@@ -114,6 +121,7 @@ class Kingdom
         $enchantmentInstance = $enchantment->getEnchantmentInstance();
         $item->addEnchantment($enchantmentInstance);
 
+        $player->getXpManager()->subtractXpLevels($enchantment->cost);
         $player->getInventory()->setItemInHand($item);
         MessagesUtils::sendTo($player, MessagesIds::ENCHANTING_TABLE_SUCCESS, [
             ExtraTags::ENCHANTMENT => EnchantUtils::getEnchantmentName($enchantment->getEnchantment()),
