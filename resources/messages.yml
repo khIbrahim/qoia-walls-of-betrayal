@@ -40,6 +40,9 @@ common:
   invalidNumber: "{GLOBAL_PREFIX}{RED}Invalid number: {NUMBER}, expected a number between {MIN} and {MAX}."
   item:
     locked: "{GLOBAL_PREFIX}{RED}This item ({ITEM}) is locked and cannot be used."
+  onKill: "{GLOBAL_PREFIX}{GRAY}{KILLER} {RED}killed {WHITE}{VICTIM} {GRAY}from {YELLOW}{VICTIM_KINGDOM} {GRAY}by {YELLOW}{KILLER_KINGDOM}"
+  playerNotLoaded: "{GLOBAL_PREFIX}{RED}Player {PLAYER} is not loaded in the game."
+
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
 # ---------------------------------------------------------------------------
@@ -255,6 +258,8 @@ commands:
         type: "toast"
     hand:
       leftover: "{GLOBAL_PREFIX}{YELLOW}You have sold {ITEM}, but you have {LEFTOVER} left over (pack size: {PACK_SIZE})."
+  stats:
+    playerStats: "{GLOBAL_PREFIX}{GRAY}Player Stats for {PLAYER}:\n{GRAY}Kills: {KILLS}\n{GRAY}Deaths: {DEATHS}\n{GRAY}KDR: {KDR}"
 
 # ---------------------------------------------------------------------------
 

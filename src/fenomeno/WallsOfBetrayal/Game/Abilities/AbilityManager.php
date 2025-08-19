@@ -58,7 +58,7 @@ class AbilityManager
     {
         foreach($this->abilities as $ability){
             if ($this->hasAbility($player, $ability->getId()) && $ability instanceof $interface){
-                $this->triggerAbility($player, $ability, $args);
+                $this->triggerAbility($player, $ability, ...$args);
             }
         }
     }

@@ -2,7 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
-use Closure;
+use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\LoadKingdomPayload;
 use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Entities\PortalEntity;
 use fenomeno\WallsOfBetrayal\Main;
@@ -21,7 +21,7 @@ class KingdomManager
 {
 
     /** @var Kingdom[] */
-    private array $kingdoms = [];
+    private array $kingdoms;
     private Config $config;
 
     public function __construct(private readonly Main $main)
@@ -29,26 +29,22 @@ class KingdomManager
         $this->main->saveResource('kingdoms.yml', true);
         $this->config = new Config($this->main->getDataFolder() . 'kingdoms.yml', Config::YAML);
 
-        $this->load(function (array $kingdoms){
-            $this->kingdoms = $kingdoms;
+        $this->loadKingdoms();
 
-            /** @var Kingdom $kingdom */
-            foreach ($kingdoms as $kingdom){
-                $portalId = $kingdom->portalId;
-                if($portalId !== ""){
-                    EntityFactoryUtils::registerEntity(PortalEntity::class, $portalId, static function (World $world, CompoundTag $nbt) use ($portalId): PortalEntity {
-                        return new PortalEntity(EntityDataHelper::parseLocation($nbt, $world), $portalId, $nbt);
-                    });
-                }
+        foreach ($this->kingdoms as $kingdom){
+            $portalId = $kingdom->portalId;
+            if($portalId !== ""){
+                EntityFactoryUtils::registerEntity(PortalEntity::class, $portalId, static function (World $world, CompoundTag $nbt) use ($portalId): PortalEntity {
+                    return new PortalEntity(EntityDataHelper::parseLocation($nbt, $world), $portalId, $nbt);
+                });
             }
+        }
 
-            $this->main->getLogger()->info(TextFormat::GREEN . count($kingdoms) . " kingdoms loaded §6(" . implode(", ", array_map(fn(Kingdom $kingdom) => $kingdom->displayName, $kingdoms)) . "§6)");
-        });
+        $this->main->getLogger()->info(TextFormat::GREEN . count($this->kingdoms) . " kingdoms loaded §6(" . implode(", ", array_map(fn(Kingdom $kingdom) => $kingdom->displayName, $this->kingdoms)) . "§6)");
     }
 
-    private function load(Closure $onSuccess): void
+    private function loadKingdoms(): void
     {
-        $kingdoms = [];
         foreach ($this->config->getAll() as $id => $kingdomData) {
             try {
                 $id = (string) $id;
@@ -86,13 +82,14 @@ class KingdomManager
                     portalId: $kingdomData['portal'] ?? "",
                     enchantments: $enchantments
                 );
-                $kingdoms[$id] = $kingdom;
+
+                $this->kingdoms[$id] = $kingdom;
+
+                $this->main->getDatabaseManager()->getKingdomRepository()->load(new LoadKingdomPayload($id));
             } catch (Throwable $e){
                 $this->main->getLogger()->error("§cFailed to load kingdom $id (verify the config in resources/kingdoms.yml): " . $e->getMessage());
             }
         }
-
-        $onSuccess($kingdoms);
     }
 
     public function getKingdomById(string $kingdom): ?Kingdom

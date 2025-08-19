@@ -1,12 +1,15 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Sessions;
 
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\IncrementDeathPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\IncrementKillsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Handlers\PlayerJoinHandler;
 use fenomeno\WallsOfBetrayal\Inventory\ChooseKingdomInventory;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\player\Player;
@@ -32,6 +35,8 @@ class Session
 
     private ?Kingdom $kingdom     = null;
     private bool $choosingKingdom = false;
+    private int $kills  = 0;
+    private int $deaths = 0;
 
     public function __construct(private readonly Player $player){}
 
@@ -46,6 +51,8 @@ class Session
                 if ($data !== null){
                     $this->kingdom   = Main::getInstance()->getKingdomManager()->getKingdomById($data->kingdom);
                     $this->abilities = array_filter($data->abilities, fn(string $abilityId) => Main::getInstance()->getAbilityManager()->getAbilityById($abilityId) !== null);
+                    $this->kills     = $data->kills;
+                    $this->deaths    = $data->deaths;
                 }
 
                 $this->player->setNoClientPredictions(false);
@@ -110,6 +117,48 @@ class Session
                     abilities: $this->abilities
                 ));
         }
+    }
+
+    /**
+     * @return int
+     */
+    public function getKills(): int
+    {
+        return $this->kills;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDeaths(): int
+    {
+        return $this->deaths;
+    }
+
+    public function addKill(): void
+    {
+        Await::g2c(
+            Main::getInstance()->getDatabaseManager()->getPlayerRepository()->addKill(new IncrementKillsPayload($this->player->getUniqueId())),
+            function () {
+                $this->kills++;
+            },
+            function () {
+                $this->player->kick(MessagesUtils::getMessage('common.unstable'));
+            }
+        );
+    }
+
+    public function addDeath(): void
+    {
+        Await::g2c(
+            Main::getInstance()->getDatabaseManager()->getPlayerRepository()->addDeath(new IncrementDeathPayload($this->player->getUniqueId())),
+            function () {
+                $this->deaths++;
+            },
+            function () {
+                $this->player->kick(MessagesUtils::getMessage('common.unstable'));
+            }
+        );
     }
 
 }

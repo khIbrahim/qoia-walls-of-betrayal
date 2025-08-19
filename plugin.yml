@@ -69,3 +69,5 @@ permissions:
     default: op
   wob.command.sell:
     default: op
+  wob.command.stats:
+    default: true

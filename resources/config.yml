@@ -27,3 +27,38 @@ cooldowns:
 vault:
   size: 27
   max_vault_number: 5
+
+webhook:
+  global:
+    user-agent: "Discord Webhook Client (+PocketMine)"
+    timeouts:
+      connect-ms: 400
+      request-ms: 2000
+    ssl:
+      verify-peer: true
+      verify-host: true
+    queue:
+      max-size: 2048
+    workers:
+      threads: 1
+    logging:
+      level: "INFO"
+      log-ratelimits: true
+      log-payload-errors: true
+
+  templates:
+    default:
+      content: "{MESSAGE}"
+      username: "WallsOfBetrayal"
+      avatar_url: ""
+      allowed_mentions:
+        parse: [ ]
+        users: [ ]
+        roles: [ ]
+        replied_user: false
+      embeds: [ ]
+    error:
+      content: "❌ {TITLE}\n```{DETAILS}```"
+      username: "WOB • Errors"
+      allowed_mentions:
+        parse: [ ]

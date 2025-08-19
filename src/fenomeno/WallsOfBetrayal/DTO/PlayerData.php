@@ -7,6 +7,8 @@ final readonly class PlayerData
     public function __construct(
         public ?string $kingdom   = null,
         public array   $abilities = [],
+        public int     $kills     = 0,
+        public int     $deaths    = 0
     ){}
 
 }

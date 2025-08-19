@@ -35,7 +35,9 @@ class VaultRepository implements VaultRepositoryInterface
 
     public function init(DatabaseManager $database): void
     {
-        $database->executeGeneric(Statements::INIT_VAULT);
+        $database->executeGeneric(Statements::INIT_VAULT, [], function () {
+            $this->main->getLogger()->info("§aTable `vaults` has been successfully init");
+        });
     }
 
     public function open(VaultOpenPayload $payload): Generator

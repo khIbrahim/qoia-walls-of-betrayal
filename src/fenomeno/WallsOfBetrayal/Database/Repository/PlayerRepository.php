@@ -2,16 +2,22 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Repository;
 
+use Closure;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\IncrementDeathPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\IncrementKillsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
+use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
+use fenomeno\WallsOfBetrayal\Exceptions\RecordNotFoundException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
+use Generator;
 use pocketmine\promise\Promise;
 use pocketmine\promise\PromiseResolver;
 use Throwable;
@@ -53,10 +59,14 @@ class PlayerRepository implements PlayerRepositoryInterface
 
                 $kingdom   = (string) $data['kingdom'];
                 $abilities = json_decode(((string) $data['abilities']), true);
+                $kills     = (int) ($data['kills'] ?? 0);
+                $deaths    = (int) ($data['deaths'] ?? 0);
 
                 $resolver->resolve(new PlayerData(
                     kingdom: $kingdom,
                     abilities: $abilities,
+                    kills: $kills,
+                    deaths: $deaths
                 ));
             } catch (Throwable $e){
                 $this->main->getLogger()->error("§cFailed to load player data : " . $e->getMessage());
@@ -69,7 +79,7 @@ class PlayerRepository implements PlayerRepositoryInterface
         return $resolver->getPromise();
     }
 
-    public function insert(InsertPlayerPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void
+    public function insert(InsertPlayerPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
     {
         $this->main->getDatabaseManager()->executeInsert(Statements::INSERT_PLAYER, $payload->jsonSerialize(), $onSuccess, $onFailure);
     }
@@ -77,7 +87,7 @@ class PlayerRepository implements PlayerRepositoryInterface
     /**
      * On insère ici en même temps, c'est la première requête que le joueur fera dans tous les cas
      */
-    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void
+    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
     {
         Await::f2c(function () use ($onFailure, $onSuccess, $payload) {
             try {
@@ -90,7 +100,7 @@ class PlayerRepository implements PlayerRepositoryInterface
         });
     }
 
-    public function updatePlayerAbilities(UpdatePlayerAbilities $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void
+    public function updatePlayerAbilities(UpdatePlayerAbilities $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
     {
         Await::f2c(function () use ($onFailure, $onSuccess, $payload) {
             try {
@@ -101,5 +111,37 @@ class PlayerRepository implements PlayerRepositoryInterface
                 $onFailure?->__invoke($e);
             }
         });
+    }
+
+    public function addKill(IncrementKillsPayload $payload): Generator
+    {
+        yield from $this->main->getDatabaseManager()->asyncInsert(Statements::INCREMENT_KILLS, $payload->jsonSerialize());
+    }
+
+    public function addDeath(IncrementDeathPayload $payload): Generator
+    {
+        yield from $this->main->getDatabaseManager()->asyncChange(Statements::INCREMENT_DEATHS, $payload->jsonSerialize());
+    }
+
+    public function asyncLoad(UsernamePayload $payload): Generator
+    {
+        $data = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::LOAD_PLAYER_BY_NAME, $payload->jsonSerialize());
+
+        if (empty($data)) {
+            throw new RecordNotFoundException("Player with username $payload->username not found.");
+        }
+
+        $data = $data[0];
+        $kingdom   = (string) $data['kingdom'] ?? '';
+        $abilities = json_decode(((string) $data['abilities']), true);
+        $kills     = (int) ($data['kills'] ?? 0);
+        $deaths    = (int) ($data['deaths'] ?? 0);
+
+        return new PlayerData(
+            kingdom: $kingdom,
+            abilities: $abilities,
+            kills: $kills,
+            deaths: $deaths
+        );
     }
 }

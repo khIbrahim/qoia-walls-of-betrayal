@@ -173,3 +173,11 @@ sell:
   name: "sell"
   description: "§7§oSell items from your inventory"
   usage: "§e/sell <all|hand> §8– §7Sell items from your inventory"
+
+stats:
+  name: "stats"
+  description: "§7§oView your stats"
+  usage: "§e/stats <player> §8– §7View your stats"
+  aliases:
+      - "statistics"
+      - "stat"

@@ -37,5 +37,12 @@ final class ExtraTags
     const LEVEL = '{LEVEL}';
     const EMOJI = '{EMOJI}';
     const COST = '{COST}';
+    const KILLER = '{KILLER}';
+    const VICTIM = '{VICTIM}';
+    const VICTIM_KINGDOM = '{VICTIM_KINGDOM}';
+    const KILLER_KINGDOM = '{KILLER_KINGDOM}';
+    const KILLS = '{KILLS}';
+    const DEATHS = '{DEATHS}';
+    const KDR = '{KDR}';
 
 }

@@ -28,5 +28,6 @@ final class CommandsIds
     public const GIVE_KIT = 'give-kit';
     public const SPAWNER = 'spawner';
     public const SELL = 'sell';
+    public const STATS = 'stats';
 
 }

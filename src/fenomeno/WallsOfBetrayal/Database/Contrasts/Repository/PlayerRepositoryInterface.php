@@ -3,11 +3,15 @@
 namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\RepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\IncrementDeathPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\IncrementKillsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
+use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
+use fenomeno\WallsOfBetrayal\Exceptions\RecordNotFoundException;
 use pocketmine\promise\Promise;
 
 interface PlayerRepositoryInterface extends RepositoryInterface
@@ -29,5 +33,14 @@ interface PlayerRepositoryInterface extends RepositoryInterface
     public function updatePlayerKingdom(SetPlayerKingdomPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
 
     public function updatePlayerAbilities(UpdatePlayerAbilities $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
+
+    public function addKill(IncrementKillsPayload $payload): \Generator;
+
+    public function addDeath(IncrementDeathPayload $payload): \Generator;
+
+    /**
+     * @throws RecordNotFoundException
+     */
+    public function asyncLoad(UsernamePayload $payload): \Generator;
 
 }

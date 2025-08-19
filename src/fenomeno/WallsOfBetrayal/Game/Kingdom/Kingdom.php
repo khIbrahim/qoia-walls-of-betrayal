@@ -1,8 +1,12 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
+use fenomeno\WallsOfBetrayal\Class\KingdomData;
+use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
 use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
+use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\item\Item;
@@ -10,9 +14,12 @@ use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\Position;
 use pocketmine\world\sound\Sound;
+use Throwable;
 
 class Kingdom
 {
+
+    private KingdomData $kingdomData;
 
     public function __construct(
         public string $id,
@@ -72,6 +79,16 @@ class Kingdom
         return $this->kits;
     }
 
+    public function getKingdomData(): KingdomData
+    {
+        return $this->kingdomData;
+    }
+
+    public function setKingdomData(KingdomData $kingdomData): void
+    {
+        $this->kingdomData = $kingdomData;
+    }
+
     /** @return KingdomEnchantment[] */
     public function getEnchantments(): array
     {
@@ -98,6 +115,24 @@ class Kingdom
 
         $player->getInventory()->setItemInHand($item);
         $player->sendMessage("TODO");
+    }
+
+    public function addDeath(): void
+    {
+        Await::g2c(
+            Main::getInstance()->getDatabaseManager()->getKingdomRepository()->addDeath(new IdPayload($this->id)),
+            fn() => $this->kingdomData->deaths++,
+            fn(Throwable $e) => Main::getInstance()->getLogger()->error("Failed to add death for kingdom $this->id: " . $e->getMessage())
+        );
+    }
+
+    public function addKill(): void
+    {
+        Await::g2c(
+            Main::getInstance()->getDatabaseManager()->getKingdomRepository()->addKill(new IdPayload($this->id)),
+            fn() => $this->kingdomData->deaths++,
+            fn(Throwable $e) => Main::getInstance()->getLogger()->error("Failed to add kill for kingdom $this->id: " . $e->getMessage())
+        );
     }
 
 }

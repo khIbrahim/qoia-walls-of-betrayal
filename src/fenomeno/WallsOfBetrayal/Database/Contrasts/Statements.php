@@ -7,6 +7,7 @@ interface Statements
 
     public const INIT_PLAYERS                   = 'players.init';
     public const LOAD_PLAYER                    = 'players.load';
+    public const LOAD_PLAYER_BY_NAME            = 'players.loadByName';
     public const INSERT_PLAYER                  = 'players.insert';
     public const SET_KINGDOM_PLAYER             = 'players.setKingdom';
     public const LOAD_KIT_REQUIREMENT           = 'kit_requirements.getByKingdomAndKit';
@@ -45,5 +46,12 @@ interface Statements
     public const INIT_VAULT                     = 'vaults.init';
     public const OPEN_VAULT                     = 'vaults.open';
     public const CLOSE_VAULT                    = 'vaults.close';
+    public const INIT_KINGDOMS                  = 'kingdoms.init';
+    public const LOAD_KINGDOM                   = 'kingdoms.get';
+    public const INSERT_KINGDOM                 = 'kingdoms.insert';
+    public const INCREMENT_KILLS                = 'players.incrementKills';
+    public const INCREMENT_DEATHS               = 'players.incrementDeaths';
+    public const INCREMENT_KINGDOM_KILLS        = 'kingdoms.incrementKills';
+    public const INCREMENT_KINGDOM_DEATHS       = 'kingdoms.incrementDeaths';
 
 }
