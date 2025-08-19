@@ -48,7 +48,7 @@ class CraftCommand extends WCommand
         try {
             $craftingTable = InvMenu::create(InvMenuTypeIds::TYPE_CRAFT);
             $craftingTable->send($player);
-            MessagesUtils::sendTo($sender, MessagesIds::CRAFTING_TABLE_OPENED, [ExtraTags::PLAYER => $player->getName()]);
+            MessagesUtils::sendTo($sender, MessagesIds::CRAFTING_TABLE_OPENED, [ExtraTags::PLAYER => $player->getDisplayName()]);
         } catch (Throwable $e){
             MessagesUtils::sendTo($sender, MessagesIds::ERROR, [ExtraTags::ERROR => $e->getMessage()]);
             $this->main->getLogger()->error("Error opening crafting table for player {$player->getName()}: " . $e->getMessage());

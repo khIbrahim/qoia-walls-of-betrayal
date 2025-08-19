@@ -30,5 +30,8 @@ final class CommandsIds
     public const SELL = 'sell';
     public const STATS = 'stats';
     public const CRAFT = 'craft';
+    public const NICK = 'nick';
+    public const NICK_RESET = 'nick-reset';
+    public const NICK_LOG = 'nick-log';
 
 }

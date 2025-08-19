@@ -75,3 +75,9 @@ permissions:
     default: op
   wob.command.craft.other:
     default: op
+  wob.command.nick:
+    default: op
+  wob.command.nick.reset:
+    default: op
+  wob.command.nick.log:
+    default: op

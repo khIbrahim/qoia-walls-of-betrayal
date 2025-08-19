@@ -180,6 +180,7 @@ abstract class BaseCommand extends Command implements IArgumentable, IRunnable, 
 		foreach($keys as $key) {
 			if(!isset($this->subCommands[$key])) {
 				$subCommand->setParent($this);
+                $subCommand->setPermission('wob.command.' . strtolower($this->getName()) . '.' . strtolower($subCommand->getName())); // je hardcode ça pour le moment j'ai vrmt vrmt vrmt la flemme de regler
 				$this->subCommands[$key] = $subCommand;
 			} else {
 				throw new InvalidArgumentException("SubCommand with same name / alias for '$key' already exists");

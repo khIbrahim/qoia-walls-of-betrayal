@@ -188,3 +188,20 @@ craft:
   usage: "§e/craft §8– §7Open the crafting menu"
   aliases:
       - "crafting"
+
+nick:
+  name: "nick"
+  description: "§7§oChange your nickname"
+  usage: "§e/nick <nickname|reset|log> §8– §7Change your nickname"
+  aliases:
+      - "nickname"
+
+nick-reset:
+  name: "reset"
+  description: "§7§oReset your nickname"
+  usage: "§e/nick reset §8– §7Reset your nickname"
+
+nick-log:
+  name: "log"
+  description: "§7§oView your nickname history"
+  usage: "§e/nick log <player=optionnal> §8– §7View your nickname history"

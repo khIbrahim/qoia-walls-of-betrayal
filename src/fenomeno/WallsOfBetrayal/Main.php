@@ -1,6 +1,7 @@
 <?php
 namespace fenomeno\WallsOfBetrayal;
 
+use Exception;
 use fenomeno\WallsOfBetrayal\Blocks\BlockManager;
 use fenomeno\WallsOfBetrayal\Commands\Admin\GiveKitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SpawnerCommand;
@@ -15,6 +16,7 @@ use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\CraftCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\FeedCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
+use fenomeno\WallsOfBetrayal\Commands\Player\NickCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\SellCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\StatsCommand;
@@ -38,6 +40,7 @@ use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\HookAlreadyRegistered;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\BlocksListener;
 use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
@@ -49,11 +52,15 @@ use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Roles\RolesManager;
+use fenomeno\WallsOfBetrayal\Services\NickService;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
 use fenomeno\WallsOfBetrayal\Tiles\TileManager;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+use Generator;
 use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
+use pocketmine\utils\TextFormat;
+use Throwable;
 
 class Main extends PluginBase
 {
@@ -129,7 +136,8 @@ class Main extends PluginBase
             new SpawnerCommand($this),
             new SellCommand($this),
             new StatsCommand($this),
-            new CraftCommand($this)
+            new CraftCommand($this),
+            new NickCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -141,6 +149,20 @@ class Main extends PluginBase
         $this->getServer()->getPluginManager()->registerEvents(new RolesListener($this), $this);
         $this->getServer()->getPluginManager()->registerEvents(new EntitiesListener(), $this);
         $this->getServer()->getPluginManager()->registerEvents(new BlocksListener(), $this);
+
+        Await::g2c(
+            $this->loadDependencies(),
+            function(){
+                $this->getLogger()->info(TextFormat::GREEN . "Dependencies successfully loaded");
+                try {
+                    NickService::init($this);
+                } catch (Throwable){}
+            },
+            function (Throwable $e){
+                $this->getLogger()->error(TextFormat::RED . "Failed to load dependencies: " . $e->getMessage());
+                $this->getLogger()->logException($e);
+            }
+        );
     }
 
     public function getDatabaseManager(): DatabaseManager
@@ -195,6 +217,24 @@ class Main extends PluginBase
 
         $this->databaseManager->waitAll();
         $this->databaseManager->close();
+    }
+
+    public function loadDependencies(): Generator
+    {
+        return Await::promise(function($resolve, $reject){
+            try {
+                $autoloadPath = __DIR__ . "/../../../vendor/autoload.php";
+                if (file_exists($autoloadPath)) {
+
+                    require_once $autoloadPath;
+                    $resolve();
+                } else {
+                    $reject(new Exception("Autoload file not found at $autoloadPath"));
+                }
+            } catch (Throwable $e){
+                $reject($e);
+            }
+        });
     }
 
     public function getFile(): string{

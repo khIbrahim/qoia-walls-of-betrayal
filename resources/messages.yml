@@ -265,6 +265,21 @@ commands:
     playerStats: "{GLOBAL_PREFIX}{GRAY}Player Stats for {PLAYER}:\n{GRAY}Kills: {KILLS}\n{GRAY}Deaths: {DEATHS}\n{GRAY}KDR: {KDR}"
   craft:
     opened: "{GLOBAL_PREFIX}{GRAY}Opened the crafting menu for {PLAYER}."
+  nick:
+    errors:
+      alreadySet: "{GLOBAL_PREFIX}{RED}Your nickname is already set."
+      empty: "{GLOBAL_PREFIX}{RED}Nickname cannot be empty."
+      alreadyUsed: "{GLOBAL_PREFIX}{RED}This nickname is already in use."
+      invalid: "{GLOBAL_PREFIX}{RED}Invalid nickname. It must be between {MIN} and {MAX} characters long, and can only contain letters, numbers, and underscores and have to be a correct nick."
+      notSet: "{GLOBAL_PREFIX}{RED}No nickname set for {PLAYER}."
+    cancelled: "{GLOBAL_PREFIX}{RED}Nickname change cancelled."
+    success: "{GLOBAL_PREFIX}{GREEN}Your nickname has been changed to {WHITE}{NICK}{GREEN}."
+    reset: "{GLOBAL_PREFIX}{GREEN}Your nickname has been reset to your username."
+    onRejoin: "{GLOBAL_PREFIX}{GRAY}Your nickname ({NICK}) has been applied on rejoin."
+    log:
+      entry: "{GRAY}[{DATE}] {PLAYER} changed their nickname to {NICK}."
+      empty: "{GRAY}No nicknames found."
+      listHeader: "{GRAY}Nickname History:\n{GRAY}"
 
 # ---------------------------------------------------------------------------
 

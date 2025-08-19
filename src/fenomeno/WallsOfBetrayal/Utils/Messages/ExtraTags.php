@@ -44,5 +44,7 @@ final class ExtraTags
     const KILLS = '{KILLS}';
     const DEATHS = '{DEATHS}';
     const KDR = '{KDR}';
+    const NICK = '{NICK}';
+    const DATE = '{DATE}';
 
 }

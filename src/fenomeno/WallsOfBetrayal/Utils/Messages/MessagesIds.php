@@ -87,5 +87,17 @@ final class MessagesIds
     public const ENCHANTING_TABLE_SUCCESS = 'kingdoms.enchantingTable.success';
     public const CRAFTING_TABLE_OPENED = 'commands.craft.opened';
     public const NO_PERMISSION = 'common.noPermission';
+    public const NICK_CANCELLED = 'commands.nick.cancelled';
+    public const NICK_SUCCESS = 'commands.nick.success';
+    public const NICK_RESET = 'commands.nick.reset';
+    public const NICK_REJOIN = 'commands.nick.onRejoin';
+    public const NICK_ALREADY_SET = 'commands.nick.errors.alreadySet';
+    public const NICK_EMPTY = 'commands.nick.errors.empty';
+    public const NICK_ALREADY_USED = 'commands.nick.errors.alreadyUsed';
+    public const NICK_INVALID = 'commands.nick.errors.invalid';
+    public const NICK_NOT_SET = 'commands.nick.errors.notSet';
+    public const NICK_LOG_ENTRY = 'commands.nick.log.entry';
+    public const NICK_LOG_EMPTY = 'commands.nick.log.empty';
+    public const NICK_LOG_LIST_HEADER = 'commands.nick.log.listHeader';
 
 }
