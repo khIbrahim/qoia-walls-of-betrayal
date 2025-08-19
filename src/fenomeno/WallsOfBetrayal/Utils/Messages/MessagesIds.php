@@ -82,5 +82,8 @@ final class MessagesIds
     public const PLAYER_KILL = 'common.onKill';
     public const PLAYER_NOT_LOADED = 'common.playerNotLoaded';
     public const PLAYER_STATS = 'commands.stats.playerStats';
+    public const NO_ITEM_IN_HAND = 'common.noItemInHand';
+    public const ENCHANTMENT_NOT_AVAILABLE = 'kingdoms.enchantments.errors.notAvailable';
+    public const ENCHANTING_TABLE_SUCCESS = 'kingdoms.enchantingTable.success';
 
 }

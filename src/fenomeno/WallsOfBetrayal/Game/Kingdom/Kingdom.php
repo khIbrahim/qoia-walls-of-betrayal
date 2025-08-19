@@ -8,11 +8,16 @@ use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
+use fenomeno\WallsOfBetrayal\Utils\EnchantUtils;
+use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+use pocketmine\item\enchantment\AvailableEnchantmentRegistry;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
 use pocketmine\Server;
 use pocketmine\world\Position;
+use pocketmine\world\sound\PopSound;
 use pocketmine\world\sound\Sound;
 use Throwable;
 
@@ -79,11 +84,6 @@ class Kingdom
         return $this->kits;
     }
 
-    public function getKingdomData(): KingdomData
-    {
-        return $this->kingdomData;
-    }
-
     public function setKingdomData(KingdomData $kingdomData): void
     {
         $this->kingdomData = $kingdomData;
@@ -95,18 +95,19 @@ class Kingdom
         return $this->enchantments;
     }
 
-    /**
-     * TODO
-     *
-     * @param Player $player
-     * @param KingdomEnchantment $enchantment
-     * @return void
-     */
     public function applyEnchantmentToPlayer(Player $player, KingdomEnchantment $enchantment): void
     {
         $item = clone $player->getInventory()->getItemInHand();
         if ($item->isNull()) {
-            MessagesUtils::sendTo($player, "You must hold an item to enchant it.");
+            MessagesUtils::sendTo($player, MessagesIds::NO_ITEM_IN_HAND);
+            return;
+        }
+
+        if (! AvailableEnchantmentRegistry::getInstance()->isAvailableForItem($enchantment->getEnchantment(), $item)){
+            MessagesUtils::sendTo($player, MessagesIds::ENCHANTMENT_NOT_AVAILABLE, [
+                ExtraTags::ENCHANTMENT => EnchantUtils::getEnchantmentName($enchantment->getEnchantment()),
+                ExtraTags::ITEM        => $item->getCustomName()
+            ]);
             return;
         }
 
@@ -114,7 +115,11 @@ class Kingdom
         $item->addEnchantment($enchantmentInstance);
 
         $player->getInventory()->setItemInHand($item);
-        $player->sendMessage("TODO");
+        MessagesUtils::sendTo($player, MessagesIds::ENCHANTING_TABLE_SUCCESS, [
+            ExtraTags::ENCHANTMENT => EnchantUtils::getEnchantmentName($enchantment->getEnchantment()),
+            ExtraTags::ITEM        => $item->getCustomName()
+        ]);
+        $player->broadcastSound(new PopSound());
     }
 
     public function addDeath(): void

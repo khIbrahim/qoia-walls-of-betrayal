@@ -42,6 +42,7 @@ common:
     locked: "{GLOBAL_PREFIX}{RED}This item ({ITEM}) is locked and cannot be used."
   onKill: "{GLOBAL_PREFIX}{GRAY}{KILLER} {RED}killed {WHITE}{VICTIM} {GRAY}from {YELLOW}{VICTIM_KINGDOM} {GRAY}by {YELLOW}{KILLER_KINGDOM}"
   playerNotLoaded: "{GLOBAL_PREFIX}{RED}Player {PLAYER} is not loaded in the game."
+  noItemInHand: "{GLOBAL_PREFIX}{RED}You must hold an item in your hand."
 
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
@@ -78,6 +79,7 @@ kingdoms:
       type: "title"
   enchantingTable:
     errors:
+      notAvailable: "{KINGDOMS_PREFIX}{RED}This item ({ITEM}) cannot be enchanted with {ENCHANTMENT}."
       noEnchantments: "{KINGDOMS_PREFIX}{RED}No enchantments available for this kingdom ({KINGDOM})."
       notEnoughResources: "{KINGDOMS_PREFIX}{RED}Not enough resources to apply this enchantment, needed: {YELLOW}{COST} XP."
       invalidEnchantment: "{KINGDOMS_PREFIX}{RED}Invalid enchantment."
@@ -85,6 +87,7 @@ kingdoms:
       title: "{KINGDOMS_PREFIX}{KINGDOM} Enchanting Table"
       text: "{GRAY}Available enchantments for {KINGDOM}:\n{GRAY}Select an enchantment to apply."
       button: "{EMOJI} {COLOR}{ENCHANTMENT} {LEVEL}\n{GREEN}{COST} XP"
+    success: "{KINGDOMS_PREFIX}{GREEN}Enchantment {WHITE}{ENCHANTMENT} {GREEN}applied successfully to {ITEM}!"
 
 # ---------------------------------------------------------------------------
 
