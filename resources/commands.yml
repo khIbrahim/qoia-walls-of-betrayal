@@ -181,3 +181,10 @@ stats:
   aliases:
       - "statistics"
       - "stat"
+
+craft:
+  name: "craft"
+  description: "§7§oOpen the crafting menu"
+  usage: "§e/craft §8– §7Open the crafting menu"
+  aliases:
+      - "crafting"

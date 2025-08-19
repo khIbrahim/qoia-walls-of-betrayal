@@ -29,5 +29,6 @@ final class CommandsIds
     public const SPAWNER = 'spawner';
     public const SELL = 'sell';
     public const STATS = 'stats';
+    public const CRAFT = 'craft';
 
 }

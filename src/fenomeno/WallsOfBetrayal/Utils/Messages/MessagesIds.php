@@ -85,5 +85,7 @@ final class MessagesIds
     public const NO_ITEM_IN_HAND = 'common.noItemInHand';
     public const ENCHANTMENT_NOT_AVAILABLE = 'kingdoms.enchantments.errors.notAvailable';
     public const ENCHANTING_TABLE_SUCCESS = 'kingdoms.enchantingTable.success';
+    public const CRAFTING_TABLE_OPENED = 'commands.craft.opened';
+    public const NO_PERMISSION = 'common.noPermission';
 
 }

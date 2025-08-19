@@ -36,6 +36,13 @@ final class InvMenuTypeRegistry{
 			->setBlockActorId("Hopper")
 			->setNetworkWindowType(WindowTypes::HOPPER)
 		->build());
+
+        $this->register(InvMenuTypeIds::TYPE_CRAFT, InvMenuTypeBuilders::BLOCK_ACTOR_FIXED()
+            ->setBlock(VanillaBlocks::CRAFTING_TABLE())
+            ->setSize(9)
+            ->setBlockActorId("CraftingTable")
+            ->setNetworkWindowType(WindowTypes::WORKBENCH)
+        ->build());
 	}
 
 	public function register(string $identifier, InvMenuType $type) : void{

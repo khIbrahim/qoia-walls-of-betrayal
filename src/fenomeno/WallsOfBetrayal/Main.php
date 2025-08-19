@@ -12,6 +12,7 @@ use fenomeno\WallsOfBetrayal\Commands\Economy\PayCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\RichCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\AbilitiesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ChooseCommand;
+use fenomeno\WallsOfBetrayal\Commands\Player\CraftCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\FeedCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\SellCommand;
@@ -127,7 +128,8 @@ class Main extends PluginBase
             new GiveKitCommand($this),
             new SpawnerCommand($this),
             new SellCommand($this),
-            new StatsCommand($this)
+            new StatsCommand($this),
+            new CraftCommand($this)
         ]);
 
         $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);

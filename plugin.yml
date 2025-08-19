@@ -71,3 +71,7 @@ permissions:
     default: op
   wob.command.stats:
     default: true
+  wob.command.craft:
+    default: op
+  wob.command.craft.other:
+    default: op

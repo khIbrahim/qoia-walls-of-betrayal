@@ -55,6 +55,7 @@ roles:
       - "wob.war.banner.break"
       - "wob.betray.mark"              # marquer une cible de trahison (RP futur)
       - "wob.command.vault.3"          # accès vault 3
+      - "wob.command.craft"
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: {}

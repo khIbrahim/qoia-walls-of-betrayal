@@ -263,6 +263,8 @@ commands:
       leftover: "{GLOBAL_PREFIX}{YELLOW}You have sold {ITEM}, but you have {LEFTOVER} left over (pack size: {PACK_SIZE})."
   stats:
     playerStats: "{GLOBAL_PREFIX}{GRAY}Player Stats for {PLAYER}:\n{GRAY}Kills: {KILLS}\n{GRAY}Deaths: {DEATHS}\n{GRAY}KDR: {KDR}"
+  craft:
+    opened: "{GLOBAL_PREFIX}{GRAY}Opened the crafting menu for {PLAYER}."
 
 # ---------------------------------------------------------------------------
 
