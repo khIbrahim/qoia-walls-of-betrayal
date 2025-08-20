@@ -33,5 +33,13 @@ final class CommandsIds
     public const NICK = 'nick';
     public const NICK_RESET = 'nick-reset';
     public const NICK_LOG = 'nick-log';
+    public const MUTE = 'mute';
+    public const UNMUTE = 'unmute';
+    public const MUTE_LIST = 'mute-list';
+    public const MUTE_HISTORY = 'mute-history';
+    public const BAN = 'ban';
+    public const UNBAN = 'unban';
+    public const TEMP_BAN = 'temp-ban';
+    public const BAN_LIST = 'ban-list';
 
 }

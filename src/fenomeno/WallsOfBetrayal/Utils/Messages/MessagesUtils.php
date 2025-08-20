@@ -151,13 +151,14 @@ final class MessagesUtils {
             $colors   = (array) ($theme['colors'] ?? []);
 
             $map = [
-                '{GLOBAL_PREFIX}'    => (string)($prefixes['global']    ?? ''),
-                '{KINGDOMS_PREFIX}'  => (string)($prefixes['kingdoms']  ?? ''),
-                '{KITS_PREFIX}'      => (string)($prefixes['kits']      ?? ''),
-                '{ABILITIES_PREFIX}' => (string)($prefixes['abilities'] ?? ''),
-                '{SHOP_PREFIX}'      => (string)($prefixes['shop']      ?? ''),
-                '{MONEY_PREFIX}'     => (string)($prefixes['money']     ?? ''),
-                '{ROLES_PREFIX}'     => (string)($prefixes['roles']     ?? ''),
+                '{GLOBAL_PREFIX}'    => (string) ($prefixes['global']    ?? ''),
+                '{KINGDOMS_PREFIX}'  => (string) ($prefixes['kingdoms']  ?? ''),
+                '{KITS_PREFIX}'      => (string) ($prefixes['kits']      ?? ''),
+                '{ABILITIES_PREFIX}' => (string) ($prefixes['abilities'] ?? ''),
+                '{SHOP_PREFIX}'      => (string) ($prefixes['shop']      ?? ''),
+                '{MONEY_PREFIX}'     => (string) ($prefixes['money']     ?? ''),
+                '{ROLES_PREFIX}'     => (string) ($prefixes['roles']     ?? ''),
+                '{PUNISHMENT_PREFIX}'  => (string) ($prefixes['punishment'] ?? ''),
             ];
             foreach ($map as $k => $v) {
                 if ($v !== '') self::$themeTags[$k] = $v;

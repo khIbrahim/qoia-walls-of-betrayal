@@ -99,6 +99,30 @@ final class MessagesIds
     public const NICK_LOG_ENTRY = 'commands.nick.log.entry';
     public const NICK_LOG_EMPTY = 'commands.nick.log.empty';
     public const NICK_LOG_LIST_HEADER = 'commands.nick.log.listHeader';
-    const ENCHANTING_TABLE_NOT_ENOUGH_XP = 'kingdoms.enchantingTable.errors.notEnoughXp';
+    public const ENCHANTING_TABLE_NOT_ENOUGH_XP = 'kingdoms.enchantingTable.errors.notEnoughXp';
+    public const BROADCAST_MUTE = 'punishment.mute.broadcast';
+    public const ALREADY_MUTED = 'punishment.mute.errors.alreadyMuted';
+    public const DEFAULT_REASON = 'punishment.defaultReason';
+    public const MUTE_TARGET_MUTED = 'punishment.mute.targetMuted';
+    public const NOT_MUTED = 'punishment.mute.errors.notMuted';
+    public const BROADCAST_UNMUTE = 'punishment.unmute.broadcast';
+    public const UNMUTE_SUCCESS = 'punishment.unmute.success';
+    public const MUTE_LIST_EMPTY = 'punishment.muteList.empty';
+    public const MUTE_LIST_HEADER = 'punishment.muteList.header';
+    public const MUTE_LIST_ENTRY = 'punishment.muteList.entry';
+    public const MUTE_MUTED = 'punishment.mute.muted';
+    public const NO_PUNISHMENT_TYPE_HISTORY = 'punishment.history.noPunishmentTypeHistory';
+    public const ALREADY_BANNED = 'punishment.ban.errors.alreadyBanned';
+    public const BROADCAST_BAN = 'punishment.ban.broadcast';
+    public const BAN_TARGET_BANNED = 'punishment.ban.targetBanned';
+    public const BAN_SCREEN_MESSAGE = 'punishment.ban.screenMessage';
+    public const BROADCAST_UNBAN = 'punishment.unban.broadcast';
+    public const UNBAN_SUCCESS = 'punishment.unban.success';
+    public const NOT_BANNED = 'punishment.unban.errors.notBanned';
+    public const BAN_LIST_EMPTY = 'punishment.banlist.empty';
+    public const INVALID_PAGE = 'common.invalidPage';
+    public const PAGE_NOT_FOUND = 'common.pageNotFound';
+    public const BAN_LIST_HEADER = 'punishment.banlist.header';
+    public const BAN_LIST_ENTRY = 'punishment.banlist.entry';
 
 }

@@ -8,6 +8,10 @@ class DurationParser
 {
     public static function fromString(string $argument): int
     {
+        if (in_array($argument, ['perm', 'permanently', 'permanent', 'forever', 'forever'])) {
+            return PHP_INT_MAX;
+        }
+
         $pattern = '/(\d+)([smhd])/i';
         preg_match_all($pattern, $argument, $matches, PREG_SET_ORDER);
 
@@ -36,6 +40,10 @@ class DurationParser
     }
 
     public static function getReadableDuration(?int $timestamp): string {
+        if ($timestamp === PHP_INT_MAX) {
+            return "permanently";
+        }
+
         $seconds = $timestamp - time();
 
         if ($seconds <= 0 || $timestamp === null) return "permanently";

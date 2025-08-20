@@ -9,6 +9,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KingdomRepositoryInte
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\VaultRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
@@ -16,6 +17,9 @@ use fenomeno\WallsOfBetrayal\Database\Repository\KingdomRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRolesRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\BanRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\MuteRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\ReportRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\VaultRepository;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\libasynql;
@@ -37,6 +41,9 @@ class DatabaseManager
     private PlayerRolesRepositoryInterface $rolesRepository;
     private VaultRepositoryInterface $vaultRepository;
     private KingdomRepositoryInterface $kingdomRepository;
+    private PunishmentRepositoryInterface $muteRepository;
+    private PunishmentRepositoryInterface $banRepository;
+    private PunishmentRepositoryInterface $reportRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
 
@@ -72,6 +79,15 @@ class DatabaseManager
 
             $this->kingdomRepository = new KingdomRepository($this->main);
             $this->kingdomRepository->init($this);
+
+            $this->muteRepository = new MuteRepository($this->main);
+            $this->muteRepository->init($this);
+
+            $this->banRepository = new BanRepository($this->main);
+            $this->banRepository->init($this);
+
+            $this->reportRepository = new ReportRepository($this->main);
+            $this->reportRepository->init($this);
         } catch (Throwable $e){
             $this->main->getLogger()->error("§cAn error occurred while init database: " . $e->getMessage());
             $this->main->getLogger()->logException($e);
@@ -111,6 +127,21 @@ class DatabaseManager
     public function getKingdomRepository(): KingdomRepositoryInterface
     {
         return $this->kingdomRepository;
+    }
+
+    public function getMuteRepository(): PunishmentRepositoryInterface
+    {
+        return $this->muteRepository;
+    }
+
+    public function getBanRepository(): PunishmentRepositoryInterface
+    {
+        return $this->banRepository;
+    }
+
+    public function getReportRepository(): PunishmentRepositoryInterface
+    {
+        return $this->reportRepository;
     }
 
     public function __call(string $name, array $arguments)

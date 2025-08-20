@@ -68,7 +68,9 @@ roles:
     permissions:
       - "wob.staff.chat"
       - "wob.report.view"
-      - "wob.mute.temp"
+      - "wob.command.mute"
+      - "wob.command.unmute"
+      - "wob.command.mutelist"
       - "wob.warn"
       - "wob.chat.clear.local"
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
@@ -89,6 +91,10 @@ roles:
       - "wob.tp.here"
       - "wob.invsee"
       - "wob.chat.clear.global"
+      - "wob.command.ban"
+      - "wob.command.unban"
+      - "wob.command.tban"
+      - "wob.command.banlist"
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: { }
@@ -114,7 +120,7 @@ roles:
     icon: "⚙"
     inherits: [ "moderator", "builder" ]
     permissions:
-      - "wob.ban"
+      - "wob.command.ban"
       - "wob.unban"
       - "wob.economy.set"
       - "wob.role.set"

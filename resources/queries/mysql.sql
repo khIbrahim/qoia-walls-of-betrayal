@@ -64,7 +64,7 @@
 -- # { kit_requirements
     -- # { init
         CREATE TABLE IF NOT EXISTS kit_requirement (
-            id INTEGER NOT NULL, # c'est bon ça ?
+            id INTEGER NOT NULL,
             kingdom_id VARCHAR(64) NOT NULL,
             kit_id VARCHAR(64) NOT NULL,
             amount INTEGER DEFAULT 0 NOT NULL,
@@ -424,4 +424,215 @@
     -- # :id string
         UPDATE kingdoms SET deaths = deaths + 1 WHERE id = :id;
     -- # }
+-- # }
+
+-- # { mute
+
+    -- # { init
+        CREATE TABLE IF NOT EXISTS mute (
+            id          INT NOT NULL PRIMARY KEY AUTO_INCREMENT,
+            target      VARCHAR(255) NOT NULL,
+            expiration  BIGINT NULL,
+            reason      TEXT,
+            staff       VARCHAR(255),
+            created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
+            active      TINYINT(1) DEFAULT 1
+        );
+    -- # }
+
+    -- # { get
+        SELECT * FROM mute;
+    -- # }
+
+    -- # { create
+    -- # :target string
+    -- # :expiration ?int
+    -- # :reason string
+    -- # :staff string
+        INSERT INTO mute(target, expiration, reason, staff)
+        VALUES (:target, :expiration, :reason, :staff);
+    -- # }
+
+    -- # { delete
+    -- # :username string
+        DELETE FROM mute WHERE target = :username;
+    -- # }
+
+-- # }
+
+-- # { history
+    -- # { init
+        CREATE TABLE IF NOT EXISTS punishment_history (
+            id           INT AUTO_INCREMENT PRIMARY KEY,
+            target       VARCHAR(255) NOT NULL,
+            type         VARCHAR(100) NOT NULL,
+            reason       TEXT,
+            staff        VARCHAR(255),
+            created_at   INT,
+            expiration   BIGINT DEFAULT NULL
+        );
+    -- # }
+
+    -- # { add
+    -- # :target string
+    -- # :type string
+    -- # :reason string
+    -- # :staff string
+    -- # :created_at int
+    -- # :expiration ?int
+        INSERT INTO punishment_history(target, type, reason, staff, created_at, expiration)
+        VALUES (:target, :type, :reason, :staff, :created_at, :expiration);
+    -- # }
+
+    -- # { get
+    -- # :username string
+    -- # :type string
+        SELECT * FROM punishment_history WHERE target = :username AND type = :type ORDER BY created_at DESC;
+    -- # }
+
+-- # }
+
+-- # { ban
+    -- # { init
+        CREATE TABLE IF NOT EXISTS bans (
+            id             INT AUTO_INCREMENT PRIMARY KEY,
+            target         VARCHAR(255) NOT NULL,
+            reason         TEXT,
+            staff          VARCHAR(255),
+            created_at     INT,
+            expiration     BIGINT DEFAULT NULL,
+            silent         INT DEFAULT 0,
+            active         INT DEFAULT 1
+        );
+    -- # }
+
+    -- # { add
+        -- # :target string
+        -- # :reason string
+        -- # :staff string
+        -- # :created_at int
+        -- # :expiration ?int
+        -- # :silent int
+        INSERT INTO bans(target, reason, staff, created_at, expiration, silent)
+        VALUES (:target, :reason, :staff, :created_at, :expiration, :silent)
+        ON DUPLICATE KEY UPDATE
+            reason = VALUES(reason),
+            staff = VALUES(staff),
+            created_at = VALUES(created_at),
+            expiration = VALUES(expiration),
+            silent = VALUES(silent),
+            active = 1;
+    -- # }
+
+    -- # { remove
+    -- # :username string
+        DELETE FROM bans WHERE target = :username;
+    -- # }
+
+    -- # { getAll
+        SELECT * FROM bans WHERE active = 1;
+    -- # }
+
+    -- # { get
+    -- # :target string
+        SELECT * FROM bans WHERE target = :target AND expiration > :time;
+    -- # }
+
+-- # }
+
+-- # { jail
+    -- # { init
+        CREATE TABLE IF NOT EXISTS jails(
+            id                INT AUTO_INCREMENT PRIMARY KEY,
+            target            VARCHAR(255) NOT NULL,
+            reason            TEXT,
+            staff             VARCHAR(255),
+            quest_progress    INT DEFAULT 0,
+            quest_objective   INT DEFAULT 0,
+            original_location TEXT DEFAULT NULL,
+            created_at        INT,
+            expiration        BIGINT DEFAULT NULL,
+            active            INT DEFAULT 1
+        );
+    -- # }
+
+    -- # { get
+        SELECT * FROM jails WHERE active = 1;
+    -- # }
+
+    -- # { create
+    -- # :target string
+    -- # :reason string
+    -- # :staff string
+    -- # :quest_progress int
+    -- # :quest_objective int
+    -- # :original_location ?string
+    -- # :expiration ?int
+        INSERT INTO jails(target, reason, staff, quest_progress, quest_objective, original_location, created_at, expiration, active)
+        VALUES (:target, :reason, :staff, :quest_progress, :quest_objective, :original_location, UNIX_TIMESTAMP(), :expiration, 1)
+        ON DUPLICATE KEY UPDATE
+            reason = VALUES(reason),
+            staff = VALUES(staff),
+            quest_progress = VALUES(quest_progress),
+            quest_objective = VALUES(quest_objective),
+            original_location = VALUES(original_location),
+            expiration = VALUES(expiration),
+            active = 1;
+    -- # }
+
+    -- # { delete
+    -- # :target string
+        DELETE FROM jails WHERE target = :target;
+    -- # }
+
+    -- # { update
+    -- # :target string
+    -- # :quest_progress int
+    -- # :quest_objective int
+        UPDATE jails
+        SET quest_progress = :quest_progress,
+            quest_objective = :quest_objective
+        WHERE target = :target;
+    -- # }
+-- # }
+
+-- # { report
+    -- # { init
+    CREATE TABLE IF NOT EXISTS reports (
+        id          INT AUTO_INCREMENT PRIMARY KEY,
+        target      VARCHAR(255) NOT NULL,
+        reason      TEXT,
+        staff       VARCHAR(255),
+        created_at  INT,
+        active      INT DEFAULT 1,
+        expiration  BIGINT DEFAULT (UNIX_TIMESTAMP() + 604800)
+    );
+    -- # }
+
+    -- # { get
+        SELECT * FROM reports;
+    -- # }
+
+    -- # { create
+    -- # :target string
+    -- # :reason string
+    -- # :staff string
+    -- # :expiration ?int
+        INSERT INTO reports(target, reason, staff, created_at, active, expiration)
+        VALUES(:target, :reason, :staff, UNIX_TIMESTAMP(), 1, :expiration);
+    -- # }
+
+    -- # { delete
+    -- # :id int
+        DELETE FROM reports WHERE id = :id;
+    -- # }
+
+    -- # { archive
+    -- # :id int
+        UPDATE reports
+        SET
+            active = 0
+        WHERE id = :id;
+    -- # }
+
 -- # }

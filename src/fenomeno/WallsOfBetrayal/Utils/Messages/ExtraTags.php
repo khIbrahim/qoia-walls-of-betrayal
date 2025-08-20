@@ -46,5 +46,11 @@ final class ExtraTags
     const KDR = '{KDR}';
     const NICK = '{NICK}';
     const DATE = '{DATE}';
+    const STAFF = '{STAFF}';
+    const REASON = '{REASON}';
+    const COUNT = '{COUNT}';
+    const TYPE = '{TYPE}';
+    const PAGE = '{PAGE}';
+    const TOTAL_PAGES = '{PAGES}';
 
 }

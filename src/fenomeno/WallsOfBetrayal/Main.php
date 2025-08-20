@@ -21,6 +21,13 @@ use fenomeno\WallsOfBetrayal\Commands\Player\SellCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\StatsCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\VaultCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\BanCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\BanListCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\TempBanCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\UnBanCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Mute\MuteCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Mute\MuteListCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Mute\UnMuteCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\CreateRoleCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\ListRolesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\Permission\AddPermissionCommand;
@@ -37,8 +44,8 @@ use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
 use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
-use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\HookAlreadyRegistered;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
+use fenomeno\WallsOfBetrayal\libs\fenomeno\libWebhook\thread\DiscordWebhook;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
@@ -47,9 +54,11 @@ use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
+use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
+use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Roles\RolesManager;
 use fenomeno\WallsOfBetrayal\Services\NickService;
@@ -66,15 +75,16 @@ class Main extends PluginBase
 {
     use SingletonTrait;
 
-    private KingdomManager  $kingdomManager;
-    private DatabaseManager $databaseManager;
-    private PhaseManager    $phaseManager;
-    private KitsManager     $kitsManager;
-    private AbilityManager  $abilityManager;
-    private ShopManager     $shopManager;
-    private CooldownManager $cooldownManager;
-    private EconomyManager  $economyManager;
-    private RolesManager    $rolesManager;
+    private KingdomManager    $kingdomManager;
+    private DatabaseManager   $databaseManager;
+    private PhaseManager      $phaseManager;
+    private KitsManager       $kitsManager;
+    private AbilityManager    $abilityManager;
+    private ShopManager       $shopManager;
+    private CooldownManager   $cooldownManager;
+    private EconomyManager    $economyManager;
+    private RolesManager      $rolesManager;
+    private PunishmentManager $punishmentManager;
 
     protected function onLoad(): void
     {
@@ -84,85 +94,103 @@ class Main extends PluginBase
         MessagesUtils::init($this);
     }
 
-    /**
-     * @throws HookAlreadyRegistered
-     */
     protected function onEnable(): void
     {
-        if(! InvMenuHandler::isRegistered()){
-            InvMenuHandler::register($this);
-        }
-
-        if(! PacketHooker::isRegistered()){
-            PacketHooker::register($this);
-        }
-
-        $this->databaseManager = new DatabaseManager($this);
-        $this->abilityManager  = new AbilityManager($this);
-        $this->kingdomManager  = new KingdomManager($this);
-        $this->phaseManager    = new PhaseManager($this);
-        $this->kitsManager     = new KitsManager($this);
-        $this->shopManager     = new ShopManager($this);
-        $this->cooldownManager = new CooldownManager($this);
-        $this->economyManager  = new EconomyManager($this);
-        $this->rolesManager    = new RolesManager($this);
-
-        EntityManager::getInstance()->startup($this);
-        TileManager::getInstance()->startup();
-        BlockManager::getInstance()->startup();
-
-        $this->getServer()->getCommandMap()->registerAll('wob', [
-            new ChooseCommand($this),
-            new KitCommand($this),
-            new AbilitiesCommand($this),
-            new ShopCommand($this),
-            new BalanceCommand($this),
-            new PayCommand($this),
-            new RichCommand($this),
-            new AddBalanceCommand($this),
-            new SetBalanceCommand($this),
-            new RemoveBalanceCommand($this),
-            new FeedCommand($this),
-            new SetRoleCommand($this),
-            new AddPermissionCommand($this),
-            new RemovePermissionCommand($this),
-            new PlayerRoleInfoCommand($this),
-            new AddSubRoleCommand($this),
-            new RemoveSubRoleCommand($this),
-            new CreateRoleCommand($this),
-            new ListRolesCommand($this),
-            new VaultCommand($this),
-            new GiveKitCommand($this),
-            new SpawnerCommand($this),
-            new SellCommand($this),
-            new StatsCommand($this),
-            new CraftCommand($this),
-            new NickCommand($this)
-        ]);
-
-        $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new KingdomListener($this), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new ScoreboardUpdateListener($this), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new KitsListener($this), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new AbilitiesListener($this), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new EconomyListener($this), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new RolesListener($this), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new EntitiesListener(), $this);
-        $this->getServer()->getPluginManager()->registerEvents(new BlocksListener(), $this);
-
-        Await::g2c(
-            $this->loadDependencies(),
-            function(){
-                $this->getLogger()->info(TextFormat::GREEN . "Dependencies successfully loaded");
-                try {
-                    NickService::init($this);
-                } catch (Throwable){}
-            },
-            function (Throwable $e){
-                $this->getLogger()->error(TextFormat::RED . "Failed to load dependencies: " . $e->getMessage());
-                $this->getLogger()->logException($e);
+        try {
+            if(! InvMenuHandler::isRegistered()){
+                InvMenuHandler::register($this);
             }
-        );
+
+            if(! PacketHooker::isRegistered()){
+                PacketHooker::register($this);
+            }
+
+            if(! DiscordWebhook::isRegistered()){
+                DiscordWebhook::init($this);
+            }
+
+            $this->databaseManager = new DatabaseManager($this);
+            $this->abilityManager  = new AbilityManager($this);
+            $this->kingdomManager  = new KingdomManager($this);
+            $this->phaseManager    = new PhaseManager($this);
+            $this->kitsManager     = new KitsManager($this);
+            $this->shopManager     = new ShopManager($this);
+            $this->cooldownManager = new CooldownManager($this);
+            $this->economyManager  = new EconomyManager($this);
+            $this->rolesManager    = new RolesManager($this);
+            $this->punishmentManager = new PunishmentManager($this);
+
+            EntityManager::getInstance()->startup($this);
+            TileManager::getInstance()->startup();
+            BlockManager::getInstance()->startup();
+
+            $this->getServer()->getCommandMap()->registerAll('wob', [
+                new ChooseCommand($this),
+                new KitCommand($this),
+                new AbilitiesCommand($this),
+                new ShopCommand($this),
+                new BalanceCommand($this),
+                new PayCommand($this),
+                new RichCommand($this),
+                new AddBalanceCommand($this),
+                new SetBalanceCommand($this),
+                new RemoveBalanceCommand($this),
+                new FeedCommand($this),
+                new SetRoleCommand($this),
+                new AddPermissionCommand($this),
+                new RemovePermissionCommand($this),
+                new PlayerRoleInfoCommand($this),
+                new AddSubRoleCommand($this),
+                new RemoveSubRoleCommand($this),
+                new CreateRoleCommand($this),
+                new ListRolesCommand($this),
+                new VaultCommand($this),
+                new GiveKitCommand($this),
+                new SpawnerCommand($this),
+                new SellCommand($this),
+                new StatsCommand($this),
+                new CraftCommand($this),
+                new NickCommand($this),
+                new MuteCommand($this),
+                new UnMuteCommand($this),
+                new MuteListCommand($this),
+                new BanCommand($this),
+                new UnBanCommand($this),
+                new TempBanCommand($this),
+                new BanListCommand($this)
+            ]);
+
+            $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new KingdomListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new ScoreboardUpdateListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new KitsListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new AbilitiesListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new EconomyListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new RolesListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new EntitiesListener(), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new BlocksListener(), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new PunishmentListener($this), $this);
+
+            Await::g2c(
+                $this->loadDependencies(),
+                function(){
+                    $this->getLogger()->info(TextFormat::GREEN . "Dependencies successfully loaded");
+                    try {
+                        NickService::init($this);
+                    } catch (Throwable){}
+                },
+                function (Throwable $e){
+                    $this->getLogger()->error(TextFormat::RED . "Failed to load dependencies: " . $e->getMessage());
+                    $this->getLogger()->logException($e);
+                }
+            );
+
+            $this->getLogger()->info(TextFormat::GREEN . "WallsOfBetrayal plugin enabled successfully");
+        } catch (Throwable $e){
+            $this->getLogger()->error(TextFormat::RED . "An error occurred while enabling WallsOfBetrayal: " . $e->getMessage());
+            $this->getLogger()->logException($e);
+            $this->getServer()->getPluginManager()->disablePlugin($this);
+        }
     }
 
     public function getDatabaseManager(): DatabaseManager
@@ -208,6 +236,11 @@ class Main extends PluginBase
     public function getRolesManager(): RolesManager
     {
         return $this->rolesManager;
+    }
+
+    public function getPunishmentManager(): PunishmentManager
+    {
+        return $this->punishmentManager;
     }
 
     protected function onDisable(): void

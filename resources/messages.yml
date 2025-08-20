@@ -8,6 +8,7 @@ theme:
     shop: "§r§6§lShop §8»§r "
     money: "§r§a§lBalance§8»§r "
     roles: "§r§7§lRoles §8»§r "
+    punishment: "§r§c§lPunishment §8»§r "
 
   colors:
     RED: "§c"
@@ -43,6 +44,8 @@ common:
   onKill: "{GLOBAL_PREFIX}{GRAY}{KILLER} {RED}killed {WHITE}{VICTIM} {GRAY}from {YELLOW}{VICTIM_KINGDOM} {GRAY}by {YELLOW}{KILLER_KINGDOM}"
   playerNotLoaded: "{GLOBAL_PREFIX}{RED}Player {PLAYER} is not loaded in the game."
   noItemInHand: "{GLOBAL_PREFIX}{RED}You must hold an item in your hand."
+  invalidPage: "{GLOBAL_PREFIX}{RED}Page {PAGE} is invalid."
+  pageNotFound: "{GLOBAL_PREFIX}{RED}Page {PAGE} not found, total: {TOTAL_PAGES}."
 
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
@@ -332,12 +335,51 @@ roles:
     line: " - {COLOR}{ROLE_ID}{RESET}: {DISPLAY}"
 
 # ---------------------------------------------------------------------------
+
+punishment:
+  mute:
+    errors:
+      alreadyMuted: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} is already muted."
+      notMuted: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} is not muted."
+    targetMuted: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} has been muted by {STAFF} for {REASON} ({DURATION})."
+    broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{RED}Mute{GRAY}] {PLAYER} has been muted by {STAFF} for: {REASON} ({DURATION})"
+    muted: "{PUNISHMENT_PREFIX}{GREEN}You have been muted by {STAFF} for: {REASON} ({DURATION})"
+  unmute:
+    broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{GREEN}Unmute{GRAY}] {PLAYER} has been unmuted."
+    success: "{PUNISHMENT_PREFIX}{GREEN}Player {PLAYER} has been unmuted."
+  muteList:
+    empty: "{PUNISHMENT_PREFIX}{RED}No players are currently muted."
+    header: "{PUNISHMENT_PREFIX}{GRAY}Muted Players List ({COUNT}):\n"
+    entry: "{GRAY} - {PLAYER} ({DURATION}) - {REASON} by {STAFF}\n"
+  history:
+    noPunishmentTypeHistory: "{PUNISHMENT_PREFIX}{RED}No punishment history for type {TYPE} for player {PLAYER}."
+  ban:
+    errors:
+      alreadyBanned: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} is already banned."
+    broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{RED}Ban{GRAY}] {PLAYER} has been banned by {STAFF} for: {REASON} ({DURATION})"
+    targetBanned: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} has been banned by {STAFF} for: {REASON} ({DURATION})"
+    screenMessage: "{PUNISHMENT_PREFIX}{RED}You have been banned by {STAFF} for: {REASON} ({DURATION})\n{GRAY}Please contact a staff member for more information."
+  unban:
+    errors:
+      notBanned: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} is not banned."
+    broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{GREEN}Unban{GRAY}] {PLAYER} has been unbanned."
+    success: "{PUNISHMENT_PREFIX}{GREEN}Player {PLAYER} has been unbanned."
+  defaultReason: "{PUNISHMENT_PREFIX}{RED}No reason provided by {STAFF}."
+  banlist:
+    empty: "{PUNISHMENT_PREFIX}{RED}No players are currently banned."
+    header: "{PUNISHMENT_PREFIX}{GRAY}Banned Players List ({PAGE}/{TOTAL_PAGES}):\n"
+    entry: "{GRAY} - {PLAYER} ({DURATION}) - {REASON} by {STAFF}\n"
+
+# ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)
 # - {GLOBAL_PREFIX}     -> theme.prefixes.global
 # - {KINGDOMS_PREFIX}   -> theme.prefixes.kingdoms
 # - {KITS_PREFIX}       -> theme.prefixes.kits
 # - {ABILITIES_PREFIX}  -> theme.prefixes.abilities
 # - {SHOP_PREFIX}       -> theme.prefixes.shop
+# - {MONEY_PREFIX}      -> theme.prefixes.money
+# - {ROLES_PREFIX}      -> theme.prefixes.roles
+# - {PUNISHMENT_PREFIX} -> theme.prefixes.punishment
 # - Couleurs {RED}/{GOLD}/... -> theme.colors
 # - Variables dynamiques: {PLAYER}, {KINGDOM}, {KIT}, {ABILITY}, {NAME}, {TIME}, {USAGE}, {ITEM}, {QTY}, {UNIT_PRICE}, {TOTAL_PRICE}, {BALANCE}, {MODE}, {RARITY_COLOR}
 

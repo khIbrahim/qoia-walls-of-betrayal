@@ -14,6 +14,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\scheduler\ClosureTask;
 use Throwable;
 
 class RolesListener implements Listener
@@ -73,36 +74,38 @@ class RolesListener implements Listener
 
     public function onJoin(PlayerJoinEvent $event): void
     {
-        $player = $event->getPlayer();
+        $this->main->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use($event) {
+            $player = $event->getPlayer();
 
-        $rolePlayer = $this->main->getRolesManager()->getPlayer($player);
-        if ($rolePlayer === null) {
-            $this->main->getLogger()->warning("RolePlayer not found for player: " . $player->getName());
-            return;
-        }
-
-        try {
-            if ($rolePlayer->isExpired()) {
-                Await::g2c(
-                    $this->main->getRolesManager()->handleExpiredRole($player),
-                    function (Role $role) use ($player) {
-                        MessagesUtils::sendTo($player, MessagesIds::ROLES_EXPIRED_TO_DEFAULT, [
-                            ExtraTags::ROLE => $role->getDisplayName()
-                        ]);
-                    },
-                    function (Throwable $e) use ($player) {
-                        $this->main->getLogger()->error("Failed to handle expired role for {$player->getName()}: ".$e->getMessage());
-                        $this->main->getLogger()->logException($e);
-                    }
-                );
+            $rolePlayer = $this->main->getRolesManager()->getPlayer($player);
+            if ($rolePlayer === null) {
+                $this->main->getLogger()->warning("RolePlayer not found for player: " . $player->getName());
                 return;
             }
 
-            $rolePlayer->applyTo($player);
-        } catch (Throwable $e) {
-            $this->main->getLogger()->error("Failed to apply role to player {$player->getName()}: ".$e->getMessage());
-            $this->main->getLogger()->logException($e);
-        }
+            try {
+                if ($rolePlayer->isExpired()) {
+                    Await::g2c(
+                        $this->main->getRolesManager()->handleExpiredRole($player),
+                        function (Role $role) use ($player) {
+                            MessagesUtils::sendTo($player, MessagesIds::ROLES_EXPIRED_TO_DEFAULT, [
+                                ExtraTags::ROLE => $role->getDisplayName()
+                            ]);
+                        },
+                        function (Throwable $e) use ($player) {
+                            $this->main->getLogger()->error("Failed to handle expired role for {$player->getName()}: ".$e->getMessage());
+                            $this->main->getLogger()->logException($e);
+                        }
+                    );
+                    return;
+                }
+
+                $rolePlayer->applyTo($player);
+            } catch (Throwable $e) {
+                $this->main->getLogger()->error("Failed to apply role to player {$player->getName()}: ".$e->getMessage());
+                $this->main->getLogger()->logException($e);
+            }
+        }), 20 * 3);
     }
 
 }

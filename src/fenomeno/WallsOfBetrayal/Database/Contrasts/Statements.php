@@ -53,5 +53,31 @@ interface Statements
     public const INCREMENT_DEATHS               = 'players.incrementDeaths';
     public const INCREMENT_KINGDOM_KILLS        = 'kingdoms.incrementKills';
     public const INCREMENT_KINGDOM_DEATHS       = 'kingdoms.incrementDeaths';
+    
+    public const INIT_MUTE    = 'mute.init';
+    public const MUTE_GET     = 'mute.get';
+    public const MUTE_CREATE  = 'mute.create';
+    public const MUTE_DELETE  = 'mute.delete';
+    
+    public const INIT_HISTORY   = "history.init";
+    public const HISTORY_ADD    = "history.add";
+    public const HISTORY_GET    = "history.get";
+
+    public const INIT_BAN       = "ban.init";
+    public const BAN_ADD        = "ban.add";
+    public const BAN_REMOVE     = "ban.remove";
+    public const BAN_GETALL     = "ban.getAll";
+
+    public const INIT_JAIL      = "jail.init";
+    public const JAIL_GET       = "jail.get";
+    public const JAIL_CREATE    = "jail.create";
+    public const JAIL_DELETE    = "jail.delete";
+    public const JAIL_UPDATE    = 'jail.update';
+
+    public const INIT_REPORT    = "report.init";
+    public const REPORT_CREATE  = "report.create";
+    public const REPORT_GET     = "report.get";
+    public const REPORT_DELETE  = "report.delete";
+    public const REPORT_ARCHIVE = "report.archive";
 
 }

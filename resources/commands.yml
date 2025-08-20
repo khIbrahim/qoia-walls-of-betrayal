@@ -205,3 +205,56 @@ nick-log:
   name: "log"
   description: "§7§oView your nickname history"
   usage: "§e/nick log <player=optionnal> §8– §7View your nickname history"
+
+mute:
+  name: "mute"
+  description: "§7§oMute a player"
+  usage: "§e/mute <player> <duration=perm> <reason> §8– §7Mute a player"
+  aliases:
+      - "silence"
+      - "setmute"
+
+unmute:
+  name: "unmute"
+  description: "§7§oUnmute a player"
+  usage: "§e/unmute <player> §8– §7Unmute a player"
+  aliases:
+    - "unsilence"
+    - "removemute"
+    - "demute"
+
+mute-list:
+  name: "mutelist"
+  description: "§7§oView the list of muted players"
+  usage: "§e/mutelist §8– §7View the list of muted players"
+
+mute-history:
+  name: "mutehistory"
+  description: "§7§oView the mute history of a player"
+  usage: "§e/mutehistory <player> §8– §7View the mute history of a player"
+
+ban:
+  name: "ban"
+  description: "§7§oBan a player"
+  usage: "§e/ban <player> <reason> §8– §7Ban a player"
+  aliases:
+    - "banperm"
+
+unban:
+  name: "unban"
+  description: "§7§oUnban a player"
+  usage: "§e/unban <player> §8– §7Unban a player"
+  aliases:
+    - "pardon"
+
+temp-ban:
+  name: "tban"
+  description: "§7§oTempban a player"
+  usage: "§e/tban <player> <duration> <reason> §8- §7Temp ban a player"
+  aliases:
+    - "tempban"
+
+ban-list:
+  name: "banlist"
+  description: "§7§8Show the list of banned players"
+  usage: "§e/banlist <page=1> §8- §7Show the list of banned players"

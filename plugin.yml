@@ -81,3 +81,17 @@ permissions:
     default: op
   wob.command.nick.log:
     default: op
+  wob.command.mute:
+    default: op
+  wob.command.unmute:
+    default: op
+  wob.command.mutelist:
+    default: op
+  wob.command.ban:
+    default: op
+  wob.command.unban:
+    default: op
+  wob.command.tban:
+    default: op
+  wob.command.banlist:
+    default: op
