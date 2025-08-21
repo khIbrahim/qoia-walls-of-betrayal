@@ -3,7 +3,6 @@ namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
 use fenomeno\WallsOfBetrayal\Class\Punishment\AbstractPunishment;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\RepositoryInterface;
-use fenomeno\WallsOfBetrayal\Database\Payload\HistoryPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
 use Generator;
 
@@ -15,7 +14,5 @@ interface PunishmentRepositoryInterface extends RepositoryInterface
     public function create(AbstractPunishment $punishment): Generator;
 
     public function delete(UsernamePayload $payload): Generator;
-
-    public function getHistory(HistoryPayload $payload): Generator;
 
 }

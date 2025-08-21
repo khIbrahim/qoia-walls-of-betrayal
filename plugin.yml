@@ -95,3 +95,25 @@ permissions:
     default: op
   wob.command.banlist:
     default: op
+  wob.command.report:
+    default: true
+  wob.reports.see:
+    default: op
+  wob.command.reports:
+    default: op
+  wob.command.kick:
+    default: op
+  wob.command.staffchat:
+    default: op
+  wob.command.staffmod:
+    default: op
+  wob.command.vanish:
+    default: op
+  wob.command.freeze:
+    default: op
+  wob.command.history:
+    default: op
+  wob.command.randomtp:
+    default: op
+  wob.command.invsee:
+    default: op

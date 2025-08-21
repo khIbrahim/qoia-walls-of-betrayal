@@ -73,6 +73,7 @@ roles:
       - "wob.command.mutelist"
       - "wob.warn"
       - "wob.chat.clear.local"
+      - "wob.command.staffchat"
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: { }
@@ -84,7 +85,6 @@ roles:
     inherits: [ "helper" ]
     permissions:
       - "wob.mute"
-      - "wob.kick"
       - "wob.tempban"
       - "wob.vanish"
       - "wob.tp.to"
@@ -95,6 +95,11 @@ roles:
       - "wob.command.unban"
       - "wob.command.tban"
       - "wob.command.banlist"
+      - "wob.command.kick"
+      - "wob.command.staffmod"
+      - "wob.command.vanish"
+      - "wob.command.freeze"
+      - "wob.command.randomtp"
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: { }
@@ -129,6 +134,8 @@ roles:
       - "wob.reload"
       - "wob.staff.alert"
       - "wob.kit.*"
+      - "wob.command.history"
+      - "wob.command.invsee"
     chatFormat: "§7[{KINGDOM}§7] {COLOR}{ROLE} §f{PLAYER}§7: §f{MESSAGE}"
     nameTagFormat: "{COLOR}{PLAYER} §7[{KINGDOM}§7]"
     perks: { }

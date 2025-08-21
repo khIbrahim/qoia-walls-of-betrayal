@@ -23,6 +23,14 @@ final class PermissionIds
     public const UNBAN = 'wob.command.unban';
     public const TBAN = 'wob.command.tban';
     public const BAN_LIST = 'wob.command.banlist';
+    public const REPORT = 'wob.command.report';
+    public const SEE_REPORTS = 'wob.reports.see';
+    public const REPORTS = 'wob.command.reports';
+    public const KICK = 'wob.command.kick';
+    public const STAFF_CHAT = 'wob.command.staffchat';
+    public const HISTORY = 'wob.command.history';
+    public const RANDOM_TP = 'wob.command.randomtp';
+    public const INVSEE = 'wob.command.invsee';
 
     public static function getVaultPerm(int $number): string
     {

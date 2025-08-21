@@ -4,7 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Events\Punishment;
 
 use fenomeno\WallsOfBetrayal\Class\Punishment\AbstractPunishment;
 
-class PlayerMutedEvent extends SanctionEvent
+class PlayerMutedEvent extends PunishmentEvent
 {
 
     private AbstractPunishment $punishment;
@@ -20,7 +20,7 @@ class PlayerMutedEvent extends SanctionEvent
         $this->punishment = $punishment;
     }
 
-    public function getModerationAction(): string
+    public function getPunishmentType(): string
     {
         return AbstractPunishment::TYPE_MUTE;
     }

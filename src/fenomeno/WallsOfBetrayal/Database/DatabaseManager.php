@@ -24,6 +24,12 @@ use fenomeno\WallsOfBetrayal\Database\Repository\VaultRepository;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\libasynql;
 use fenomeno\WallsOfBetrayal\Main;
+use pocketmine\item\Item;
+use pocketmine\nbt\BigEndianNbtSerializer;
+use pocketmine\nbt\NBT;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ListTag;
+use pocketmine\nbt\TreeRoot;
 use Throwable;
 
 /***
@@ -46,6 +52,7 @@ class DatabaseManager
     private PunishmentRepositoryInterface $reportRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
+    private BigEndianNbtSerializer $nbtSerializer;
 
     public function __construct(
         private readonly Main $main
@@ -88,6 +95,8 @@ class DatabaseManager
 
             $this->reportRepository = new ReportRepository($this->main);
             $this->reportRepository->init($this);
+
+            $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
             $this->main->getLogger()->error("§cAn error occurred while init database: " . $e->getMessage());
             $this->main->getLogger()->logException($e);
@@ -152,6 +161,32 @@ class DatabaseManager
     public function getBinaryStringParser(): BinaryStringParserInterface
     {
         return $this->binaryStringParser;
+    }
+
+    public function readItems(?string $data, string $tagInventory) : array{
+        if ($data === "" || $data === null) {
+            return [];
+        }
+
+        $contents = [];
+        $inventoryTag = $this->nbtSerializer->read(zlib_decode($data))->mustGetCompoundTag()->getListTag($tagInventory);
+        /** @var CompoundTag $tag */
+        foreach($inventoryTag as $tag){
+            $contents[$tag->getByte("Slot")] = Item::nbtDeserialize($tag);
+        }
+
+        return $contents;
+    }
+
+    public function writeItems(array $c, string $tagInventory) : string{
+        $contents = [];
+        foreach($c as $slot => $item){
+            $contents[] = $item->nbtSerialize($slot);
+        }
+
+        return zlib_encode($this->nbtSerializer->write(new TreeRoot(CompoundTag::create()
+            ->setTag($tagInventory, new ListTag($contents, NBT::TAG_Compound))
+        )), ZLIB_ENCODING_GZIP);
     }
 
 }

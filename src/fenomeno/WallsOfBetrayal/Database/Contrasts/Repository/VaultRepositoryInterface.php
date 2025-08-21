@@ -14,8 +14,4 @@ interface VaultRepositoryInterface extends RepositoryInterface
 
     public function close(CloseVaultPayload $payload, array $items = []): Generator;
 
-    public function read(string $data) : array;
-
-    public function write(array $c) : string;
-
 }

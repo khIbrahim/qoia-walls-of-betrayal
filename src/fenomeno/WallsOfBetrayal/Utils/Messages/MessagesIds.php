@@ -115,7 +115,8 @@ final class MessagesIds
     public const ALREADY_BANNED = 'punishment.ban.errors.alreadyBanned';
     public const BROADCAST_BAN = 'punishment.ban.broadcast';
     public const BAN_TARGET_BANNED = 'punishment.ban.targetBanned';
-    public const BAN_SCREEN_MESSAGE = 'punishment.ban.screenMessage';
+    public const BAN_TEMP_SCREEN_MESSAGE = 'punishment.ban.screenMessageTemp';
+    public const BAN_PERM_SCREEN_MESSAGE = 'punishment.ban.screenMessagePerm';
     public const BROADCAST_UNBAN = 'punishment.unban.broadcast';
     public const UNBAN_SUCCESS = 'punishment.unban.success';
     public const NOT_BANNED = 'punishment.unban.errors.notBanned';
@@ -124,5 +125,30 @@ final class MessagesIds
     public const PAGE_NOT_FOUND = 'common.pageNotFound';
     public const BAN_LIST_HEADER = 'punishment.banlist.header';
     public const BAN_LIST_ENTRY = 'punishment.banlist.entry';
+    public const BROADCAST_REPORT = 'punishment.report.broadcast';
+    public const ALREADY_REPORTED = 'punishment.report.errors.alreadyReported';
+    public const REPORT_SUCCESS = 'punishment.report.success';
+    public const REPORTS_EMPTY = 'punishment.report.reportList.empty';
+    public const REPORTS_HEADER = 'punishment.report.reportList.header';
+    public const REPORT_DETAILS = 'punishment.report.reportList.details';
+    public const REPORT_REMOVED = 'punishment.report.reportList.removed';
+    public const REPORT_NOT_FOUND = 'punishment.report.errors.notFound';
+    public const KICK_SCREEN_MESSAGE = 'punishment.kick.screenMessage';
+    public const ENTER_STAFF_MOD = 'commands.staffmod.enter';
+    public const LEAVE_STAFF_MOD = 'commands.staffmod.leave';
+    public const BROADCAST_ENTER_STAFF_CHAT = 'commands.staffchat.broadcastJoin';
+    public const BROADCAST_LEAVE_STAFF_CHAT = 'commands.staffchat.broadcastLeave';
+    public const FROZEN = 'commands.freeze.frozen';
+    public const NO_COMMAND_STAFF_MOD_ITEM = 'commands.staffmod.errors.noItemCommand';
+    public const STAFF_CHAT_FORMAT = 'commands.staffchat.format';
+    public const VANISH_ENABLED = 'commands.vanish.enabled';
+    public const VANISH_DISABLED = 'commands.vanish.disabled';
+    public const FREEZE_ENABLED_ON_PLAYER = 'commands.freeze.enabledOnPlayer';
+    public const FREEZE_DISABLED_ON_PLAYER = 'commands.freeze.disabledOnPlayer';
+    public const PUNISHMENT_HISTORY_ENTRY = 'punishment.history.entry';
+    public const SERVER_EMPTY = 'common.serverEmpty';
+    public const NO_OTHER_PLAYERS = 'common.noOtherPlayers';
+    public const TELEPORTED_TO_PLAYER = 'commands.randomTp.success';
+    public const INVSEE_UPDATED = 'commands.invsee.updated';
 
 }

@@ -8,9 +8,7 @@ use fenomeno\WallsOfBetrayal\Class\Punishment\Ban;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
-use fenomeno\WallsOfBetrayal\Database\Payload\HistoryPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
-use fenomeno\WallsOfBetrayal\DTO\SanctionHistoryEntry;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
@@ -74,32 +72,5 @@ class BanRepository implements PunishmentRepositoryInterface
     public function delete(UsernamePayload $payload): Generator
     {
         yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::BAN_REMOVE, $payload->jsonSerialize());
-    }
-
-    public function getHistory(HistoryPayload $payload): Generator
-    {
-        return Await::promise(function ($resolve, $reject) use ($payload) {
-            Await::f2c(function () use ($payload, $resolve, $reject) {
-                try {
-                    $rows = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::HISTORY_GET, $payload->jsonSerialize());
-
-                    $history = [];
-                    foreach ($rows as $row) {
-                        $history[] = new SanctionHistoryEntry(
-                            target: $payload->username,
-                            type: AbstractPunishment::TYPE_BAN,
-                            reason: $row['reason'],
-                            staff: $row['staff'],
-                            createdAt: (int)$row['created_at'],
-                            expiration: $row['expiration'] !== null ? (int)$row['expiration'] : null
-                        );
-                    }
-
-                    $resolve($history);
-                } catch (Throwable $e){
-                    $reject($e);
-                }
-            });
-        });
     }
 }

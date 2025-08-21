@@ -52,5 +52,10 @@ final class ExtraTags
     const TYPE = '{TYPE}';
     const PAGE = '{PAGE}';
     const TOTAL_PAGES = '{PAGES}';
+    const REPORTER = '{REPORTER}';
+    const CREATED_AT = '{CREATED_AT}';
+    const ID = '{ID}';
+    const APPEAL_LINK = '{APPEAL_LINK}';
+    const TARGET = '{TARGET}';
 
 }

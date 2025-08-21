@@ -258,3 +258,65 @@ ban-list:
   name: "banlist"
   description: "§7§8Show the list of banned players"
   usage: "§e/banlist <page=1> §8- §7Show the list of banned players"
+
+report:
+  name: "report"
+  description: "§7§8Report a player"
+  usage: "§e/report <player> <reason> §8- §7Report a player"
+
+reports:
+  name: "reports"
+  description: "reports"
+  usage: "§e/reports §8- §7Open the report list menu"
+
+kick:
+  name: "kick"
+  description: "§7§oKick a player from the server"
+  usage: "§e/kick <player> <reason=optional> §8– §7Kick a player from the server"
+  aliases:
+    - "boot"
+    - "remove"
+
+staffchat:
+  name: "staffchat"
+  description: "§7§oToggle staff chat mode"
+  usage: "§e/staffchat <state> §8– §7Enable or disable staff chat"
+  aliases:
+    - "sc"
+
+staffmod:
+  name: "staffmod"
+  description: "§7§oEnable or disable moderation mode"
+  usage: "§e/staffmod §8– §7Enable or disable moderation mode"
+
+vanish:
+  name: "vanish"
+  description: "§7§oMake a player invisible"
+  usage: "§e/vanish §8– §7Make a player invisible"
+  aliases:
+    - "v"
+
+freeze:
+  name: "freeze"
+  description: "§7§oFreeze a player"
+  usage: "§e/freeze <player> §8– §7Prevent a player from moving"
+  aliases:
+    - "lock"
+
+history:
+  name: "history"
+  description: "§7§oView the punishment history of a player"
+  usage: "§e/history <player> <type> §8– §7View the punishment history of a player"
+  aliases:
+    - "punishmenthistory"
+    - "phistory"
+
+randomtp:
+  name: "randomtp"
+  description: "§7§oTeleport to a random player"
+  usage: "§e/randomtp §8– §7Teleport to a random player"
+
+invsee:
+  name: "invsee"
+  description: "§7§oOpen player inventory"
+  usage: "§e/randomtp §8– §7Open player inventory"

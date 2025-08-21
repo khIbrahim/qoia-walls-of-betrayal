@@ -44,7 +44,7 @@ class TempBanCommand extends WCommand
 
         Await::f2c(function () use($expiration, $sender, $staff, $reason, $target){
             try {
-                $ban = yield from $this->main->getPunishmentManager()->banPlayer($target, $reason, $staff, $expiration);
+                $ban = yield from $this->main->getPunishmentManager()->getBanManager()->banPlayer($target, $reason, $staff, $expiration);
 
                 MessagesUtils::sendTo($sender, MessagesIds::BAN_TARGET_BANNED, [
                     ExtraTags::PLAYER   => $ban->getTarget(),
@@ -54,12 +54,7 @@ class TempBanCommand extends WCommand
                 ]);
 
                 if (($player = $sender->getServer()->getPlayerByPrefix($ban->getTarget())) !== null && $player->isOnline()){
-                    $player->kick(MessagesUtils::getMessage(MessagesIds::BAN_SCREEN_MESSAGE, [
-                        ExtraTags::PLAYER   => $ban->getTarget(),
-                        ExtraTags::STAFF    => $ban->getStaff(),
-                        ExtraTags::REASON   => $ban->getReason(),
-                        ExtraTags::DURATION => $ban->getDurationText()
-                    ]));
+                    $player->kick($this->main->getPunishmentManager()->getBanScreenMessage($ban));
                 }
             } catch (PlayerAlreadyBannedException) {
                 MessagesUtils::sendTo($sender, MessagesIds::ALREADY_BANNED, [ExtraTags::PLAYER => $target]);

@@ -58,25 +58,10 @@ class VaultRepository implements VaultRepositoryInterface
                 continue;
             }
 
-            $items = $this->read($this->main->getDatabaseManager()->getBinaryStringParser()->decode($row["items"]));
+            $items = $this->main->getDatabaseManager()->readItems($this->main->getDatabaseManager()->getBinaryStringParser()->decode($row["items"]), self::TAG_INVENTORY);
         }
 
         return $items;
-    }
-
-    public function read(?string $data) : array{
-        if ($data === "" || $data === null) {
-            return [];
-        }
-
-        $contents = [];
-        $inventoryTag = $this->nbtSerializer->read(zlib_decode($data))->mustGetCompoundTag()->getListTag(self::TAG_INVENTORY);
-        /** @var CompoundTag $tag */
-        foreach($inventoryTag as $tag){
-            $contents[$tag->getByte("Slot")] = Item::nbtDeserialize($tag);
-        }
-
-        return $contents;
     }
 
     public function write(array $c) : string{
@@ -97,7 +82,8 @@ class VaultRepository implements VaultRepositoryInterface
             $payload = new CloseVaultPayload(
                 $payload->uuid,
                 $payload->username,
-                $this->main->getDatabaseManager()->getBinaryStringParser()->encode($this->write($items)),
+
+                $this->main->getDatabaseManager()->getBinaryStringParser()->encode($this->main->getDatabaseManager()->writeItems($items, self::TAG_INVENTORY)),
                 $payload->number
             );
         }

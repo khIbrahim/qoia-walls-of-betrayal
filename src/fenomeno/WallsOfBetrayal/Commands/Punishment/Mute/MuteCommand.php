@@ -47,7 +47,7 @@ class MuteCommand extends WCommand
         Await::f2c(function () use($sender, $target, $expiration, $reason, $moderator) {
             try {
                 /** @var Mute $mute */
-                $mute = yield from $this->main->getPunishmentManager()->mutePlayer($target, $reason, $moderator, $expiration);
+                $mute = yield from $this->main->getPunishmentManager()->getMuteManager()->mutePlayer($target, $reason, $moderator, $expiration);
 
                 MessagesUtils::sendTo($sender, MessagesIds::MUTE_TARGET_MUTED, [
                     ExtraTags::PLAYER   => $mute->getTarget(),

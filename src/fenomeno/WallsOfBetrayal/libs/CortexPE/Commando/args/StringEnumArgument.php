@@ -67,6 +67,6 @@ abstract class StringEnumArgument extends BaseArgument {
 	}
 
 	public function getEnumValues(): array {
-		return array_keys(static::$VALUES);
+		return array_map('strtolower', array_keys(static::$VALUES));
 	}
 }

@@ -8,8 +8,9 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryI
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\HistoryPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
-use fenomeno\WallsOfBetrayal\DTO\SanctionHistoryEntry;
+use fenomeno\WallsOfBetrayal\DTO\PunishmentHistoryEntry;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
@@ -78,36 +79,15 @@ class ReportRepository implements PunishmentRepositoryInterface
         });
     }
 
+    // azy nique sa mère ça
     public function delete(UsernamePayload $payload): Generator
     {
         return yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::REPORT_DELETE, $payload->jsonSerialize());
     }
 
-    public function getHistory(HistoryPayload $payload): Generator
+    public function del(IdPayload $payload): Generator
     {
-        return Await::promise(function ($resolve, $reject) use ($payload) {
-            Await::f2c(function () use($resolve, $reject, $payload){
-                try {
-                    $rows = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::HISTORY_GET, $payload->jsonSerialize());
-
-                    $history = [];
-                    foreach ($rows as $row) {
-                        $history[] = new SanctionHistoryEntry(
-                            target: $payload->username,
-                            type: AbstractPunishment::TYPE_REPORT,
-                            reason: $row['reason'],
-                            staff: $row['staff'],
-                            createdAt: (int)$row['created_at'],
-                            expiration: $row['expiration'] !== null ? (int)$row['expiration'] : null
-                        );
-                    }
-
-                    $resolve($history);
-                } catch (Throwable $e) {
-                    $reject($e);
-                }
-            });
-        });
+        return yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::REPORT_DELETE, $payload->jsonSerialize());
     }
 
     public function archiveReport(Report $report): Generator

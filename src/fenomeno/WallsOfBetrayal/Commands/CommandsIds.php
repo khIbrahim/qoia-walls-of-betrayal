@@ -41,5 +41,15 @@ final class CommandsIds
     public const UNBAN = 'unban';
     public const TEMP_BAN = 'temp-ban';
     public const BAN_LIST = 'ban-list';
+    public const REPORT = 'report';
+    public const REPORTS = 'reports';
+    public const KICK = 'kick';
+    public const STAFF_CHAT = 'staffchat';
+    public const STAFF_MOD = 'staffmod';
+    public const VANISH = 'vanish';
+    public const FREEZE = 'freeze';
+    public const HISTORY = 'history';
+    public const RANDOM_TP = 'randomtp';
+    public const INVSEE = 'invsee';
 
 }

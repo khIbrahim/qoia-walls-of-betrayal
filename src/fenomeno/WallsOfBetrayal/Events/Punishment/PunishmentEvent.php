@@ -4,7 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Events\Punishment;
 
 use pocketmine\event\Event;
 
-abstract class SanctionEvent extends Event
+abstract class PunishmentEvent extends Event
 {
     protected string $target;
     protected string $staff;
@@ -66,6 +66,6 @@ abstract class SanctionEvent extends Event
         $this->extraData[$key] = $value;
     }
 
-    abstract public function getModerationAction(): string;
+    abstract public function getPunishmentType(): string;
 
 }

@@ -4,7 +4,7 @@ namespace fenomeno\WallsOfBetrayal\DTO;
 
 use fenomeno\WallsOfBetrayal\Utils\DurationParser;
 
-final readonly class SanctionHistoryEntry
+final readonly class PunishmentHistoryEntry
 {
     public function __construct(
         public string $target,

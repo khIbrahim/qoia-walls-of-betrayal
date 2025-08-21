@@ -28,7 +28,7 @@ class BanListCommand extends WCommand
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
-        $bans = $this->main->getPunishmentManager()->getActiveBans();
+        $bans = $this->main->getPunishmentManager()->getBanManager()->getActiveBans();
 
         if(empty($bans)){
             MessagesUtils::sendTo($sender, MessagesIds::BAN_LIST_EMPTY);

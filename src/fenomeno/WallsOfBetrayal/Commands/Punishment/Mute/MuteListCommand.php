@@ -22,7 +22,7 @@ class MuteListCommand extends WCommand
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
-        $mutes = $this->main->getPunishmentManager()->getActiveMutes();
+        $mutes = $this->main->getPunishmentManager()->getMuteManager()->getActiveMutes();
 
         if (empty($mutes)) {
             MessagesUtils::sendTo($sender, MessagesIds::MUTE_LIST_EMPTY);

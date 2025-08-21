@@ -34,7 +34,7 @@ class UnBanCommand extends WCommand
 
         Await::f2c(function () use ($sender, $target) {
             try {
-                yield from $this->main->getPunishmentManager()->unbanPlayer($target);
+                yield from $this->main->getPunishmentManager()->getBanManager()->unbanPlayer($target);
 
                 MessagesUtils::sendTo($sender, MessagesIds::UNBAN_SUCCESS, [ExtraTags::PLAYER => $target]);
             } catch (PlayerNotBannedException) {

@@ -1,0 +1,47 @@
+staffmod:
+  inventory:
+    0:
+      item: "stick"
+      customName: "§r§aKick"
+      command: "kick {TARGET}"
+      type: "hit"
+    1:
+      item: "ice"
+      customName: "§r§cFreeze"
+      command: "freeze {TARGET}"
+      type: "hit"
+    2:
+      item: "diamond_sword"
+      customName: "§r§cBan"
+      command: "ban {TARGET}"
+      type: "hit"
+    3:
+      item: "glass"
+      customName: "§r§aVanish"
+      command: "vanish"
+      type: "use"
+    4:
+      item: "redstone"
+      customName: "§r§cLeave Staff Mod"
+      command: "staffmod"
+      type: "use"
+    5:
+      item: "compass"
+      customName: "§r§aRandom TP"
+      command: "randomtp"
+      type: "use"
+    6:
+      item: "chest"
+      customName: "§r§aInvsee"
+      command: "invsee {TARGET}"
+      type: "hit"
+  banOnDisconnectWhileFrozen: true
+  events:
+    interact: true
+    place: true
+    break: true
+    chat: true
+    command: true
+    pickup: false
+    drop: true
+    damage: false

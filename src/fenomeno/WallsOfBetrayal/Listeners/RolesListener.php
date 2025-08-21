@@ -38,6 +38,7 @@ class RolesListener implements Listener
             $name,
             function (?RolePlayer $rolePlayer) use ($networkSession, $uuid, $name) {
                 if ($rolePlayer !== null){
+
                     return;
                 }
 

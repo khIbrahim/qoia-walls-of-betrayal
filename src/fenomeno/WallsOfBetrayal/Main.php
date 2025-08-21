@@ -25,9 +25,12 @@ use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\BanCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\BanListCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\TempBanCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\UnBanCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\HistoryCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Mute\MuteCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Mute\MuteListCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Mute\UnMuteCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Report\ReportCommand;
+use fenomeno\WallsOfBetrayal\Commands\Punishment\Report\ReportsCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\CreateRoleCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\ListRolesCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\Permission\AddPermissionCommand;
@@ -36,10 +39,17 @@ use fenomeno\WallsOfBetrayal\Commands\Roles\PlayerRoleInfoCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\SetRoleCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\SubRole\AddSubRoleCommand;
 use fenomeno\WallsOfBetrayal\Commands\Roles\SubRole\RemoveSubRoleCommand;
+use fenomeno\WallsOfBetrayal\Commands\Staff\InvseeCommand;
+use fenomeno\WallsOfBetrayal\Commands\Staff\KickCommand;
+use fenomeno\WallsOfBetrayal\Commands\Staff\RandomTpCommand;
+use fenomeno\WallsOfBetrayal\Commands\Staff\StaffChatCommand;
+use fenomeno\WallsOfBetrayal\Commands\Staff\StaffModCommand;
+use fenomeno\WallsOfBetrayal\Commands\Staff\VanishCommand;
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Economy\EconomyManager;
 use fenomeno\WallsOfBetrayal\Entities\EntityManager;
+use fenomeno\WallsOfBetrayal\Events\Staff\FreezeCommand;
 use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
@@ -57,6 +67,7 @@ use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
+use fenomeno\WallsOfBetrayal\Listeners\StaffListener;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
@@ -157,7 +168,17 @@ class Main extends PluginBase
                 new BanCommand($this),
                 new UnBanCommand($this),
                 new TempBanCommand($this),
-                new BanListCommand($this)
+                new BanListCommand($this),
+                new ReportCommand($this),
+                new ReportsCommand($this),
+                new KickCommand($this),
+                new StaffChatCommand($this),
+                new StaffModCommand($this),
+                new VanishCommand($this),
+                new FreezeCommand($this),
+                new HistoryCommand($this),
+                new RandomTpCommand($this),
+                new InvseeCommand($this)
             ]);
 
             $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -170,6 +191,7 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new EntitiesListener(), $this);
             $this->getServer()->getPluginManager()->registerEvents(new BlocksListener(), $this);
             $this->getServer()->getPluginManager()->registerEvents(new PunishmentListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new StaffListener($this), $this);
 
             Await::g2c(
                 $this->loadDependencies(),

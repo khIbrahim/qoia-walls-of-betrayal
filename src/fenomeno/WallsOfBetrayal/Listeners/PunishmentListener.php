@@ -2,7 +2,9 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
+use fenomeno\WallsOfBetrayal\Class\Punishment\Ban;
 use fenomeno\WallsOfBetrayal\Class\Punishment\Mute;
+use fenomeno\WallsOfBetrayal\Events\Punishment\PlayerBannedEvent;
 use fenomeno\WallsOfBetrayal\Events\Punishment\PlayerMutedEvent;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
@@ -26,21 +28,16 @@ class PunishmentListener implements Listener
     public function onPreLogin(PlayerPreLoginEvent $event): void
     {
         $name = strtolower($event->getPlayerInfo()->getUsername());
-        if (! $this->main->getPunishmentManager()->isBanned($name)) {
+        if (! $this->main->getPunishmentManager()->getBanManager()->isBanned($name)) {
             return;
         }
 
-        $ban = $this->main->getPunishmentManager()->getBan($name);
+        $ban = $this->main->getPunishmentManager()->getBanManager()->getBan($name);
         if ($ban === null) {
             return;
         }
 
-        $event->setKickFlag(PlayerPreLoginEvent::KICK_FLAG_BANNED, MessagesUtils::getMessage(MessagesIds::BAN_SCREEN_MESSAGE, [
-            ExtraTags::PLAYER   => $ban->getTarget(),
-            ExtraTags::STAFF    => $ban->getStaff(),
-            ExtraTags::REASON   => $ban->getReason(),
-            ExtraTags::DURATION => $ban->getDurationText()
-        ]));
+        $event->setKickFlag(PlayerPreLoginEvent::KICK_FLAG_BANNED, $this->main->getPunishmentManager()->getBanScreenMessage($ban));
     }
 
     public function onMute(PlayerMutedEvent $event): void
@@ -57,15 +54,31 @@ class PunishmentListener implements Listener
         );
     }
 
+    public function onBan(PlayerBannedEvent $event): void
+    {
+        /** @var Ban $ban */
+        $ban = $event->getPunishment();
+        Await::g2c(
+            $this->main->getPunishmentManager()->addToHistory($ban),
+            fn () => $this->main->getLogger()->info("Ban history for {$ban->getTarget()}: {$ban->getReason()} by {$ban->getStaff()} at " . date('Y-m-d H:i:s', $ban->getCreatedAt())),
+            function(Throwable $e) {
+                $this->main->getLogger()->error("Failed to log ban history: " . $e->getMessage());
+                $this->main->getLogger()->logException($e);
+            }
+        );
+    }
+
     public function onChat(PlayerChatEvent $event): void
     {
         $player = $event->getPlayer();
         $name   = $player->getName();
 
-        if ($this->main->getPunishmentManager()->isMuted($name)) {
+        if ($this->main->getPunishmentManager()->getMuteManager()->isMuted($name)) {
             $event->cancel();
-            $mute = $this->main->getPunishmentManager()->getMute($name);
-            if ($mute === null) return;
+            $mute = $this->main->getPunishmentManager()->getMuteManager()->getMute($name);
+            if ($mute === null) {
+                return;
+            }
 
             $duration = DurationParser::getReadableDuration($mute->getExpiration());
             $message  = MessagesUtils::getMessage(MessagesIds::MUTE_MUTED, [
@@ -74,13 +87,7 @@ class PunishmentListener implements Listener
                 ExtraTags::REASON   => $mute->getReason()
             ]);
             $player->sendMessage($message);
-//            return;
         }
-//
-//        if ($this->isInJail($player) && ! JailConfig::isChatAllowed()){
-//            $event->cancel();
-//            MessagesUtils::sendTo($player, 'jail.events.chat', [], "§cVous ne pouvez pas parler en jail");
-//        }
     }
 
 }

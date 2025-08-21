@@ -33,14 +33,9 @@ class UnMuteCommand extends WCommand
     {
         $target = (string) $args[self::PLAYER_ARGUMENT];
 
-        if (! $this->main->getPunishmentManager()->isMuted($target)) {
-            MessagesUtils::sendTo($sender, MessagesIds::NOT_MUTED, [ExtraTags::PLAYER => $target]);
-            return;
-        }
-
         Await::f2c(function () use ($target, $sender) {
             try {
-                yield from $this->main->getPunishmentManager()->unmutePlayer($target);
+                yield from $this->main->getPunishmentManager()->getMuteManager()->unmutePlayer($target);
 
                 MessagesUtils::sendTo($sender, MessagesIds::UNMUTE_SUCCESS, [ExtraTags::PLAYER => $target]);
             } catch (PlayerNotMutedException) {

@@ -46,6 +46,8 @@ common:
   noItemInHand: "{GLOBAL_PREFIX}{RED}You must hold an item in your hand."
   invalidPage: "{GLOBAL_PREFIX}{RED}Page {PAGE} is invalid."
   pageNotFound: "{GLOBAL_PREFIX}{RED}Page {PAGE} not found, total: {TOTAL_PAGES}."
+  serverEmpty: "{GLOBAL_PREFIX}{RED}The server is currently empty."
+  noOtherPlayers: "{GLOBAL_PREFIX}{GRAY}No other players are connected."
 
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
@@ -284,6 +286,28 @@ commands:
       entry: "{GRAY}[{DATE}] {PLAYER} changed their nickname to {NICK}."
       empty: "{GRAY}No nicknames found."
       listHeader: "{GRAY}Nickname History:\n{GRAY}"
+  staffmod:
+    errors:
+      noItemCommand: "{GLOBAL_PREFIX}{RED}This item does not have a command set."
+    enter: "{GLOBAL_PREFIX}{GREEN}You are now in staff mode."
+    leave: "{GLOBAL_PREFIX}{RED}You have left staff mode."
+  staffchat:
+    broadcastJoin: "{GLOBAL_PREFIX}{GREEN}{PLAYER} has joined the staff chat."
+    broadcastLeave: "{GLOBAL_PREFIX}{RED}{PLAYER} has left the staff chat."
+    format: "§8[StaffChat] §b{PLAYER} §7» §f{MESSAGE}"
+  freeze:
+    enabledOnPlayer: "{GLOBAL_PREFIX}{RED}{PLAYER} has been frozen."
+    disabledOnPlayer: "{GLOBAL_PREFIX}{GREEN}{PLAYER} has been unfrozen."
+    frozen:
+      message: "{GLOBAL_PREFIX}{RED}You are frozen! If you disconnect, you will be banned."
+      type: "title"
+  vanish:
+    enabled: "{GLOBAL_PREFIX}{GREEN}You are now invisible to other players."
+    disabled: "{GLOBAL_PREFIX}{RED}You are now visible to other players."
+  randomTp:
+    success: "{GLOBAL_PREFIX}{GREEN}You have been teleported to a random player ({PLAYER})."
+  invsee:
+    updated: "{GLOBAL_PREFIX}{GREEN}{PLAYER}'s inventory updated successfully."
 
 # ---------------------------------------------------------------------------
 
@@ -353,22 +377,59 @@ punishment:
     entry: "{GRAY} - {PLAYER} ({DURATION}) - {REASON} by {STAFF}\n"
   history:
     noPunishmentTypeHistory: "{PUNISHMENT_PREFIX}{RED}No punishment history for type {TYPE} for player {PLAYER}."
+    entry: "{PUNISHMENT_PREFIX}{GRAY}[{RED}History - {TYPE}{GRAY}] {PLAYER} was punished by {STAFF} for: {REASON} ({DURATION}) on {CREATED_AT}\n"
   ban:
     errors:
       alreadyBanned: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} is already banned."
     broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{RED}Ban{GRAY}] {PLAYER} has been banned by {STAFF} for: {REASON} ({DURATION})"
     targetBanned: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} has been banned by {STAFF} for: {REASON} ({DURATION})"
-    screenMessage: "{PUNISHMENT_PREFIX}{RED}You have been banned by {STAFF} for: {REASON} ({DURATION})\n{GRAY}Please contact a staff member for more information."
+    screenMessageTemp: |
+      {PUNISHMENT_PREFIX}{RED}{CREATED_AT} - You have been temporarily banned.
+      {GRAY}Reason: {WHITE}{REASON}
+      {GRAY}By: {WHITE}{STAFF}
+      {GRAY}Ban ID: {WHITE}{BAN_ID}
+      {GRAY}Unban on: {WHITE}{UNBAN_AT} {GRAY}({REMAINING} left)
+      
+      {GRAY}If you believe this is a mistake, appeal here:
+      {WHITE}{APPEAL_LINK}
+
+    screenMessagePerm: |
+      {PUNISHMENT_PREFIX}{RED}{CREATED_AT} - You have been permanently banned.
+      {GRAY}Reason: {WHITE}{REASON}
+      {GRAY}By: {WHITE}{STAFF}
+      {GRAY}Ban ID: {WHITE}{BAN_ID}
+      
+      {GRAY}If you believe this is a mistake, you can submit an appeal:
+      {WHITE}{APPEAL_LINK}
   unban:
     errors:
       notBanned: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} is not banned."
     broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{GREEN}Unban{GRAY}] {PLAYER} has been unbanned."
     success: "{PUNISHMENT_PREFIX}{GREEN}Player {PLAYER} has been unbanned."
-  defaultReason: "{PUNISHMENT_PREFIX}{RED}No reason provided by {STAFF}."
+  defaultReason: "{PUNISHMENT_PREFIX}{RED}WobPunishment."
   banlist:
     empty: "{PUNISHMENT_PREFIX}{RED}No players are currently banned."
     header: "{PUNISHMENT_PREFIX}{GRAY}Banned Players List ({PAGE}/{TOTAL_PAGES}):\n"
     entry: "{GRAY} - {PLAYER} ({DURATION}) - {REASON} by {STAFF}\n"
+  report:
+    broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{YELLOW}Report{GRAY}] {PLAYER} has been reported by {REPORTER} for: {REASON} at {CREATED_AT}."
+    success: "{PUNISHMENT_PREFIX}{GREEN}Your report against {PLAYER} for {REASON} has been successfully submitted."
+    errors:
+      notFound: "{PUNISHMENT_PREFIX}{RED}Report #{ID} not found."
+      alreadyReported: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} has already been reported by you."
+      noPermission: "{PUNISHMENT_PREFIX}{RED}You do not have permission to view reports."
+    reportList:
+      empty: "{PUNISHMENT_PREFIX}{RED}No reports are currently available."
+      header: "{PUNISHMENT_PREFIX}{GRAY}Reports List ({COUNT}):\n"
+      removed: "{PUNISHMENT_PREFIX}{GRAY}Report #{ID} has been removed."
+      detail-title: "Report Details"
+      details: |
+        §fTarget: §6{PLAYER}
+        §fReported By: §6{REPORTER}
+        §fReason: §6{REASON}
+        §fDate: §6{DATE}
+  kick:
+    screenMessage: "{PUNISHMENT_PREFIX}{RED}You have been kicked by {STAFF} for: {REASON}"
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

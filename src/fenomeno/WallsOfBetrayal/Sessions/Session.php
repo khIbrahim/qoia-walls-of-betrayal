@@ -161,4 +161,16 @@ class Session
         );
     }
 
+    private bool $frozen = false;
+
+    public function isFrozen(): bool
+    {
+        return $this->frozen;
+    }
+
+    public function setFrozen(bool $newState): void
+    {
+        $this->frozen = $newState;
+    }
+
 }
