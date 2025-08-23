@@ -27,13 +27,19 @@ final class NpcManager
         $this->config = new Config($this->main->getDataFolder() . 'npc.json', Config::JSON);
     }
 
-    public function add(NpcEntity $entity): void
+    public function add(NpcEntity $entity): Generator
     {
-        $this->npcs[$entity->getNpcId()] = $entity;
+        return Await::promise(function ($resolve, $reject) use ($entity) {
+            try {
+                $this->npcs[$entity->getNpcId()] = $entity;
+                NpcArgument::$VALUES[$entity->getNpcId()] = $entity->getNpcId();
+                $this->saveAll();
 
-        NpcArgument::$VALUES[$entity->getNpcId()] = $entity->getNpcId();
-
-        $this->saveAll();
+                $resolve($entity);
+            } catch (Throwable $e){
+                $reject($e);
+            }
+        });
     }
 
     public function remove(string $id): Generator
@@ -85,7 +91,7 @@ final class NpcManager
 
         foreach($data as $id => $row){
             try {
-                if(! isset($row['world'], $row['x'], $row['y'], $row['z'], $row['yaw'], $row['pitch'], $row['skin'], $row['skin_id'], $row['cape'], $row['geometry_name'], $row['geometry_data'])){
+                if(! isset($row['world'], $row['x'], $row['y'], $row['z'], $row['yaw'], $row['pitch'], $row['skin'], $row['skin_id'], $row['cape'], $row['geometry_name'], $row['geometry_data'], $row['cooldown'])){
                     $this->main->getLogger()->error("Unable to parse npc $id, data is missing");
                     continue;
                 }
@@ -127,10 +133,11 @@ final class NpcManager
                     skin: $skin,
                     id: $id,
                     command: (string) ($row["command"] ?? ""),
-                    name: (string) ($row["name"] ?? "Wob NPC")
+                    name: (string) ($row["name"] ?? "Wob NPC"),
+                    cooldown: (int) $row['cooldown']
                 );
                 $npc->spawnToAll();
-                $this->add($npc);
+                Await::g2c($this->add($npc));
             } catch (Throwable $e) {
                 $this->main->getLogger()->error("Failed to parse npc $id: " . $e->getMessage());
             }

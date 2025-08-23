@@ -23,12 +23,16 @@ use Throwable;
 class NpcEntity extends Human
 {
 
-    protected const COMMAND_TAG = 'NpcCommand';
-    protected const NPC_ID_TAG  = 'NpcId';
+    public const DEFAULT_NPC_COOLDOWN = 1;
+
+    protected const COMMAND_TAG      = 'NpcCommand';
+    protected const NPC_ID_TAG       = 'NpcId';
+    protected const NPC_COOLDOWN_TAG = 'NpcCooldown';
 
     protected float $gravity = 0.0;
     private string $command;
     private string $npcId;
+    private int $cooldown = self::DEFAULT_NPC_COOLDOWN;
 
     public function getNpcId(): string
     {
@@ -49,10 +53,15 @@ class NpcEntity extends Human
         $this->setScale(1.0);
 
         if ($nbt->getTag(self::COMMAND_TAG) !== null && $nbt->getTag(self::NPC_ID_TAG) !== null){
-            $this->command = $nbt->getString(self::COMMAND_TAG);
-            $this->npcId = $nbt->getString(self::NPC_ID_TAG);
+            $this->cooldown = $nbt->getTag(self::NPC_COOLDOWN_TAG) !== null ? $nbt->getInt(self::NPC_COOLDOWN_TAG) : self::DEFAULT_NPC_COOLDOWN;
+            $this->command  = $nbt->getString(self::COMMAND_TAG);
+            $this->npcId    = $nbt->getString(self::NPC_ID_TAG);
 
-            Main::getInstance()->getNpcManager()->add($this);
+            Await::g2c(
+                Main::getInstance()->getNpcManager()->add($this),
+                function (self $npc){Main::getInstance()->getLogger()->debug($npc->getNpcId() . ' added to manager from init entity');},
+                function (Throwable $e){Utils::onFailure($e, null, "Failed to add npc $this->npcId to the manager from the init entity:" . $e->getMessage());}
+            );
         }
     }
 
@@ -60,9 +69,16 @@ class NpcEntity extends Human
     {
         $nbt = parent::saveNBT();
 
-        if (isset($this->command, $this->npcId)){
-            $nbt->setString(self::COMMAND_TAG, $this->command);
+        if (isset($this->npcId)){
             $nbt->setString(self::NPC_ID_TAG, $this->npcId);
+        }
+
+        if (isset($this->command)){
+            $nbt->setString(self::COMMAND_TAG, $this->command);
+        }
+
+        if ($this->cooldown !== self::DEFAULT_NPC_COOLDOWN){
+            $nbt->setInt(self::NPC_COOLDOWN_TAG, $this->cooldown);
         }
 
         return $nbt;
@@ -118,8 +134,15 @@ class NpcEntity extends Human
     public function executeCommandFor(Player $player): void
     {
         if (isset($this->command, $this->npcId)){
+            if (Main::getInstance()->getCooldownManager()->isOnCooldown($this->getNpcId(), $player->getName())){
+                MessagesUtils::sendTo($player, MessagesIds::NPC_COOLDOWN, [ExtraTags::TIME => Main::getInstance()->getCooldownManager()->getCooldownRemaining($this->getNpcId(), $player->getName())]);
+                return;
+            }
+
             if($player->getServer()->dispatchCommand($player, $this->command)){
                 Main::getInstance()->getLogger()->debug("Npc : " . $this->npcId . " successfully executed command for " . $player->getName());
+                Main::getInstance()->getCooldownManager()->setCooldown($this->getNpcId(), $player->getName(), $this->cooldown
+                );
             } else {
                 Main::getInstance()->getLogger()->error("Npc : " . $this->npcId . " failed to execute command for " . $player->getName());
             }
@@ -128,12 +151,14 @@ class NpcEntity extends Human
         }
     }
 
-    public static function make(Location $location, Skin $skin, string $id, string $command, string $name = "Wob NPC"): self
+    public static function make(Location $location, Skin $skin, string $id, string $command, string $name = "Wob NPC", int $cooldown = self::DEFAULT_NPC_COOLDOWN): self
     {
         $npc = new self($location, $skin);
-        $npc->setCommand($command);
-        $npc->setNpcId($id);
-        $npc->setNameTag($name);
+        $npc->setNameTag(str_replace('\n', "\n", $name));
+
+        $npc->setNpcId($id)
+            ->setCommand($command)
+            ->setCooldown($cooldown);
 
         return $npc;
     }
@@ -152,12 +177,25 @@ class NpcEntity extends Human
         return $this;
     }
 
+    public function setCooldown(int $cooldown): self
+    {
+        $this->cooldown = $cooldown;
+
+        return $this;
+    }
+
+    public function getCooldown(): int
+    {
+        return $this->cooldown;
+    }
+
     public function toArray(): array
     {
         return [
             "id"            => $this->npcId ?? uniqid("npc"),
             "name"          => $this->getNameTag(),
             "command"       => $this->getStoredCommand(),
+            "cooldown"      => $this->getCooldown(),
             "world"         => $this->getLocation()->getWorld()->getFolderName(),
             "x"             => $this->getLocation()->getX(),
             "y"             => $this->getLocation()->getY(),

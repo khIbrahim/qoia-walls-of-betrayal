@@ -7,9 +7,11 @@ use fenomeno\WallsOfBetrayal\Entities\Types\NpcEntity;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\CustomForm;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\CustomFormResponse;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\element\Input;
+use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\element\Slider;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\element\Toggle;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\MenuForm;
 use fenomeno\WallsOfBetrayal\libs\dktapps\pmforms\MenuOption;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
@@ -23,22 +25,32 @@ final class NpcMenus {
     private const FIELD_NAME = 'name';
     private const FIELD_COMMAND = 'command';
     private const FIELD_SKIN = 'skin_url';
+    private const FIELD_COOLDOWN = 'cooldown';
 
     public static function sendCreateMenu(Player $player, string $id): void {
         $menu = new CustomForm(
             title: MessagesUtils::getMessage(MessagesIds::NPC_CREATE_MENU_TITLE, [ExtraTags::ID => $id]),
             elements: [
-                new Input(self::FIELD_NAME,    MessagesUtils::getMessage(MessagesIds::NPC_CREATE_MENU_NAME_INPUT), "Guide"),
+                new Input(self::FIELD_NAME, MessagesUtils::getMessage(MessagesIds::NPC_CREATE_MENU_NAME_INPUT), "Guide"),
                 new Input(self::FIELD_COMMAND, MessagesUtils::getMessage(MessagesIds::NPC_CREATE_MENU_COMMAND_INPUT), MessagesUtils::getMessage(MessagesIds::NPC_CREATE_MENU_COMMAND_HIDDEN_INPUT)),
+                new Slider(self::FIELD_COOLDOWN, MessagesUtils::getMessage(MessagesIds::NPC_CREATE_MENU_COOLDOWN_INPUT), 0.0, 60.0, 1.0, (float) MessagesUtils::getMessage(MessagesIds::NPC_CREATE_MENU_COOLDOWN_INPUT)),
             ],
             onSubmit: function(Player $player, CustomFormResponse $response) use ($id): void {
-                $name    = trim($response->getString(self::FIELD_NAME));
-                $command = trim($response->getString(self::FIELD_COMMAND));
+                $name     = trim($response->getString(self::FIELD_NAME));
+                $command  = trim($response->getString(self::FIELD_COMMAND));
+                try {
+                    $cooldown = $response->getInt(self::FIELD_COOLDOWN);
+                } catch (Throwable){
+                    $cooldown = $response->getFloat(self::FIELD_COOLDOWN);
+                } finally {
+                    $cooldown = (int) $cooldown;
+                }
 
                 if ($name === ""){
                     MessagesUtils::sendTo($player, MessagesIds::NPC_CREATE_MENU_NAME_EMPTY);
                     return;
                 }
+
                 if ($command === ""){
                     MessagesUtils::sendTo($player, MessagesIds::NPC_CREATE_MENU_COMMAND_EMPTY);
                     return;
@@ -52,17 +64,16 @@ final class NpcMenus {
                         skin: $skin,
                         id: $id,
                         command: $command,
-                        name: $name
+                        name: $name,
+                        cooldown: $cooldown
                     );
                     $npc->spawnToAll();
-                    Main::getInstance()->getNpcManager()->add($npc);
-
-                    MessagesUtils::sendTo($player, MessagesIds::NPC_CREATE_MENU_SUCCESS, [ExtraTags::NPC => $id]);
-                } catch (Throwable $e){
-                    MessagesUtils::sendTo($player, MessagesIds::ERROR, [ExtraTags::ERROR => $e->getMessage()]);
-                    Main::getInstance()->getLogger()->error("Failed to create npc $id with name: $name, command: $command by {$player->getName()}: " . $e->getMessage());
-                    Main::getInstance()->getLogger()->logException($e);
-                }
+                    Await::g2c(
+                        Main::getInstance()->getNpcManager()->add($npc),
+                        fn (NpcEntity $npc) => MessagesUtils::sendTo($player, MessagesIds::NPC_CREATE_MENU_SUCCESS, [ExtraTags::NPC => $id]),
+                        fn (Throwable $e)   => Utils::onFailure($e, null, "Failed to add npc $id to the manager from the init entity:" . $e->getMessage())
+                    );
+                } catch (Throwable $e){Utils::onFailure($e, $player, "Failed to create npc $id with name: $name, command: $command by {$player->getName()}: " . $e->getMessage());}
             }
         );
         $player->sendForm($menu);
@@ -74,16 +85,25 @@ final class NpcMenus {
             elements: [
                 new Input(self::FIELD_NAME, MessagesUtils::getMessage(MessagesIds::NPC_EDIT_MENU_NAME_INPUT), $npc->getNameTag(), $npc->getNameTag()),
                 new Input(self::FIELD_COMMAND, MessagesUtils::getMessage(MessagesIds::NPC_EDIT_MENU_COMMAND_INPUT), $npc->getStoredCommand(), $npc->getStoredCommand()),
+                new Slider(self::FIELD_COOLDOWN, MessagesUtils::getMessage(MessagesIds::NPC_EDIT_MENU_COOLDOWN_INPUT), 0.0, 60.0, 1.0, (float) $npc->getCooldown()),
                 new Toggle(self::FIELD_SKIN, MessagesUtils::getMessage(MessagesIds::NPC_EDIT_MENU_SKIN_TOGGLE))
             ],
             onSubmit: function(Player $player, CustomFormResponse $response) use ($npc): void {
                 $name       = trim($response->getString(self::FIELD_NAME));
                 $command    = trim($response->getString(self::FIELD_COMMAND));
                 $updateSkin = $response->getBool(self::FIELD_SKIN);
+                try {
+                    $cooldown = $response->getInt(self::FIELD_COOLDOWN);
+                } catch (Throwable){
+                    $cooldown = $response->getFloat(self::FIELD_COOLDOWN);
+                } finally {
+                    $cooldown = (int) $cooldown;
+                }
 
                 try {
                     $npc->setNameTag($name);
                     $npc->setCommand($command);
+                    $npc->setCooldown($cooldown);
                     if ($updateSkin){
                         $npc->setSkin($player->getSkin());
                         $npc->sendSkin();

@@ -445,9 +445,10 @@ npc:
         emptyName: "{NPC_PREFIX}{RED}Name is empty."
         emptyCommand: "{NPC_PREFIX}{RED}Command is empty."
       title: "Create NPC {ID}"
-      name-input: "Enter NPC name"
+      name-input: 'Enter NPC name (New line : \n)'
       command-input: "Enter NPC Command without /"
       command-input-hidden: "lobby"
+      cooldown-slider: "Enter cooldown: "
     success: "{NPC_PREFIX}{GREEN}You have successfully created npc {NPC}."
   removed: "{NPC_PREFIX}{YELLOW}You have successfully removed npc {NPC}."
   move:
@@ -457,9 +458,10 @@ npc:
   edit:
     menu:
       title: "Edit Npc {NPC}"
-      name-input: "Display Name"
+      name-input: 'Display Name (New line : \n)'
       command-input: "Command (without /)"
       skin-toggle: "Toggle the button to update NPC's skin"
+      cooldown-slider: "Enter cooldown: "
     success: "{NPC_PREFIX}{GREEN}You have successfully updated NPC {NPC}, parameters saved."
   list:
     menu:
@@ -474,6 +476,9 @@ npc:
       edit-button: "§bEdit"
       move-button: "§eMove NPC here"
       remove-button: "§cRemove"
+  cooldown:
+    message: "{NPC_PREFIX}{RED}Wait {TIME} seconds..."
+    type: "popup"
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

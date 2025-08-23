@@ -179,5 +179,8 @@ final class MessagesIds
     public const NPC_ACTIONS_MENU_REMOVE_BUTTON = 'npc.actions.menu.remove-button';
     public const ALREADY_IN_KINGDOM = 'kingdoms.errors.alreadyInKingdom';
     public const UNKNOWN_KINGDOM = 'kingdoms.errors.unknownKingdom';
+    public const NPC_COOLDOWN = 'npc.cooldown';
+    public const NPC_CREATE_MENU_COOLDOWN_INPUT = 'npc.create.menu.cooldown-slider';
+    public const NPC_EDIT_MENU_COOLDOWN_INPUT = 'npc.edit.menu.cooldown-slider';
 
 }
