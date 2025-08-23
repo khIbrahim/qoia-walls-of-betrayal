@@ -24,4 +24,14 @@ class PositionHelper {
         return new Position($data["x"], $data["y"], $data["z"], $world);
     }
 
+    public static function positionToArray(Position $position): array
+    {
+        return [
+            'x'     => (float) $position->x,
+            'y'     => (float) $position->y,
+            'z'     => (float) $position->z,
+            'world' => $position->getWorld()->getFolderName()
+        ];
+    }
+
 }

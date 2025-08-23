@@ -3,6 +3,7 @@ namespace fenomeno\WallsOfBetrayal;
 
 use Exception;
 use fenomeno\WallsOfBetrayal\Blocks\BlockManager;
+use fenomeno\WallsOfBetrayal\Commands\Admin\FloatingTextCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\GiveKitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\NpcCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SpawnerCommand;
@@ -63,6 +64,7 @@ use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\BlocksListener;
 use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
+use fenomeno\WallsOfBetrayal\Listeners\FloatingTextListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\NpcListener;
@@ -71,6 +73,7 @@ use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Listeners\StaffListener;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
+use fenomeno\WallsOfBetrayal\Manager\FloatingTextManager;
 use fenomeno\WallsOfBetrayal\Manager\NpcManager;
 use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
@@ -89,17 +92,18 @@ class Main extends PluginBase
 {
     use SingletonTrait;
 
-    private KingdomManager    $kingdomManager;
-    private DatabaseManager   $databaseManager;
-    private PhaseManager      $phaseManager;
-    private KitsManager       $kitsManager;
-    private AbilityManager    $abilityManager;
-    private ShopManager       $shopManager;
-    private CooldownManager   $cooldownManager;
-    private EconomyManager    $economyManager;
-    private RolesManager      $rolesManager;
-    private PunishmentManager $punishmentManager;
-    private NpcManager        $npcManager;
+    private KingdomManager      $kingdomManager;
+    private DatabaseManager     $databaseManager;
+    private PhaseManager        $phaseManager;
+    private KitsManager         $kitsManager;
+    private AbilityManager      $abilityManager;
+    private ShopManager         $shopManager;
+    private CooldownManager     $cooldownManager;
+    private EconomyManager      $economyManager;
+    private RolesManager        $rolesManager;
+    private PunishmentManager   $punishmentManager;
+    private NpcManager          $npcManager;
+    private FloatingTextManager $floatingTextManager;
 
     protected function onLoad(): void
     {
@@ -124,17 +128,18 @@ class Main extends PluginBase
                 DiscordWebhook::init($this);
             }
 
-            $this->databaseManager   = new DatabaseManager($this);
-            $this->abilityManager    = new AbilityManager($this);
-            $this->kingdomManager    = new KingdomManager($this);
-            $this->phaseManager      = new PhaseManager($this);
-            $this->kitsManager       = new KitsManager($this);
-            $this->shopManager       = new ShopManager($this);
-            $this->cooldownManager   = new CooldownManager($this);
-            $this->economyManager    = new EconomyManager($this);
-            $this->rolesManager      = new RolesManager($this);
-            $this->punishmentManager = new PunishmentManager($this);
-            $this->npcManager        = new NpcManager($this);
+            $this->databaseManager     = new DatabaseManager($this);
+            $this->abilityManager      = new AbilityManager($this);
+            $this->kingdomManager      = new KingdomManager($this);
+            $this->phaseManager        = new PhaseManager($this);
+            $this->kitsManager         = new KitsManager($this);
+            $this->shopManager         = new ShopManager($this);
+            $this->cooldownManager     = new CooldownManager($this);
+            $this->economyManager      = new EconomyManager($this);
+            $this->rolesManager        = new RolesManager($this);
+            $this->punishmentManager   = new PunishmentManager($this);
+            $this->npcManager          = new NpcManager($this);
+            $this->floatingTextManager = new FloatingTextManager($this);
 
             EntityManager::getInstance()->startup($this);
             TileManager::getInstance()->startup();
@@ -184,7 +189,8 @@ class Main extends PluginBase
                 new HistoryCommand($this),
                 new RandomTpCommand($this),
                 new InvseeCommand($this),
-                new NpcCommand($this)
+                new NpcCommand($this),
+                new FloatingTextCommand($this)
             ]);
 
             $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -199,6 +205,7 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new PunishmentListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new StaffListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new NpcListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new FloatingTextListener($this), $this);
 
             Await::g2c(
                 $this->loadDependencies(),
@@ -277,6 +284,11 @@ class Main extends PluginBase
         return $this->npcManager;
     }
 
+    public function getFloatingTextManager(): FloatingTextManager
+    {
+        return $this->floatingTextManager;
+    }
+
     protected function onDisable(): void
     {
         $this->phaseManager->save();
@@ -284,6 +296,8 @@ class Main extends PluginBase
 
         $this->databaseManager->waitAll();
         $this->databaseManager->close();
+
+        $this->floatingTextManager->cleanup();
     }
 
     public function loadDependencies(): Generator

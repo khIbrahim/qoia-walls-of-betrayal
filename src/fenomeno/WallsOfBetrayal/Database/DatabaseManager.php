@@ -5,6 +5,7 @@ use fenomeno\WallsOfBetrayal\Database\BinaryParser\MySQLBinaryStringParser;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\BinaryStringParserInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\CooldownRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\FloatingTextRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KingdomRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
@@ -13,6 +14,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryI
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\VaultRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\FloatingTextRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KingdomRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
@@ -50,6 +52,7 @@ class DatabaseManager
     private PunishmentRepositoryInterface $muteRepository;
     private PunishmentRepositoryInterface $banRepository;
     private PunishmentRepositoryInterface $reportRepository;
+    private FloatingTextRepositoryInterface $floatingTextRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
     private BigEndianNbtSerializer $nbtSerializer;
@@ -95,6 +98,9 @@ class DatabaseManager
 
             $this->reportRepository = new ReportRepository($this->main);
             $this->reportRepository->init($this);
+
+            $this->floatingTextRepository = new FloatingTextRepository($this->main);
+            $this->floatingTextRepository->init($this);
 
             $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
@@ -151,6 +157,11 @@ class DatabaseManager
     public function getReportRepository(): PunishmentRepositoryInterface
     {
         return $this->reportRepository;
+    }
+
+    public function getFloatingTextRepository(): FloatingTextRepositoryInterface
+    {
+        return $this->floatingTextRepository;
     }
 
     public function __call(string $name, array $arguments)

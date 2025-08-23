@@ -59,5 +59,9 @@ final class ExtraTags
     const TARGET = '{TARGET}';
     const NPC = '{NPC}';
     const NAME = '{NAME}';
+    const WORLD = '{WORLD}';
+    const PING = '{PING}';
+    const FLOATING_TEXT = '{FLOATING_TEXT}';
+    const LINES = '{LINES}';
 
 }

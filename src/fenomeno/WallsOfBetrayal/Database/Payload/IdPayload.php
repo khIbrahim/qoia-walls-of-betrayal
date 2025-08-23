@@ -8,7 +8,7 @@ readonly class IdPayload implements PayloadInterface
 {
 
     public function __construct(
-        public string $id
+        public int|string $id
     ){}
 
     public function jsonSerialize(): array

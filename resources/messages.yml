@@ -10,6 +10,7 @@ theme:
     roles: "§r§7§lRoles §8»§r "
     punishment: "§r§c§lPunishment §8»§r "
     npc: "§r§e§lNpc §8»§r "
+    floatingText: "§r§7§lFloatingText §8»§r "
 
   colors:
     RED: "§c"
@@ -479,6 +480,30 @@ npc:
   cooldown:
     message: "{NPC_PREFIX}{RED}Wait {TIME} seconds..."
     type: "popup"
+
+# ---------------------------------------------------------------------------
+
+
+# ---------------------------------------------------------------------------
+
+floatingTexts:
+  errors:
+    noLines: "{FLOATINGTEXT_PREFIX}{RED}You need to provide at least one line on the create menu."
+    alreadyExists: "{FLOATINGTEXT_PREFIX}{RED}Floating Text with id {FLOATING_TEXT} already exists"
+    unknown: "{FLOATINGTEXT_PREFIX}{RED}Unknown Floating Text {FLOATING_TEXT}."
+  create:
+    success: "{FLOATINGTEXT_PREFIX}{GREEN}You have successfully created floating text {FLOATING_TEXT}"
+  edit:
+    removedLastLine: "{FLOATINGTEXT_PREFIX}{GREEN}Removed last line, saving on finish."
+    success: "{FLOATINGTEXT_PREFIX}{GREEN}Successfully edit floating text {FLOATING_TEXT}"
+    menu:
+      title: "{GOLD}Edit Floating Text §f({FLOATING_TEXT})"
+      current-text-label: "§7Current Text : \n{LINES}"
+      add-line: "{GRAY}Add a new line"
+      delete-line: "{RED}Delete last line ?"
+      finish: "{GREEN}Finish and save"
+  remove:
+    success: "{FLOATINGTEXT_PREFIX}{GREEN}Successfully removed floating text {FLOATING_TEXT}"
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

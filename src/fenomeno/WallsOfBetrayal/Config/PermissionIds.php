@@ -38,6 +38,11 @@ final class PermissionIds
     public const NPC_LIST = 'wob.command.npc.list';
     public const NPC_MOVE = 'wob.command.npc.move';
     public const NPC_TP = 'wob.command.npc.tp';
+    public const FLOATING_TEXT = 'wob.command.floatingtext';
+    public const FLOATING_TEXT_CREATE = 'wob.command.floatingtext.create';
+    public const FLOATING_TEXT_DELETE = 'wob.command.floatingtext.delete';
+    public const FLOATING_TEXT_EDIT = 'wob.command.floatingtext.edit';
+    public const FLOATING_TEXT_LIST = 'wob.command.floatingtext.list';
 
     public static function getVaultPerm(int $number): string
     {

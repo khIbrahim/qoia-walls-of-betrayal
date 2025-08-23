@@ -57,5 +57,10 @@ final class CommandsIds
     public const NPC_LIST = 'npc-list';
     public const NPC_MOVE = 'npc-move';
     public const NPC_TP = 'npc-tp';
+    public const FLOATING_TEXT = 'floating-text';
+    public const FLOATING_TEXT_CREATE = 'floating-text-create';
+    public const FLOATING_TEXT_DELETE = 'floating-text-delete';
+    public const FLOATING_TEXT_EDIT = 'floating-text-edit';
+    public const FLOATING_TEXT_LIST = 'floating-text-list';
 
 }

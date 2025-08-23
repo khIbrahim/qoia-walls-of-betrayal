@@ -131,3 +131,13 @@ permissions:
     default: op
   wob.command.npc.tp:
     default: op
+  wob.command.floatingtext:
+    default: op
+  wob.command.floatingtext.create:
+    default: op
+  wob.command.floatingtext.delete:
+    default: op
+  wob.command.floatingtext.list:
+    default: op
+  wob.command.floatingtext.edit:
+    default: op

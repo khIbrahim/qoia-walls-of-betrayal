@@ -182,5 +182,17 @@ final class MessagesIds
     public const NPC_COOLDOWN = 'npc.cooldown';
     public const NPC_CREATE_MENU_COOLDOWN_INPUT = 'npc.create.menu.cooldown-slider';
     public const NPC_EDIT_MENU_COOLDOWN_INPUT = 'npc.edit.menu.cooldown-slider';
+    public const FLOATING_TEXT_MISSING_LINE = 'floatingTexts.errors.noLines';
+    public const FLOATING_TEXT_CREATE_SUCCESS = 'floatingTexts.create.success';
+    public const FLOATING_TEXT_ALREADY_EXISTS = 'floatingTexts.errors.alreadyExists';
+    public const FLOATING_TEXT_REMOVE_SUCCESS = 'floatingTexts.remove.success';
+    public const UNKNOWN_FLOATING_TEXT = 'floatingTexts.errors.unknown';
+    public const FLOATING_TEXT_EDIT_MENU_TITLE = 'floatingTexts.edit.menu.title';
+    public const FLOATING_TEXT_EDIT_MENU_CURRENT_TEXT = 'floatingTexts.edit.menu.current-text-label';
+    public const FLOATING_TEXT_EDIT_MENU_ADD_LINE = 'floatingTexts.edit.menu.add-line';
+    public const FLOATING_TEXT_EDIT_MENU_DELETE_LINE = 'floatingTexts.edit.menu.delete-line';
+    public const FLOATING_TEXT_EDIT_MENU_FINISH = 'floatingTexts.edit.menu.finish';
+    public const FLOATING_TEXT_DELETED_LAST_LINE = 'floatingTexts.edit.removedLastLine';
+    public const FLOATING_TEXT_EDIT_SUCCESS = 'floatingTexts.edit.success';
 
 }

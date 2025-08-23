@@ -365,3 +365,36 @@ npc-tp:
   name: "tp"
   description: "§8§oTeleport to NPC"
   usage: "§e/npc tp <id> §8- §7Teleport to npc"
+
+floating-text:
+  name: "floatingtext"
+  description: "§8§oManage Floating Texts"
+  usage: "§e/ft <create|delete|list|modify> §8- §7Manage Floating Texts"
+  aliases:
+    - "ft"
+
+floating-text-create:
+  name: "create"
+  description: "§8§oCreate Floating Text"
+  usage: "§e/ft create <id> §8- §7Create Floating Text"
+  aliases:
+    - "add"
+
+floating-text-edit:
+  name: "edit"
+  description: "§8§oEdit Floating Text"
+  usage: "§e/ft edit <id> §8- §7Edit Floating Text"
+  aliases:
+    - "modify"
+
+floating-text-delete:
+  name: "delete"
+  description: "§8§oDelete Floating Text"
+  usage: "§e/ft delete <id> §8- §7Delete Floating Text"
+  aliases:
+    - "remove"
+
+floating-text-list:
+  name: "list"
+  description: "§8§oOpen Floating Text List Menu"
+  usage: "§e/ft list §8- §7Open Floating Text List Menu"

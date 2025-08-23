@@ -10,11 +10,14 @@ interface Statements
     public const LOAD_PLAYER_BY_NAME            = 'players.loadByName';
     public const INSERT_PLAYER                  = 'players.insert';
     public const SET_KINGDOM_PLAYER             = 'players.setKingdom';
+
     public const LOAD_KIT_REQUIREMENT           = 'kit_requirements.getByKingdomAndKit';
     public const INSERT_KIT_REQUIREMENT         = 'kit_requirements.insert';
     public const INCREMENT_KIT_REQUIREMENT      = 'kit_requirements.increment';
     public const INIT_KIT_REQUIREMENT           = 'kit_requirements.init';
+
     public const UPDATE_PLAYER_ABILITIES        = 'players.updateAbilities';
+
     public const INIT_COOLDOWNS                 = 'cooldowns.init';
     public const GET_ACTIVE_COOLDOWNS           = 'cooldowns.getActive';
     public const GET_PLAYER_COOLDOWNS_COOLDOWNS = 'cooldowns.getPlayerCooldowns';
@@ -22,6 +25,7 @@ interface Statements
     public const REMOVE_COOLDOWN                = 'cooldowns.remove';
     public const CLEANUP_EXPIRED_COOLDOWNS      = 'cooldowns.cleanupExpired';
     public const GET_PLAYER_COOLDOWN            = 'cooldowns.getPlayerSpecificCooldown';
+
     public const INIT_ECONOMY                   = 'economy.init';
     public const GET_ECONOMY                    = 'economy.get';
     public const INSERT_ECONOMY                 = 'economy.insert';
@@ -35,6 +39,7 @@ interface Statements
     public const TRANSFER_ROLLBACK              = 'economy.transfer.rollback';
     public const TRANSFER_DEBIT_SENDER          = 'economy.transfer.debitSender';
     public const CREDIT_RECEIVER                = 'economy.transfer.creditReceiver';
+
     public const INIT_ROLES                     = 'roles.init';
     public const GET_PLAYER_ROLE                = 'roles.get';
     public const INSERT_PLAYER_ROLE             = 'roles.assign';
@@ -43,9 +48,11 @@ interface Statements
     public const UPDATE_PLAYER_PERMISSIONS      = 'roles.updatePermissions';
     public const GET_PLAYER_SUBROLES            = 'roles.getSubRoles';
     public const UPDATE_PLAYER_SUBROLES         = 'roles.updateSubRoles';
+
     public const INIT_VAULT                     = 'vaults.init';
     public const OPEN_VAULT                     = 'vaults.open';
     public const CLOSE_VAULT                    = 'vaults.close';
+
     public const INIT_KINGDOMS                  = 'kingdoms.init';
     public const LOAD_KINGDOM                   = 'kingdoms.get';
     public const INSERT_KINGDOM                 = 'kingdoms.insert';
@@ -79,5 +86,11 @@ interface Statements
     public const REPORT_GET     = "report.get";
     public const REPORT_DELETE  = "report.delete";
     public const REPORT_ARCHIVE = "report.archive";
+
+    public const INIT_FLOATING_TEXT = 'floatingText.init';
+    public const LOAD_FLOATING_TEXTS = 'floatingText.load';
+    public const CREATE_FLOATING_TEXT = 'floatingText.create';
+    public const REMOVE_FLOATING_TEXT = 'floatingText.remove';
+    public const UPDATE_FLOATING_TEXT = 'floatingText.updateText';
 
 }
