@@ -4,7 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\LoadKingdomPayload;
 use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
-use fenomeno\WallsOfBetrayal\Entities\PortalEntity;
+use fenomeno\WallsOfBetrayal\Entities\Types\PortalEntity;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\EntityFactoryUtils;
 use fenomeno\WallsOfBetrayal\Utils\PositionHelper;

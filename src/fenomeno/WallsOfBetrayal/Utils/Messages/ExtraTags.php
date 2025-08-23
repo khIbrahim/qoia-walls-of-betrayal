@@ -57,5 +57,7 @@ final class ExtraTags
     const ID = '{ID}';
     const APPEAL_LINK = '{APPEAL_LINK}';
     const TARGET = '{TARGET}';
+    const NPC = '{NPC}';
+    const NAME = '{NAME}';
 
 }

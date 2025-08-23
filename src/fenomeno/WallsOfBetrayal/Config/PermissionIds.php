@@ -31,6 +31,13 @@ final class PermissionIds
     public const HISTORY = 'wob.command.history';
     public const RANDOM_TP = 'wob.command.randomtp';
     public const INVSEE = 'wob.command.invsee';
+    public const NPC = 'wob.command.npc';
+    public const NPC_REMOVE = 'wob.command.npc.remove';
+    public const NPC_CREATE = 'wob.command.npc.create';
+    public const NPC_EDIT = 'wob.command.npc.edit';
+    public const NPC_LIST = 'wob.command.npc.list';
+    public const NPC_MOVE = 'wob.command.npc.move';
+    public const NPC_TP = 'wob.command.npc.tp';
 
     public static function getVaultPerm(int $number): string
     {

@@ -2,11 +2,13 @@
 
 namespace fenomeno\WallsOfBetrayal\Entities;
 
+use fenomeno\WallsOfBetrayal\Entities\Types\NpcEntity;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\entity\Entity;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\entity\EntityFactory;
+use pocketmine\entity\Human;
 use pocketmine\entity\Living;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\utils\Config;
@@ -39,7 +41,7 @@ class EntityManager {
         /** @var array<string, int> $entityIdMap */
         $entityIdMap = json_decode(file_get_contents(BEDROCK_DATA_PATH . "/entity_id_map.json"), true);
         foreach(["passive", "neutral", "monster"] as $type){
-            Utils::callDirectory("Entities/$type", function (string $namespace)use($type, $entityIdMap): void{
+            Utils::callDirectory("Entities/$type", function (string $namespace)use($main, $type, $entityIdMap): void{
                 try {
                     /** @var Living $namespace */
                     $saveNames = [ucfirst(str_replace("_", " ", str_replace("minecraft:", "", $namespace::getNetworkTypeId()))), $namespace::getNetworkTypeId()];
@@ -51,13 +53,15 @@ class EntityManager {
                     $info = new EntityInfo($namespace, $entityId, $name, $legacyId);
                     $this->entityInfoMap[$legacyId] = $info;
                 } catch (Throwable $e) {
-                    Main::getInstance()->getLogger()->error("Failed to register entity $namespace: " . $e->getMessage());
+                    $main->getLogger()->error("Failed to register entity $namespace: " . $e->getMessage());
                 }
             });
         }
 
         $entitiesNames = array_map(fn(EntityInfo $info) => $info->getName(), $this->entityInfoMap);
-        Main::getInstance()->getLogger()->info("§aENTITIES - Registered §6(" . count($this->entities) . ") §aentities: §6(" . implode(", ", $entitiesNames) . "§6)");
+        $main->getLogger()->info("§aENTITIES - Registered §6(" . count($this->entities) . ") §aentities: §6(" . implode(", ", $entitiesNames) . "§6)");
+
+        $this->registerTypes();
     }
 
     public function getEntitiesInfo(): array
@@ -102,6 +106,13 @@ class EntityManager {
     public function isEntityEnabled(string $entity): bool
     {
         return isset($this->mobs[$entity]) && $this->mobs[$entity] === true;
+    }
+
+    private function registerTypes(): void
+    {
+        EntityFactory::getInstance()->register(NpcEntity::class, function (World $world, CompoundTag $nbt): NpcEntity {
+            return new NpcEntity(EntityDataHelper::parseLocation($nbt, $world), Human::parseSkinNBT($nbt), $nbt);
+        }, ['WobNPC']);
     }
 
 }

@@ -36,7 +36,6 @@ final class CommandsIds
     public const MUTE = 'mute';
     public const UNMUTE = 'unmute';
     public const MUTE_LIST = 'mute-list';
-    public const MUTE_HISTORY = 'mute-history';
     public const BAN = 'ban';
     public const UNBAN = 'unban';
     public const TEMP_BAN = 'temp-ban';
@@ -51,5 +50,12 @@ final class CommandsIds
     public const HISTORY = 'history';
     public const RANDOM_TP = 'randomtp';
     public const INVSEE = 'invsee';
+    public const NPC = 'npc';
+    public const NPC_REMOVE = 'npc-remove';
+    public const NPC_EDIT = 'npc-edit';
+    public const NPC_CREATE = 'npc-create';
+    public const NPC_LIST = 'npc-list';
+    public const NPC_MOVE = 'npc-move';
+    public const NPC_TP = 'npc-tp';
 
 }

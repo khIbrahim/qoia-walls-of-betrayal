@@ -117,3 +117,17 @@ permissions:
     default: op
   wob.command.invsee:
     default: op
+  wob.command.npc:
+    default: op
+  wob.command.npc.remove:
+    default: op
+  wob.command.npc.edit:
+    default: op
+  wob.command.npc.create:
+    default: op
+  wob.command.npc.list:
+    default: op
+  wob.command.npc.move:
+    default: op
+  wob.command.npc.tp:
+    default: op

@@ -1,6 +1,6 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Entities;
+namespace fenomeno\WallsOfBetrayal\Entities\Types;
 
 use fenomeno\WallsOfBetrayal\Main;
 use pocketmine\entity\EntitySizeInfo;

@@ -320,3 +320,48 @@ invsee:
   name: "invsee"
   description: "§7§oOpen player inventory"
   usage: "§e/randomtp §8– §7Open player inventory"
+
+npc:
+  name: "npc"
+  description: "§8§o Manage NPCs"
+  usage: "/npc <create|edit|list|remove|move|tp>"
+  aliases:
+    - "pnj"
+
+npc-remove:
+  name: "remove"
+  description: "§8§oDelete NPC by its id"
+  usage: "§e/npc remove <id> §8- §7Delete NPC"
+  aliases:
+    - "delete"
+
+npc-edit:
+  name: "edit"
+  description: "§8§oEdit NPC by its id"
+  usage: "§e/npc edit <id> §8- §7Edit NPC"
+  aliases:
+    - "modify"
+
+npc-create:
+  name: "create"
+  description: "§8§oCreate NPC"
+  usage: "§e/npc create <id> §8- §7Create NPC"
+  aliases:
+    - "add"
+
+npc-list:
+  name: "list"
+  description: "§8§oOpen NPC List Menu"
+  usage: "§e/npc list §8- §7Open NPC List Menu"
+  aliases:
+    - "all"
+
+npc-move:
+  name: "move"
+  description: "§8§oMove NPC to your position"
+  usage: "§e/npc list §8- §7Move NPC to your position"
+
+npc-tp:
+  name: "tp"
+  description: "§8§oTeleport to NPC"
+  usage: "§e/npc tp <id> §8- §7Teleport to npc"

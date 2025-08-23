@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal;
 use Exception;
 use fenomeno\WallsOfBetrayal\Blocks\BlockManager;
 use fenomeno\WallsOfBetrayal\Commands\Admin\GiveKitCommand;
+use fenomeno\WallsOfBetrayal\Commands\Admin\NpcCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SpawnerCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\AddBalanceCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\RemoveBalanceCommand;
@@ -64,11 +65,13 @@ use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
+use fenomeno\WallsOfBetrayal\Listeners\NpcListener;
 use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Listeners\StaffListener;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
+use fenomeno\WallsOfBetrayal\Manager\NpcManager;
 use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Roles\RolesManager;
@@ -96,6 +99,7 @@ class Main extends PluginBase
     private EconomyManager    $economyManager;
     private RolesManager      $rolesManager;
     private PunishmentManager $punishmentManager;
+    private NpcManager        $npcManager;
 
     protected function onLoad(): void
     {
@@ -120,16 +124,17 @@ class Main extends PluginBase
                 DiscordWebhook::init($this);
             }
 
-            $this->databaseManager = new DatabaseManager($this);
-            $this->abilityManager  = new AbilityManager($this);
-            $this->kingdomManager  = new KingdomManager($this);
-            $this->phaseManager    = new PhaseManager($this);
-            $this->kitsManager     = new KitsManager($this);
-            $this->shopManager     = new ShopManager($this);
-            $this->cooldownManager = new CooldownManager($this);
-            $this->economyManager  = new EconomyManager($this);
-            $this->rolesManager    = new RolesManager($this);
+            $this->databaseManager   = new DatabaseManager($this);
+            $this->abilityManager    = new AbilityManager($this);
+            $this->kingdomManager    = new KingdomManager($this);
+            $this->phaseManager      = new PhaseManager($this);
+            $this->kitsManager       = new KitsManager($this);
+            $this->shopManager       = new ShopManager($this);
+            $this->cooldownManager   = new CooldownManager($this);
+            $this->economyManager    = new EconomyManager($this);
+            $this->rolesManager      = new RolesManager($this);
             $this->punishmentManager = new PunishmentManager($this);
+            $this->npcManager        = new NpcManager($this);
 
             EntityManager::getInstance()->startup($this);
             TileManager::getInstance()->startup();
@@ -178,7 +183,8 @@ class Main extends PluginBase
                 new FreezeCommand($this),
                 new HistoryCommand($this),
                 new RandomTpCommand($this),
-                new InvseeCommand($this)
+                new InvseeCommand($this),
+                new NpcCommand($this)
             ]);
 
             $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -192,6 +198,7 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new BlocksListener(), $this);
             $this->getServer()->getPluginManager()->registerEvents(new PunishmentListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new StaffListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new NpcListener($this), $this);
 
             Await::g2c(
                 $this->loadDependencies(),
@@ -263,6 +270,11 @@ class Main extends PluginBase
     public function getPunishmentManager(): PunishmentManager
     {
         return $this->punishmentManager;
+    }
+
+    public function getNpcManager(): NpcManager
+    {
+        return $this->npcManager;
     }
 
     protected function onDisable(): void

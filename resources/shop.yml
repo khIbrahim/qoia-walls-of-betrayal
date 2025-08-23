@@ -4,375 +4,85 @@ categories:
     display-name: "§r§aFARMING"
     items:
       - item: "wheat"
-        display-name: "§r§eWheat x16"
-        count: 16
-        buy: 160
-        sell: 40
+        display-name: "§r§e🌾 Wheat x1"
+        count: 1
+        buy: 20
+        sell: 5
       - item: "carrot"
-        display-name: "§r§6Carrots x16"
-        count: 16
-        buy: 240
-        sell: 64
-      - item: "potato"
-        display-name: "§r§6Potatoes x16"
-        count: 16
-        buy: 240
-        sell: 64
-      - item: "beetroot"
-        display-name: "§r§6Beetroot x16"
-        count: 16
-        buy: 220
-        sell: 56
+        display-name: "§r§6🥕 Carrots x1"
+        count: 1
+        buy: 30
+        sell: 8
       - item: "bread"
-        display-name: "§r§fBread x16"
-        count: 16
-        buy: 800
+        display-name: "§r§f🍞 Bread x1"
+        count: 1
+        buy: 100
         sell: 0
+      - item: "cooked_porkchop"
+        display-name: "§r§d🐖 Cooked Pork x1"
+        count: 1
+        buy: 50
+        sell: 12
       - item: "cooked_mutton"
-        display-name: "§r§dCooked Mutton x16"
-        count: 16
-        buy: 800
-        sell: 192
-      - item: "cooked_beef"
-        display-name: "§r§dSteak x16"
-        count: 16
-        buy: 900
-        sell: 224
+        display-name: "§r§d🐑 Cooked Mutton x1"
+        count: 1
+        buy: 50
+        sell: 12
 
   combat:
-    icon: "iron_sword"
+    icon: "diamond_sword"
     display-name: "§r§cCOMBAT"
     items:
       - item: "tnt"
-        display-name: "§r§cTNT x16"
+        display-name: "§r§c🧨 TNT x16"
         count: 16
         buy: 4000
         sell: 0
-      - item: "bow"
-        display-name: "§r§fBow"
-        count: 1
-        buy: 1200
-        sell: 240
-      - item: "arrow"
-        display-name: "§r§7Arrows x64"
-        count: 64
-        buy: 640
-        sell: 96
-      - item: "iron_sword"
-        display-name: "§r§fIron Sword"
-        count: 1
-        buy: 2500
-        sell: 500
-      - item: "diamond_sword"
-        display-name: "§r§bDiamond Sword"
-        count: 1
-        buy: 18000
-        sell: 4000
-      - item: "Bow"
-        display-name: "§r§7Bow"
-        count: 1
-        buy: 2200
-        sell: 440
+      - item: "potion"
+        display-name: "§r§d🧪 Potion Bundle (Speed II x2, Strength I x1)"
+        count: 3
+        buy: 6000
+        sell: 0
       - item: "golden_apple"
-        display-name: "§r§6Golden Apples x4"
+        display-name: "§r§6🍗 Golden Apples x4"
         count: 4
         buy: 7500
         sell: 1500
+      - item: "diamond_sword"
+        display-name: "§r§b🗡️ Diamond Sword (Sharp II, Unbreaking I)"
+        count: 1
+        buy: 18000
+        sell: 4000
 
   armor:
     icon: "iron_chestplate"
     display-name: "§r§fARMOR"
     items:
-      - item: "leather_chestplate"
-        display-name: "§r§7Leather Chestplate"
-        count: 1
-        buy: 400
-        sell: 80
-      - item: "iron_helmet"
-        display-name: "§r§fIron Helmet"
-        count: 1
-        buy: 1800
-        sell: 360
       - item: "iron_chestplate"
-        display-name: "§r§fIron Chestplate"
+        display-name: "§r§f🛡️ Iron Armor Set (Full)"
         count: 1
-        buy: 5000
-        sell: 1000
-      - item: "iron_leggings"
-        display-name: "§r§fIron Leggings"
-        count: 1
-        buy: 4200
-        sell: 840
-      - item: "iron_boots"
-        display-name: "§r§fIron Boots"
-        count: 1
-        buy: 1600
-        sell: 320
-      - item: "diamond_helmet"
-        display-name: "§r§bDiamond Helmet"
-        count: 1
-        buy: 9000
-        sell: 2000
+        buy: 15000
+        sell: 3000
       - item: "diamond_chestplate"
-        display-name: "§r§bDiamond Chestplate"
+        display-name: "§r§b🧥 Diamond Chestplate (Prot III)"
         count: 1
         buy: 25000
         sell: 6000
-      - item: "diamond_leggings"
-        display-name: "§r§bDiamond Leggings"
-        count: 1
-        buy: 20000
-        sell: 4800
-      - item: "diamond_boots"
-        display-name: "§r§bDiamond Boots"
-        count: 1
-        buy: 8000
-        sell: 1800
 
-  tools:
-    icon: "diamond_pickaxe"
-    display-name: "§r§7TOOLS"
+  spawners:
+    icon: "pig_mob_spawner"
+    display-name: "§r§dSPAWNERS"
     items:
-      - item: "stone_pickaxe"
-        display-name: "§r§7Stone Pickaxe"
+      - item: "pig_mob_spawner"
+        display-name: "§r§a🟢 Pig Spawner"
         count: 1
-        buy: 300
-        sell: 60
-      - item: "iron_pickaxe"
-        display-name: "§r§fIron Pickaxe"
-        count: 1
-        buy: 1800
-        sell: 360
-      - item: "diamond_pickaxe"
-        display-name: "§r§bDiamond Pickaxe"
-        count: 1
-        buy: 10000
-        sell: 2200
-      - item: "iron_axe"
-        display-name: "§r§fIron Axe"
-        count: 1
-        buy: 1600
-        sell: 320
-      - item: "diamond_axe"
-        display-name: "§r§bDiamond Axe"
-        count: 1
-        buy: 9000
-        sell: 2000
-      - item: "shears"
-        display-name: "§r§7Shears"
-        count: 1
-        buy: 600
-        sell: 120
-      - item: "flint_and_steel"
-        display-name: "§r§6Flint & Steel"
-        count: 1
-        buy: 700
-        sell: 140
-      - item: "fishing_rod"
-        display-name: "§r§7Fishing Rod"
-        count: 1
-        buy: 800
-        sell: 160
-
-  resources:
-    icon: "iron_ingot"
-    display-name: "§r§6RESOURCES"
-    items:
-      - item: "coal"
-        display-name: "§r§8Coal x32"
-        count: 32
-        buy: 640
-        sell: 128
-      - item: "iron_ingot"
-        display-name: "§r§fIron Ingot x16"
-        count: 16
-        buy: 3200
-        sell: 640
-      - item: "gold_ingot"
-        display-name: "§r§6Gold Ingot x16"
-        count: 16
-        buy: 5600
-        sell: 1120
-      - item: "diamond"
-        display-name: "§r§bDiamond x8"
-        count: 8
-        buy: 12000
-        sell: 2400
-      - item: "redstone"
-        display-name: "§r§cRedstone Dust x32"
-        count: 32
-        buy: 960
-        sell: 192
-      - item: "lapis_lazuli"
-        display-name: "§r§9Lapis Lazuli x16"
-        count: 16
-        buy: 2200
-        sell: 440
-      - item: "emerald"
-        display-name: "§r§aEmerald x8"
-        count: 8
-        buy: 10000
-        sell: 2000
-      - item: "obsidian"
-        display-name: "§r§5Obsidian x16"
-        count: 16
-        buy: 6400
-        sell: 1280
-
-  potions:
-    icon: "potion"
-    display-name: "§r§dPOTIONS"
-    items:
-      - item: "potion"
-        display-name: "§r§dPotion of Healing II x3"
-        count: 3
-        buy: 4500
+        buy: 50000
         sell: 0
-      - item: "potion"
-        display-name: "§r§dPotion of Strength x3"
-        count: 3
-        buy: 5000
+      - item: "sheep_mob_spawner"
+        display-name: "§r§d🟣 Sheep Spawner"
+        count: 1
+        buy: 55000
         sell: 0
-      - item: "potion"
-        display-name: "§r§dPotion of Swiftness x3"
-        count: 3
-        buy: 3600
-        sell: 0
-      - item: "potion"
-        display-name: "§r§dPotion of Fire Resistance x3"
-        count: 3
-        buy: 4200
-        sell: 0
-      - item: "golden_carrot"
-        display-name: "§r§6Golden Carrot x8"
-        count: 8
-        buy: 3200
-        sell: 640
-
-  building:
-    icon: "stone"
-    display-name: "§r§7BUILDING"
-    items:
-      - item: "oak_planks"
-        display-name: "§r§7Oak Planks x64"
-        count: 64
-        buy: 0
-        sell: 64
-      - item: "spruce_planks"
-        display-name: "§r§7Spruce Planks x64"
-        count: 64
-        buy: 320
-        sell: 0
-      - item: "stone"
-        display-name: "§r§7Stone x64"
-        count: 64
-        buy: 480
-        sell: 96
-      - item: "cobblestone"
-        display-name: "§r§7Cobblestone x64"
-        count: 64
-        buy: 320
-        sell: 64
-      - item: "sand"
-        display-name: "§r§7Sand x64"
-        count: 64
-        buy: 360
-        sell: 72
-      - item: "glass"
-        display-name: "§r§fGlass x64"
-        count: 64
-        buy: 800
-        sell: 160
-      - item: "ladder"
-        display-name: "§r§7Ladder x32"
-        count: 32
-        buy: 320
-        sell: 64
-      - item: "torch"
-        display-name: "§r§6Torch x64"
-        count: 64
-        buy: 320
-        sell: 64
-      - item: "water_bucket"
-        display-name: "§r§9Water Bucket"
-        count: 1
-        buy: 600
-        sell: 120
-      - item: "lava_bucket"
-        display-name: "§r§6Lava Bucket"
-        count: 1
-        buy: 1200
-        sell: 240
-
-  redstone:
-    icon: "redstone"
-    display-name: "§r§cREDSTONE"
-    items:
-      - item: "redstone"
-        display-name: "§r§cRedstone Dust x64"
-        count: 64
-        buy: 1800
-        sell: 360
-      - item: "repeater"
-        display-name: "§r§7Redstone Repeater x16"
-        count: 16
-        buy: 2400
-        sell: 480
-      - item: "comparator"
-        display-name: "§r§7Redstone Comparator x16"
-        count: 16
-        buy: 3200
-        sell: 640
-      - item: "hopper"
-        display-name: "§r§7Hopper x8"
-        count: 8
-        buy: 4800
-        sell: 960
-
-  utility:
-    icon: "ender_chest"
-    display-name: "§r§6UTILITY"
-    items:
-      - item: "ender_chest"
-        display-name: "§r§5Ender Chest"
-        count: 1
-        buy: 5000
-        sell: 1000
-      - item: "chest"
-        display-name: "§r§7Chest x4"
-        count: 4
-        buy: 600
-        sell: 120
-      - item: "barrel"
-        display-name: "§r§7Barrel x4"
-        count: 4
-        buy: 600
-        sell: 120
-      - item: "anvil"
-        display-name: "§r§7Anvil"
-        count: 1
-        buy: 4500
-        sell: 900
-      - item: "enchanting_table"
-        display-name: "§r§9Enchanting Table"
-        count: 1
-        buy: 6000
-        sell: 1200
-      - item: "smithing_table"
-        display-name: "§r§7Smithing Table"
-        count: 1
-        buy: 1200
-        sell: 240
-      - item: "crafting_table"
-        display-name: "§r§7Crafting Table"
-        count: 1
-        buy: 200
-        sell: 40
-      - item: "furnace"
-        display-name: "§r§7Furnace"
-        count: 1
-        buy: 400
-        sell: 80
 
 config:
   shop-item-description:

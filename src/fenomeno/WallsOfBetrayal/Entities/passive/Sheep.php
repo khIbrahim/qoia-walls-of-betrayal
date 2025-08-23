@@ -29,4 +29,9 @@ class Sheep extends SpawnerEntity {
         return [VanillaBlocks::WOOL()->asItem(), VanillaItems::RAW_MUTTON()];
     }
 
+    public function getXpDropAmount(): int
+    {
+        return 1;
+    }
+
 }

@@ -11,6 +11,7 @@ use fenomeno\WallsOfBetrayal\Inventory\ChooseKingdomInventory;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\constraint\InGameRequiredConstraint;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\command\CommandSender;
 use pocketmine\player\Player;
@@ -41,7 +42,7 @@ class ChooseCommand extends WCommand
         $kingdomId = (string) $args[self::KINGDOM_ARGUMENT];
         $kingdom = $this->main->getKingdomManager()->getKingdomById($kingdomId);
         if(! $kingdom){
-            MessagesUtils::sendTo($sender, 'unknownKingdom', ['{KINGDOM}' => $kingdomId]);
+            MessagesUtils::sendTo($sender, MessagesIds::UNKNOWN_KINGDOM, ['{KINGDOM}' => $kingdomId]);
             return;
         }
 

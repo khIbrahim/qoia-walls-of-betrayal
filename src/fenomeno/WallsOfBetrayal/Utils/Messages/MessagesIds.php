@@ -150,5 +150,34 @@ final class MessagesIds
     public const NO_OTHER_PLAYERS = 'common.noOtherPlayers';
     public const TELEPORTED_TO_PLAYER = 'commands.randomTp.success';
     public const INVSEE_UPDATED = 'commands.invsee.updated';
+    public const NPC_NOT_SET = 'npc.errors.notSet';
+    public const NPC_CREATE_MENU_TITLE = 'npc.create.menu.title';
+    public const NPC_CREATE_MENU_NAME_INPUT = 'npc.create.menu.name-input';
+    public const NPC_CREATE_MENU_COMMAND_INPUT = 'npc.create.menu.command-input';
+    public const NPC_CREATE_MENU_COMMAND_HIDDEN_INPUT = 'npc.create.menu.command-input-hidden';
+    public const NPC_CREATE_MENU_NAME_EMPTY = 'npc.create.menu.errors.emptyName';
+    public const NPC_CREATE_MENU_COMMAND_EMPTY = 'npc.create.menu.errors.emptyCommand';
+    public const NPC_CREATE_MENU_SUCCESS = 'npc.create.success';
+    public const NPC_REMOVED = 'npc.removed';
+    public const NPC_ALREADY_EXISTS = 'npc.errors.alreadyExists';
+    public const NPC_NOT_FOUND = 'npc.errors.notFound';
+    public const NPC_MOVED_SUCCESS = 'npc.move.success';
+    public const TELEPORTED_TO_NPC = 'npc.tp.success';
+    public const NPC_EDIT_MENU_TITLE = 'npc.edit.menu.title';
+    public const NPC_EDIT_MENU_NAME_INPUT = 'npc.edit.menu.name-input';
+    public const NPC_EDIT_MENU_COMMAND_INPUT = 'npc.edit.menu.command-input';
+    public const NPC_EDIT_MENU_SKIN_TOGGLE = 'npc.edit.menu.skin-toggle';
+    public const NPC_EDITED = 'npc.edit.success';
+    public const NPC_LIST_MENU_TITLE = 'npc.list.menu.title';
+    public const NPC_LIST_MENU_TEXT = 'npc.list.menu.text';
+    public const NPC_LIST_MENU_BUTTON = 'npc.list.menu.button';
+    public const NPC_ACTIONS_MENU_TITLE = 'npc.actions.menu.title';
+    public const NPC_ACTIONS_MENU_TEXT = 'npc.actions.menu.text';
+    public const NPC_ACTIONS_MENU_TP_BUTTON = 'npc.actions.menu.teleport-button';
+    public const NPC_ACTIONS_MENU_EDIT_BUTTON = 'npc.actions.menu.edit-button';
+    public const NPC_ACTIONS_MENU_MOVE_BUTTON = 'npc.actions.menu.move-button';
+    public const NPC_ACTIONS_MENU_REMOVE_BUTTON = 'npc.actions.menu.remove-button';
+    public const ALREADY_IN_KINGDOM = 'kingdoms.errors.alreadyInKingdom';
+    public const UNKNOWN_KINGDOM = 'kingdoms.errors.unknownKingdom';
 
 }

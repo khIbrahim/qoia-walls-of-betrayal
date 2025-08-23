@@ -2,7 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
-use fenomeno\WallsOfBetrayal\Entities\PortalEntity;
+use fenomeno\WallsOfBetrayal\Entities\Types\PortalEntity;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;

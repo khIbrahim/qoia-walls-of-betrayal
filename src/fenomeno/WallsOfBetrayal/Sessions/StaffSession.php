@@ -13,6 +13,7 @@ use fenomeno\WallsOfBetrayal\Services\NotificationService;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\network\mcpe\protocol\PlayerListPacket;
 use pocketmine\network\mcpe\protocol\types\PlayerListEntry;
 use pocketmine\player\Player;
@@ -148,9 +149,7 @@ class StaffSession
             $this->player->getXpManager()->setXpAndProgress($this->cache->xp, $this->cache->xpProgress);
             $this->player->setGamemode($this->cache->gameMode);
         } catch (Throwable $e) {
-            MessagesUtils::sendTo($this->player, MessagesIds::ERROR, [ExtraTags::ERROR => $e->getMessage()]);
-            Main::getInstance()->getLogger()->error("Failed to load staffmod to " . $this->player->getName() . ": " . $e->getMessage());
-            Main::getInstance()->getLogger()->logException($e);
+            Utils::onFailure($e, $this->player, "Failed to load staffmod to " . $this->player->getName() . ": " . $e->getMessage());
         }
     }
 

@@ -9,6 +9,7 @@ theme:
     money: "§r§a§lBalance§8»§r "
     roles: "§r§7§lRoles §8»§r "
     punishment: "§r§c§lPunishment §8»§r "
+    npc: "§r§e§lNpc §8»§r "
 
   colors:
     RED: "§c"
@@ -76,7 +77,7 @@ kingdoms:
 
   errors:
     unstable: "{KINGDOMS_PREFIX}{RED}Your connection is unstable, please reconnect."
-    alreadyInKingdom: "{KINGDOMS_PREFIX}{RED}You are already in a kingdom!"
+    alreadyInKingdom: "{KINGDOMS_PREFIX}{RED}You are already in kingdom {KINGDOM}{RED}!"
     unknownKingdom: "{KINGDOMS_PREFIX}{RED}Unknown Kingdom: {KINGDOM}"
     notInKingdom: "{KINGDOMS_PREFIX}{RED}You are not in a kingdom."
     cantCloseChooseInventory:
@@ -430,6 +431,49 @@ punishment:
         §fDate: §6{DATE}
   kick:
     screenMessage: "{PUNISHMENT_PREFIX}{RED}You have been kicked by {STAFF} for: {REASON}"
+
+# ---------------------------------------------------------------------------
+
+npc:
+  errors:
+    alreadyExists: "{NPC_PREFIX}{RED}Npc with id {NPC} already exists."
+    notSet: "{NPC_PREFIX}{RED}Npc is not set, command | id is missing."
+    notFound: "{NPC_PREFIX}{RED}Npc with id {NPC} not found."
+  create:
+    menu:
+      errors:
+        emptyName: "{NPC_PREFIX}{RED}Name is empty."
+        emptyCommand: "{NPC_PREFIX}{RED}Command is empty."
+      title: "Create NPC {ID}"
+      name-input: "Enter NPC name"
+      command-input: "Enter NPC Command without /"
+      command-input-hidden: "lobby"
+    success: "{NPC_PREFIX}{GREEN}You have successfully created npc {NPC}."
+  removed: "{NPC_PREFIX}{YELLOW}You have successfully removed npc {NPC}."
+  move:
+    success: "{NPC_PREFIX}{GREEN}Npc {NPC} successfully moved to {PLAYER} position's"
+  tp:
+    success: "{NPC_PREFIX}{GREEN}Successfully teleported to NPC {NPC}."
+  edit:
+    menu:
+      title: "Edit Npc {NPC}"
+      name-input: "Display Name"
+      command-input: "Command (without /)"
+      skin-toggle: "Toggle the button to update NPC's skin"
+    success: "{NPC_PREFIX}{GREEN}You have successfully updated NPC {NPC}, parameters saved."
+  list:
+    menu:
+      title: "Npc List"
+      text: "Select an NPC to manage:"
+      button: "{YELLOW}{ID}\n{GRAY}{NAME}"
+  actions:
+    menu:
+      title: "NPC: {NPC}"
+      text: "Choose an action:"
+      teleport-button: "§aTeleport to NPC"
+      edit-button: "§bEdit"
+      move-button: "§eMove NPC here"
+      remove-button: "§cRemove"
 
 # ---------------------------------------------------------------------------
 # Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)

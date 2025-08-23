@@ -5,7 +5,11 @@ namespace fenomeno\WallsOfBetrayal\Utils;
 use fenomeno\WallsOfBetrayal\DTO\InventoryDTO;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\type\InvMenuTypeIds;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use InvalidArgumentException;
+use pocketmine\command\CommandSender;
 use pocketmine\inventory\Inventory;
 use pocketmine\item\enchantment\EnchantmentInstance;
 use pocketmine\item\enchantment\StringToEnchantmentParser;
@@ -13,6 +17,7 @@ use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\player\Player;
+use pocketmine\Server;
 
 class Utils
 {
@@ -307,6 +312,19 @@ class Utils
                 $callable($namespace);
             }
         }
+    }
+
+    public static function onFailure(\Throwable $e, null|CommandSender|Player|Server|array $player = null, string $context = ""): void
+    {
+        if ($player !== null){
+            MessagesUtils::sendTo($player, MessagesIds::ERROR, [ExtraTags::ERROR => $e->getMessage()]);
+        }
+
+        if (empty($context)){
+            $context = "Failed " . $e->getMessage();
+        }
+        Main::getInstance()->getLogger()->error($context);
+        Main::getInstance()->getLogger()->logException($e);
     }
 
 }

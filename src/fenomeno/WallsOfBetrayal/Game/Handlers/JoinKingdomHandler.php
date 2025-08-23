@@ -7,6 +7,8 @@ use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomEvent;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
+use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
@@ -26,7 +28,7 @@ class JoinKingdomHandler
         }
 
         if ($session->getKingdom() !== null){
-            MessagesUtils::sendTo($player, 'kingdoms.kingdoms.alreadyInKingdom');
+            MessagesUtils::sendTo($player, MessagesIds::ALREADY_IN_KINGDOM, [ExtraTags::KINGDOM => $session->getKingdom()->getDisplayName()]);
             return;
         }
 
