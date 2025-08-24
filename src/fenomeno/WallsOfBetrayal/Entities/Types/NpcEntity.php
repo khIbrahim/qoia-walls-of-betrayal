@@ -144,7 +144,7 @@ class NpcEntity extends Human
                 Main::getInstance()->getCooldownManager()->setCooldown($this->getNpcId(), $player->getName(), $this->cooldown
                 );
             } else {
-                Main::getInstance()->getLogger()->error("Npc : " . $this->npcId . " failed to execute command for " . $player->getName());
+                Main::getInstance()->getLogger()->error("Npc : " . $this->npcId . " failed to execute command $this->command for " . $player->getName());
             }
         } else {
             MessagesUtils::sendTo($player, MessagesIds::NPC_NOT_SET);

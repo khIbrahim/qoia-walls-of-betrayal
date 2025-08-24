@@ -63,5 +63,8 @@ final class ExtraTags
     const PING = '{PING}';
     const FLOATING_TEXT = '{FLOATING_TEXT}';
     const LINES = '{LINES}';
+    const SETTING = '{SETTING}';
+    const BOOL = '{BOOL}';
+    const BOOLEAN = '{BOOL}';
 
 }

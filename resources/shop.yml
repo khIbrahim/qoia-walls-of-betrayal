@@ -4,27 +4,27 @@ categories:
     display-name: "§r§aFARMING"
     items:
       - item: "wheat"
-        display-name: "§r§e🌾 Wheat x1"
+        display-name: "§r§eWheat x1"
         count: 1
         buy: 20
         sell: 5
       - item: "carrot"
-        display-name: "§r§6🥕 Carrots x1"
+        display-name: "§r§6Carrots x1"
         count: 1
         buy: 30
         sell: 8
       - item: "bread"
-        display-name: "§r§f🍞 Bread x1"
+        display-name: "§r§fBread x1"
         count: 1
         buy: 100
         sell: 0
       - item: "cooked_porkchop"
-        display-name: "§r§d🐖 Cooked Pork x1"
+        display-name: "§r§dCooked Pork x1"
         count: 1
         buy: 50
         sell: 12
       - item: "cooked_mutton"
-        display-name: "§r§d🐑 Cooked Mutton x1"
+        display-name: "§r§dCooked Mutton x1"
         count: 1
         buy: 50
         sell: 12
@@ -34,22 +34,22 @@ categories:
     display-name: "§r§cCOMBAT"
     items:
       - item: "tnt"
-        display-name: "§r§c🧨 TNT x16"
+        display-name: "§r§cTNT x16"
         count: 16
         buy: 4000
         sell: 0
       - item: "potion"
-        display-name: "§r§d🧪 Potion Bundle (Speed II x2, Strength I x1)"
+        display-name: "§r§dPotion Bundle (Speed II x2, Strength I x1)"
         count: 3
         buy: 6000
         sell: 0
       - item: "golden_apple"
-        display-name: "§r§6🍗 Golden Apples x4"
+        display-name: "§r§6Golden Apples x4"
         count: 4
         buy: 7500
         sell: 1500
       - item: "diamond_sword"
-        display-name: "§r§b🗡️ Diamond Sword (Sharp II, Unbreaking I)"
+        display-name: "§r§bDiamond Sword (Sharp II, Unbreaking I)"
         count: 1
         buy: 18000
         sell: 4000
@@ -59,12 +59,12 @@ categories:
     display-name: "§r§fARMOR"
     items:
       - item: "iron_chestplate"
-        display-name: "§r§f🛡️ Iron Armor Set (Full)"
+        display-name: "§r§fIron Armor Set (Full)"
         count: 1
         buy: 15000
         sell: 3000
       - item: "diamond_chestplate"
-        display-name: "§r§b🧥 Diamond Chestplate (Prot III)"
+        display-name: "§r§bDiamond Chestplate (Prot III)"
         count: 1
         buy: 25000
         sell: 6000
@@ -74,12 +74,12 @@ categories:
     display-name: "§r§dSPAWNERS"
     items:
       - item: "pig_mob_spawner"
-        display-name: "§r§a🟢 Pig Spawner"
+        display-name: "§r§aPig Spawner"
         count: 1
         buy: 50000
         sell: 0
       - item: "sheep_mob_spawner"
-        display-name: "§r§d🟣 Sheep Spawner"
+        display-name: "§r§dSheep Spawner"
         count: 1
         buy: 55000
         sell: 0

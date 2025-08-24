@@ -64,17 +64,6 @@ class VaultRepository implements VaultRepositoryInterface
         return $items;
     }
 
-    public function write(array $c) : string{
-        $contents = [];
-        foreach($c as $slot => $item){
-            $contents[] = $item->nbtSerialize($slot);
-        }
-
-        return zlib_encode($this->nbtSerializer->write(new TreeRoot(CompoundTag::create()
-            ->setTag(self::TAG_INVENTORY, new ListTag($contents, NBT::TAG_Compound))
-        )), ZLIB_ENCODING_GZIP);
-    }
-
     public function close(CloseVaultPayload $payload, array $items = []): Generator
     {
         if (! empty($items) || $items !== []){

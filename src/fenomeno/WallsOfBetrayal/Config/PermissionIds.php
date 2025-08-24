@@ -43,10 +43,33 @@ final class PermissionIds
     public const FLOATING_TEXT_DELETE = 'wob.command.floatingtext.delete';
     public const FLOATING_TEXT_EDIT = 'wob.command.floatingtext.edit';
     public const FLOATING_TEXT_LIST = 'wob.command.floatingtext.list';
+    public const NPC_LOAD = 'wob.command.npc.load';
+    public const NPC_CLEANUP = 'wob.command.npc.cleanup';
+    public const LOBBY = 'wob.command.lobby';
+    public const LOBBY_OTHER = 'wob.command.lobby.other';
+    public const SET_LOBBY = 'wob.command.setlobby';
+    public const SPAWN = 'wob.command.spawn';
+    public const SPAWN_OTHER = 'wob.command.spawn.other';
+    public const SET_SPAWN = 'wob.command.setspawn';
+    public const KINGDOM = 'wob.command.kingdom';
+    public const KINGDOM_SPAWN = 'wob.command.kingdom.spawn';
+    public const PORTAL = 'wob.command.portal';
+    public const BYPASS_LOBBY = 'wob.bypass.lobby';
+    public const SET_LOBBY_SETTING = 'wob.command.setlobbysetting';
+    public const KINGDOM_CONTRIBUTE = 'wob.command.kingdom.contribute';
+    public const KINGDOM_ABILITIES = 'wob.command.kingdom.abilities';
+    public const KINGDOM_ADD_XP = 'wob.command.kingdom.addxp';
+    public const KINGDOM_MANAGE = 'wob.command.kingdom.manage';
+    public const KINGDOM_SET_BORDERS = 'wob.command.kingdom.setborders';
 
     public static function getVaultPerm(int $number): string
     {
         return "wob.command.vault.$number";
+    }
+
+    public static function getLobbyPerm(string $key): string
+    {
+        return 'wob.bypass.lobby' . $key;
     }
 
 }

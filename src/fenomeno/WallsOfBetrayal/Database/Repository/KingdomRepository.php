@@ -9,7 +9,10 @@ use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\InsertKingdomPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\LoadKingdomPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\UpdateKingdomSpawnPayload;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use Generator;
 use Throwable;
 
 class KingdomRepository implements KingdomRepositoryInterface
@@ -49,7 +52,8 @@ class KingdomRepository implements KingdomRepositoryInterface
                     xp: (int) $data['xp'],
                     balance: (int) $data['balance'],
                     kills: (int) $data['kills'],
-                    deaths: (int) $data['deaths']
+                    deaths: (int) $data['deaths'],
+                    spawn: isset($data['spawn']) ? PositionHelper::load(json_decode($data['spawn'])) : null
                 );
 
                 $kingdom->setKingdomData($kingdomData);
@@ -68,13 +72,19 @@ class KingdomRepository implements KingdomRepositoryInterface
         }, fn(Throwable $e) => $this->main->getLogger()->error("§cAn error occurred while inserting kingdom data. Error: " . $e->getMessage()));
     }
 
-    public function addDeath(IdPayload $payload): \Generator
+    public function addDeath(IdPayload $payload): Generator
     {
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::INCREMENT_KINGDOM_DEATHS, $payload->jsonSerialize());
     }
 
-    public function addKill(IdPayload $payload): \Generator
+    public function addKill(IdPayload $payload): Generator
     {
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::INCREMENT_KINGDOM_KILLS, $payload->jsonSerialize());
     }
+
+    public function updateSpawn(UpdateKingdomSpawnPayload $payload): Generator
+    {
+        yield from $this->main->getDatabaseManager()->asyncChange(Statements::UPDATE_KINGDOM_SPAWN, $payload->jsonSerialize());
+    }
+
 }

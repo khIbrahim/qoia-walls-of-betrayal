@@ -3,10 +3,12 @@
 namespace fenomeno\WallsOfBetrayal\Commands\Admin;
 
 use fenomeno\WallsOfBetrayal\Commands\CommandsIds;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\CleanupNpcSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\CreateNpcSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\DeleteNpcSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\EditNpcSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\ListNpcSubCommand;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\LoadNpcSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\MoveNpcSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Npc\TpNpcSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\WCommand;
@@ -34,6 +36,8 @@ class NpcCommand extends WCommand
         $this->registerSubCommand(new MoveNpcSubCommand($this->main));
         $this->registerSubCommand(new TpNpcSubCommand($this->main));
         $this->registerSubCommand(new ListNpcSubCommand($this->main));
+        $this->registerSubCommand(new LoadNpcSubCommand($this->main));
+        $this->registerSubCommand(new CleanupNpcSubCommand($this->main));
     }
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void

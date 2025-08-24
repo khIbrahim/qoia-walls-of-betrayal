@@ -194,5 +194,20 @@ final class MessagesIds
     public const FLOATING_TEXT_EDIT_MENU_FINISH = 'floatingTexts.edit.menu.finish';
     public const FLOATING_TEXT_DELETED_LAST_LINE = 'floatingTexts.edit.removedLastLine';
     public const FLOATING_TEXT_EDIT_SUCCESS = 'floatingTexts.edit.success';
+    public const LOBBY_SUCCESS_SELF = 'commands.lobby.self';
+    public const LOBBY_SUCCESS_OTHER = 'commands.lobby.other';
+    public const SET_LOBBY_SUCCESS = 'commands.set-lobby.success';
+    public const SESSION_NOT_LOADED = 'common.playerNotLoaded';
+    public const SPAWN_NO_KINGDOM = 'commands.spawn.errors.noKingdom.self';
+    public const SPAWN_NO_KINGDOM_OTHER = 'commands.spawn.errors.noKingdom.other';
+    public const SPAWN_NO_KINGDOM_SPAWN = 'commands.spawn.errors.noKingdomSpawn.self';
+    public const SPAWN_NO_KINGDOM_SPAWN_OTHER = 'commands.spawn.errors.noKingdomSpawn.other';
+    public const SPAWN_SUCCESS_SELF = 'commands.spawn.success.self';
+    public const SPAWN_SUCCESS_OTHER = 'commands.spawn.success.other';
+    public const SET_SPAWN_SUCCESS = 'commands.set-spawn.success';
+    public const NO_PORTAL = 'commands.portal.errors.noPortal';
+    public const PORTAL_SUCCESS = 'commands.portal.success';
+    public const SET_LOBBY_SETTING_SUCCESS = 'commands.set-lobby-setting.success';
+    const PORTAL_REMOVE_SUCCESS = 'commands.portal.remove.success';
 
 }

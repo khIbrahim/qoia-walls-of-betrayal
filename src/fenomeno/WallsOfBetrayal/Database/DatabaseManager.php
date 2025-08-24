@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInte
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\FloatingTextRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KingdomRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface\NpcRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
@@ -17,6 +18,7 @@ use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\FloatingTextRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KingdomRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\NpcRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRolesRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\BanRepository;
@@ -53,6 +55,7 @@ class DatabaseManager
     private PunishmentRepositoryInterface $banRepository;
     private PunishmentRepositoryInterface $reportRepository;
     private FloatingTextRepositoryInterface $floatingTextRepository;
+    private NpcRepositoryInterface $npcRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
     private BigEndianNbtSerializer $nbtSerializer;
@@ -66,7 +69,6 @@ class DatabaseManager
                 "mysql"  => "queries/mysql.sql"
             ]);
 
-            // je garde en mysql pour le moment, je ferai plus tard une vérification du type la base de données
             $this->binaryStringParser = new MySQLBinaryStringParser();
 
             $this->playerRepository = new PlayerRepository($this->main);
@@ -101,6 +103,9 @@ class DatabaseManager
 
             $this->floatingTextRepository = new FloatingTextRepository($this->main);
             $this->floatingTextRepository->init($this);
+
+            $this->npcRepository = new NpcRepository($this->main);
+            $this->npcRepository->init($this);
 
             $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
@@ -162,6 +167,11 @@ class DatabaseManager
     public function getFloatingTextRepository(): FloatingTextRepositoryInterface
     {
         return $this->floatingTextRepository;
+    }
+
+    public function getNpcRepository(): NpcRepositoryInterface
+    {
+        return $this->npcRepository;
     }
 
     public function __call(string $name, array $arguments)

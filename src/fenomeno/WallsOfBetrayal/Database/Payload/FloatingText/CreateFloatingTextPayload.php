@@ -34,7 +34,7 @@ final readonly class CreateFloatingTextPayload implements PayloadInterface
 
         $id   = $object->getId();
         $text = $object->getText();
-        $pos  = PositionHelper::positionToArray($object->getPosition());
+        $pos  = PositionHelper::toArray($object->getPosition());
 
         return new CreateFloatingTextPayload($id, $pos, $text);
     }

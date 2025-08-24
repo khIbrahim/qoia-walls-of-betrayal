@@ -2,16 +2,17 @@
 
 namespace fenomeno\WallsOfBetrayal\Manager;
 
+use Closure;
 use fenomeno\WallsOfBetrayal\Commands\Arguments\NpcArgument;
+use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Npc\NpcCreatePayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Npc\NpcUpdatePayload;
 use fenomeno\WallsOfBetrayal\Entities\Types\NpcEntity;
 use fenomeno\WallsOfBetrayal\Exceptions\Npc\UnknownNpcException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
-use pocketmine\entity\Location;
-use pocketmine\entity\Skin;
-use pocketmine\utils\Config;
-use pocketmine\world\World;
+use pocketmine\Server;
 use Throwable;
 
 final class NpcManager
@@ -20,46 +21,52 @@ final class NpcManager
     /** @var NpcEntity[] */
     private array $npcs = [];
 
-    private Config $config;
-
-    public function __construct(private readonly Main $main)
-    {
-        $this->config = new Config($this->main->getDataFolder() . 'npc.json', Config::JSON);
-    }
+    public function __construct(private readonly Main $main){}
 
     public function add(NpcEntity $entity): Generator
     {
-        return Await::promise(function ($resolve, $reject) use ($entity) {
-            try {
-                $this->npcs[$entity->getNpcId()] = $entity;
-                NpcArgument::$VALUES[$entity->getNpcId()] = $entity->getNpcId();
-                $this->saveAll();
+        try {
+            yield from $this->main->getDatabaseManager()->getNpcRepository()->create(NpcCreatePayload::fromNpc($entity));
+        } catch (Throwable){
+            yield from $this->main->getDatabaseManager()->getNpcRepository()->update(NpcUpdatePayload::fromNpc($entity));
+        }
 
-                $resolve($entity);
-            } catch (Throwable $e){
-                $reject($e);
-            }
-        });
+        $this->npcs[$entity->getNpcId()] = $entity;
+        NpcArgument::$VALUES[$entity->getNpcId()] = $entity->getNpcId();
+
+        return $entity;
     }
 
+    /**
+     * @throws UnknownNpcException
+     */
     public function remove(string $id): Generator
     {
-        return Await::promise(function ($resolve, $reject) use ($id) {
-            $npc = $this->getNpcById($id);
+        $npc = $this->getNpcById($id);
 
-            if(! $npc instanceof NpcEntity){
-                $reject(new UnknownNpcException("Unknown npc id : " . $id));
-                return;
-            }
+        if(! $npc instanceof NpcEntity){
+            throw new UnknownNpcException("Unknown npc id : " . $id);
+        }
 
-            if(! $npc->isFlaggedForDespawn()){
-                $npc->flagForDespawn();
-            }
+        yield from $this->main->getDatabaseManager()->getNpcRepository()->delete(new IdPayload($id));
 
-            unset($this->npcs[$id]);
-            unset(NpcArgument::$VALUES[$id]);
-            $resolve($id);
-        });
+        if(! $npc->isFlaggedForDespawn()){
+            $npc->flagForDespawn();
+        }
+
+        unset($this->npcs[$id]);
+        unset(NpcArgument::$VALUES[$id]);
+
+        return $id;
+    }
+
+    public function update(NpcEntity $entity, Closure $update): Generator
+    {
+        $update($entity);
+
+        yield from $this->main->getDatabaseManager()->getNpcRepository()->update(NpcUpdatePayload::fromNpc($entity));
+
+        return $entity;
     }
 
     public function getNpcById(string $id): ?NpcEntity
@@ -73,75 +80,64 @@ final class NpcManager
         return $this->npcs;
     }
 
-    /** @throws */
-    public function saveAll(): void
+    public function asyncLoadFromDatabase(): Generator
     {
-        $data = [];
-        foreach ($this->npcs as $npc){
-            $data[$npc->getNpcId()] = $npc->toArray();
+        /** @var array<string,NpcEntity> $npcs */
+        $npcs = yield from $this->main->getDatabaseManager()->getNpcRepository()->loadAll();
+
+        if (empty($npcs)) {
+            return [0, 0, 0];
         }
 
-        $this->config->setAll($data);
-        $this->config->save();
-    }
+        $wm = Server::getInstance()->getWorldManager();
 
-    /** @throws */
-    public function spawnAllFromConfigByWorld(string|world $targetWorld, bool $load = false): void {
-        $data = $this->config->getAll();
-
-        foreach($data as $id => $row){
-            try {
-                if(! isset($row['world'], $row['x'], $row['y'], $row['z'], $row['yaw'], $row['pitch'], $row['skin'], $row['skin_id'], $row['cape'], $row['geometry_name'], $row['geometry_data'], $row['cooldown'])){
-                    $this->main->getLogger()->error("Unable to parse npc $id, data is missing");
-                    continue;
+        $present = [];
+        foreach ($wm->getWorlds() as $world) {
+            foreach ($world->getEntities() as $entity) {
+                if ($entity instanceof NpcEntity && $entity->getNpcId() !== '') {
+                    $present[$entity->getNpcId()] = true;
                 }
-
-                $worldName       = (string) ($row["world"] ?? 'world');
-                $targetWorldName = $targetWorld instanceof World ? $targetWorld->getFolderName() : $targetWorld;
-
-                if (strtolower($targetWorldName) != strtolower($worldName)){
-                    continue;
-                }
-
-                if ($load){
-                    $this->main->getServer()->getWorldManager()->loadWorld($worldName);
-                }
-                $world = $this->main->getServer()->getWorldManager()->getWorldByName($worldName);
-                if(! $world instanceof World){
-                    $this->main->getLogger()->warning("Unable to parse $worldName world to load npc " . $id);
-                    continue;
-                }
-
-                $loc = new Location(
-                    x: (float) $row["x"],
-                    y: (float) $row["y"],
-                    z: (float) $row["z"],
-                    world: $world,
-                    yaw: (float) $row["yaw"],
-                    pitch: (float) $row["pitch"]
-                );
-                $skin = new Skin(
-                    skinId: $row["skin_id"] ?? "Standard_Custom",
-                    skinData: base64_decode($row["skin"] ?? "", true) ?: "",
-                    capeData: base64_decode($row["cape"] ?? "", true) ?: "",
-                    geometryName: (string) $row['geometry_name'],
-                    geometryData: base64_decode($row['geometry_data'])
-                );
-
-                $npc = NpcEntity::make(
-                    location: $loc,
-                    skin: $skin,
-                    id: $id,
-                    command: (string) ($row["command"] ?? ""),
-                    name: (string) ($row["name"] ?? "Wob NPC"),
-                    cooldown: (int) $row['cooldown']
-                );
-                $npc->spawnToAll();
-                Await::g2c($this->add($npc));
-            } catch (Throwable $e) {
-                $this->main->getLogger()->error("Failed to parse npc $id: " . $e->getMessage());
             }
         }
+
+        $tasks = [];
+        $manager = $this->main->getNpcManager();
+
+        foreach ($npcs as $id => $npc) {
+            $tasks[] = (function () use ($npc, $id, $present, $manager, $wm): Generator {
+                if (isset($present[$id])) {
+                    return ['already' => 1, 'worldMissing' => 0, 'loaded' => 0, 'msg' => "$id already spawned"];
+                }
+                if ($manager->getNpcById($id) !== null) {
+                    return ['already' => 1, 'worldMissing' => 0, 'loaded' => 0, 'msg' => "$id already in manager"];
+                }
+
+                $world = $npc->getLocation()->getWorld();
+                if (! $wm->isWorldLoaded($world->getFolderName())) {
+                    return ['already' => 0, 'worldMissing' => 1, 'loaded' => 0, 'msg' => "$id world not loaded"];
+                }
+
+                $npc->spawnToAll();
+                try {
+                    yield from $manager->add($npc);
+                } catch (Throwable $e) {
+                    $this->main->getLogger()->warning("NPC $id spawned but failed to persist: " . $e->getMessage());
+                }
+
+                return ['already' => 0, 'worldMissing' => 0, 'loaded' => 1, 'msg' => "$id spawned"];
+            })();
+        }
+
+        $results = yield from Await::all($tasks);
+
+        $loaded = $already = $worldMissing = 0;
+        foreach ($results as $r) {
+            $loaded      += $r['loaded'];
+            $already     += $r['already'];
+            $worldMissing+= $r['worldMissing'];
+        }
+
+        return [$loaded, $already, $worldMissing];
     }
 
 }

@@ -60,6 +60,7 @@ interface Statements
     public const INCREMENT_DEATHS               = 'players.incrementDeaths';
     public const INCREMENT_KINGDOM_KILLS        = 'kingdoms.incrementKills';
     public const INCREMENT_KINGDOM_DEATHS       = 'kingdoms.incrementDeaths';
+    public const UPDATE_KINGDOM_SPAWN           = 'kingdoms.updateSpawn';
     
     public const INIT_MUTE    = 'mute.init';
     public const MUTE_GET     = 'mute.get';
@@ -92,5 +93,16 @@ interface Statements
     public const CREATE_FLOATING_TEXT = 'floatingText.create';
     public const REMOVE_FLOATING_TEXT = 'floatingText.remove';
     public const UPDATE_FLOATING_TEXT = 'floatingText.updateText';
+
+    public const INIT_NPC     = 'npc.init';
+    public const CREATE_NPC   = 'npc.create';
+    public const UPDATE_NPC   = 'npc.update';
+    public const DELETE_NPC   = 'npc.delete';
+    public const LOAD_ALL_NPC = 'npc.loadAll';
+
+    public const INIT_SERVER             = 'server.init';
+    public const LOAD_SERVER             = 'server.load';
+    public const INSERT_SERVER           = 'server.insert';
+    public const UPDATE_LOBBY_LOC_SERVER = 'server.updateLobbyLoc';
 
 }

@@ -3,6 +3,7 @@ namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
 use fenomeno\WallsOfBetrayal\Class\KingdomData;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\UpdateKingdomSpawnPayload;
 use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
@@ -12,6 +13,8 @@ use fenomeno\WallsOfBetrayal\Utils\EnchantUtils;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use pocketmine\entity\Location;
 use pocketmine\item\enchantment\AvailableEnchantmentRegistry;
 use pocketmine\item\Item;
 use pocketmine\player\Player;
@@ -32,7 +35,6 @@ class Kingdom
         public string $color,
         public string $description,
         public ?Item $item = null,
-        public ?Position $spawn = null,
         public array $kits = [],
         public array $abilities = [],
         public string $portalId = "",
@@ -146,6 +148,19 @@ class Kingdom
             fn() => $this->kingdomData->deaths++,
             fn(Throwable $e) => Main::getInstance()->getLogger()->error("Failed to add kill for kingdom $this->id: " . $e->getMessage())
         );
+    }
+
+    public function getSpawn(): null|Location|Position
+    {
+        return $this->kingdomData->spawn;
+    }
+
+    public function updateSpawn(null|Position|Location $location): \Generator
+    {
+        yield from Main::getInstance()->getDatabaseManager()->getKingdomRepository()->updateSpawn(new UpdateKingdomSpawnPayload($this->id, PositionHelper::toArray($location)));
+
+        $this->kingdomData->spawn = $location;
+        return $location;
     }
 
 }

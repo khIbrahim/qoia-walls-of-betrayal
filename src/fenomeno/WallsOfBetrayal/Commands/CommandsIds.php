@@ -62,5 +62,35 @@ final class CommandsIds
     public const FLOATING_TEXT_DELETE = 'floating-text-delete';
     public const FLOATING_TEXT_EDIT = 'floating-text-edit';
     public const FLOATING_TEXT_LIST = 'floating-text-list';
+    public const NPC_LOAD = 'npc-load';
+    public const NPC_CLEANUP = 'npc-cleanup';
+    public const LOBBY = 'lobby';
+    public const SET_LOBBY = 'set-lobby';
+    public const SPAWN = 'spawn';
+    public const KINGDOM = 'kingdom';
+    public const SET_SPAWN = 'set-spawn';
+    public const KINGDOM_SPAWN = 'kingdom-spawn';
+    public const KINGDOM_SET_SPAWN = 'kingdom-set-spawn';
+    public const PORTAL = 'portal';
+    public const SET_LOBBY_SETTING = 'set-lobby-setting';
+    public const KINGDOM_INFO = 'kingdom-info';
+    public const KINGDOM_TOP = 'kingdom-top';
+    public const KINGDOM_MAP = 'kingdom-map';
+    public const KINGDOM_CONTRIBUTE = 'kingdom-contribute';
+    public const KINGDOM_ABILITIES = 'kingdom-abilities';
+    public const KINGDOM_ADD_XP = 'kingdom-addxp';
+    public const KINGDOM_SET_BORDERS = 'kingdom-setborder';
+    public const KINGDOM_MANAGE = 'kingdom-manage';
+    public const KINGDOM_KICK = 'kingdom-kick';
+    public const KINGDOM_BAN = 'kingdom-ban';
+    public const KINGDOM_VOTE = 'kingdom-vote';
+    public const KINGDOM_TRUCE = 'kingdom-truce';
+    public const KINGDOM_WAR = 'kingdom-war';
+    public const KINGDOM_PEACE = 'kingdom-peace';
+    public const KINGDOM_UPGRADE = 'kingdom-upgrade';
+    public const KINGDOM_SHIELD = 'kingdom-shield';
+    public const KINGDOM_ALARM = 'kingdom-alarm';
+    public const KINGDOM_RALLY = 'kingdom-rally';
+    public const KINGDOM_BOUNTY = 'kingdom-bounty';
 
 }

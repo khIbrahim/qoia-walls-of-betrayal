@@ -2,17 +2,18 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
-use fenomeno\WallsOfBetrayal\Entities\Types\PortalEntity;
+use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomWorldEvent;
+use fenomeno\WallsOfBetrayal\Events\PlayerLeaveKingdomWorldEvent;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
-use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerDeathEvent;
-use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\player\Player;
 
 class KingdomListener implements Listener
@@ -20,27 +21,45 @@ class KingdomListener implements Listener
 
     public function __construct(private readonly Main $main){}
 
-    public function onJoin(PlayerJoinEvent $event): void
-    {
-        $event->setJoinMessage("");
+    public function onWorldChange(EntityTeleportEvent $event): void {
+        $player = $event->getEntity();
+        if(! $player instanceof Player){
+            return;
+        }
+
+        $from = $event->getFrom()->getWorld();
+        $to   = $event->getTo()->getWorld();
+
+        if($from->getFolderName() === $to->getFolderName()){
+            return;
+        }
+
+        if ($to->getFolderName() === ServerManager::KINGDOM_WORLD){
+            $ev = new PlayerJoinKingdomWorldEvent($player);
+        } else {
+            $ev = new PlayerLeaveKingdomWorldEvent($player);
+        }
+        $ev->call();
     }
 
-    public function onChat(PlayerChatEvent $event): void
+    public function onJoinKingdomWorld(PlayerJoinKingdomWorldEvent $event): void
     {
-        $player  = $event->getPlayer();
-        $message = $event->getMessage();
-        if (str_starts_with($message, 'portal')){
-            $parts = explode(" ", $message);
-            if(count($parts) === 2){
-                $kingdomId = $parts[1];
-                $kingdom = $this->main->getKingdomManager()->getKingdomById($kingdomId);
-                if ($kingdom){
-                    $entity = new PortalEntity($player->getLocation(), $kingdom->portalId);
-                    $entity->spawnToAll();
-                    $player->sendMessage("§aPORTAIL SPAWN");
-                }
-            }
-        }
+        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
+        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
+        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
+        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
+        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
+        var_dump("-------------------------------------------------------");
+    }
+
+    public function onLeaveKingdom(PlayerLeaveKingdomWorldEvent $event): void
+    {
+        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
+        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
+        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
+        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
+        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
+        var_dump("-------------------------------------------------------");
     }
 
     public function onKill(PlayerDeathEvent $event): void

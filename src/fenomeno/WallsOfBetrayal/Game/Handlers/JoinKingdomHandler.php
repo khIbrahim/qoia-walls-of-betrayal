@@ -40,8 +40,8 @@ class JoinKingdomHandler
             $session->setKingdom($kingdom);
             $session->addAbilities($kingdom->abilities);
             $session->setChoosingKingdom(false);
-            if($kingdom->spawn !== null){
-                $player->teleport($kingdom->spawn);
+            if($kingdom->getSpawn() !== null){
+                $player->teleport($kingdom->getSpawn());
             }
             MessagesUtils::sendTo($player, 'kingdoms.onJoin.' . $kingdom->id);
             $player->broadcastSound(new XpLevelUpSound(1));

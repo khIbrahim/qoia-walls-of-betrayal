@@ -398,3 +398,176 @@ floating-text-list:
   name: "list"
   description: "§8§oOpen Floating Text List Menu"
   usage: "§e/ft list §8- §7Open Floating Text List Menu"
+
+npc-load:
+  name: "load"
+  description: "§8§oLoad all the npc from the database"
+  usage: "§e/npc load §8- §7Load all the npcs from the database"
+
+npc-cleanup:
+  name: "cleanup"
+  description: "§8§oCleanup the server from all the npcs"
+  usage: "§e/npc cleanup §8- §7Cleanup the server from all the npcs"
+
+lobby:
+  name: "lobby"
+  description: "§8§oTeleport to the lobby"
+  usage: "§e/lobby §8- §7Teleport to the lobby"
+  aliases:
+    - "hub"
+
+set-lobby:
+  name: "setlobby"
+  description: "§8§oUpdate Lobby Position"
+  usage: "§e/setlobby §8- §7Update Lobby Position"
+  aliases:
+    - "sethub"
+
+spawn:
+  name: "spawn"
+  description: "§8§8Teleport to your kingdom spawn"
+  usage: "§e/spawn §8- §7Teleport to your kingdom spawn"
+  aliases:
+    - "tpkingdom"
+
+set-spawn:
+  name: "setspawn"
+  description: "§8§8Update kingdom spawn"
+  usage: "§e/setspawn §8- §7Update kingdom spawn"
+  aliases:
+    - "setkingdomspawn"
+
+kingdom:
+  name: "kingdom"
+  description: "§7Manage and interact with your Kingdom."
+  usage: "§e/kingdom <subcommand>"
+  aliases: ["royaume", "kd"]
+
+kingdom-spawn:
+  name: "spawn"
+  description: "§7Teleport to your Kingdom’s spawn."
+  usage: "§e/kingdom spawn"
+  aliases: ["home", "base", "tp", "go"]
+
+kingdom-info:
+  name: "info"
+  description: "§7Display detailed information about your Kingdom."
+  usage: "§e/kingdom info"
+  aliases: ["who", "stats"]
+
+kingdom-top:
+  name: "top"
+  description: "§7Show the leaderboard of all Kingdoms."
+  usage: "§e/kingdom top"
+  aliases: ["leaderboard"]
+
+kingdom-map:
+  name: "map"
+  description: "§7Visualize your Kingdom’s borders."
+  usage: "§e/kingdom map"
+  aliases: ["border"]
+
+kingdom-contribute:
+  name: "contribute"
+  description: "§7Donate XP, money or resources to your Kingdom."
+  usage: "§e/kingdom contribute <xp|money|resource>"
+  aliases: ["donate", "give"]
+
+kingdom-abilities:
+  name: "abilities"
+  description: "§7View and activate your Kingdom’s special abilities."
+  usage: "§e/kingdom abilities"
+  aliases: ["powers"]
+
+kingdom-addxp:
+  name: "addxp"
+  description: "§7Add XP to a Kingdom’s bank."
+  usage: "§e/kingdom addxp <kingdom> <amount>"
+  aliases: ["givexp"]
+
+kingdom-setborder:
+  name: "setborders"
+  description: "§7Define or edit a Kingdom’s border."
+  usage: "§e/kingdom setborder <kingdom>"
+  aliases: ["borderedit"]
+
+kingdom-manage:
+  name: "manage"
+  description: "§7Open the admin Kingdom management menu."
+  usage: "§e/kingdom manage"
+  aliases: []
+
+kingdom-kick:
+  name: "kick"
+  description: "§7Start a democratic vote to expel a member from your Kingdom."
+  usage: "§e/kingdom kick <player> [reason]"
+  aliases: ["votekick", "vk"]
+
+kingdom-ban:
+  name: "ban"
+  description: "§7Start a democratic vote to ban a member from your Kingdom."
+  usage: "§e/kingdom ban <player> [reason]"
+  aliases: [ "voteban", "vb" ]
+
+kingdom-vote:
+  name: "vote"
+  description: "§7Cast your vote for the ongoing proposal in your Kingdom."
+  usage: "§e/kingdom vote"
+  aliases: ["v"]
+
+kingdom-truce:
+  name: "truce"
+  description: "§7Start a truce vote with another Kingdom."
+  usage: "§e/kingdom truce <kingdom>"
+  aliases: ["peaceoffer", "armistice"]
+
+kingdom-war:
+  name: "war"
+  description: "§7Start a war declaration vote."
+  usage: "§e/kingdom declare-war <kingdom>"
+
+kingdom-peace:
+  name: "peace"
+  description: "§7Propose a peace treaty (both Kingdoms must pass a vote)."
+  usage: "§e/kingdom peace <kingdom>"
+  aliases: ["treaty"]
+
+kingdom-upgrade:
+  name: "upgrade"
+  description: "§7Propose to buy/activate a Kingdom perk."
+  usage: "§e/kingdom upgrade <perkId>"
+  aliases: ["perk"]
+
+kingdom-shield:
+  name: "shield"
+  description: "§7Raise a temporary defensive shield around the Kingdom."
+  usage: "§e/kingdom shield <duration>"
+  aliases: ["aegis"]
+
+kingdom-alarm:
+  name: "alarm"
+  description: "§7Alert all Kingdom members and highlight attackers direction."
+  usage: "§e/kingdom alarm"
+  aliases: ["alert"]
+
+kingdom-rally:
+  name: "rally"
+  description: "§7Place a rally point and allow members to teleport to it."
+  usage: "§e/kingdom rally"
+  aliases: ["rly"]
+
+kingdom-bounty:
+  name: "bounty"
+  description: "§7Propose a bounty on an enemy player."
+  usage: "§e/kingdom bounty <player> <amount>"
+  aliases: ["reward"]
+
+portal:
+  name: "portal"
+  description: "§7Spawn a kingdom portal"
+  usage: "§e/portal <kingdom_id>"
+
+set-lobby-setting:
+  name: "setlobbysetting"
+  description: "§7Update lobby setting"
+  usage: "§e/setlobbysetting <setting> <boolean>"

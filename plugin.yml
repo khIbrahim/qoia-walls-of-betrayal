@@ -131,6 +131,8 @@ permissions:
     default: op
   wob.command.npc.tp:
     default: op
+  wob.command.npc.load:
+    default: op
   wob.command.floatingtext:
     default: op
   wob.command.floatingtext.create:
@@ -141,3 +143,83 @@ permissions:
     default: op
   wob.command.floatingtext.edit:
     default: op
+  wob.command.npc.cleanup:
+    default: op
+  wob.command.lobby:
+    default: true
+  wob.command.lobby.other:
+    default: op
+  wob.command.setlobby:
+    default: op
+  wob.command.spawn:
+    default: true
+  wob.command.spawn.other:
+    default: true
+  wob.command.setspawn:
+    default: op
+  wob.command.kingdom:
+    default: true
+  wob.command.kingdom.spawn:
+    default: true
+  wob.command.portal:
+    default: op
+  wob.bypass.lobby:
+    default: op
+  wob.bypass.lobby.build:
+    default: op
+  wob.bypass.lobby.break:
+    default: op
+  wob.bypass.lobby.pvp:
+    default: op
+  wob.bypass.lobby.damage:
+    default: op
+  wob.bypass.lobby.interact:
+    default: op
+  wob.bypass.lobby.drop:
+    default: op
+  wob.bypass.lobby.pickup:
+    default: op
+  wob.bypass.lobby.hunger:
+    default: op
+  wob.bypass.lobby.void_tp:
+    default: op
+  wob.command.setlobbysetting:
+    default: op
+  wob.command.kingdom.info:
+    default: true
+  wob.command.kingdom.top:
+    default: true
+  wob.command.kingdom.map:
+    default: true
+  wob.command.kingdom.contribute:
+    default: true
+  wob.command.kingdom.abilities:
+    default: true
+  wob.command.kingdom.addxp:
+    default: op
+  wob.command.kingdom.setborders:
+    default: op
+  wob.command.kingdom.manage:
+    default: true
+  wob.command.kingdom.kick:
+    default: true
+  wob.command.kingdom.ban:
+    default: true
+  wob.command.kingdom.truce:
+    default: true
+  wob.command.kingdom.war:
+    default: true
+  wob.command.kingdom.peace:
+    default: true
+  wob.command.kingdom.upgrade:
+    default: true
+  wob.command.kingdom.shield:
+    default: true
+  wob.command.kingdom.alarm:
+    default: true
+  wob.command.kingdom.rally:
+    default: true
+  wob.command.kingdom.bounty:
+    default: true
+  wob.command.kingdom.vote:
+    default: true

@@ -2,8 +2,10 @@
 
 namespace fenomeno\WallsOfBetrayal\Utils;
 
+use pocketmine\entity\Location;
 use pocketmine\Server;
 use pocketmine\world\Position;
+use RuntimeException;
 
 class PositionHelper {
 
@@ -14,24 +16,35 @@ class PositionHelper {
         $worldManager->loadWorld($folderName);
         $world = $worldManager->getWorldByName($folderName);
         if ($world == null) {
-            throw new \RuntimeException("Le monde $folderName n'existe pas");
+            throw new RuntimeException("World $folderName does not exists");
         }
         if (! $world->isLoaded()){
             $worldManager->loadWorld($folderName);
             return self::load($data);
         }
 
-        return new Position($data["x"], $data["y"], $data["z"], $world);
+        if (isset($data['yaw'], $data['pitch'])){
+            return new Location((float) $data['x'], (float) $data['y'], (float) $data['z'], $world, (float) $data['yaw'], (float) $data['pitch']);
+        }
+
+        return new Position((float) $data["x"], (float) $data["y"], (float) $data["z"], $world);
     }
 
-    public static function positionToArray(Position $position): array
+    public static function toArray(Position $position): array
     {
-        return [
+        $default = [
             'x'     => (float) $position->x,
             'y'     => (float) $position->y,
             'z'     => (float) $position->z,
             'world' => $position->getWorld()->getFolderName()
         ];
+
+        if ($position instanceof Location){
+            $default['yaw']   = $position->yaw;
+            $default['pitch'] = $position->pitch;
+        }
+
+        return $default;
     }
 
 }

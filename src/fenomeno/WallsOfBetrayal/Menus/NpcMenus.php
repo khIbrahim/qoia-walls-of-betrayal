@@ -100,19 +100,23 @@ final class NpcMenus {
                     $cooldown = (int) $cooldown;
                 }
 
-                try {
-                    $npc->setNameTag($name);
-                    $npc->setCommand($command);
-                    $npc->setCooldown($cooldown);
-                    if ($updateSkin){
-                        $npc->setSkin($player->getSkin());
-                        $npc->sendSkin();
-                    }
+                Await::f2c(static function () use ($name, $command, $cooldown, $player, $updateSkin, $npc) {
+                    try {
+                        yield from Main::getInstance()->getNpcManager()->update($npc, function (NpcEntity $npc) use ($updateSkin, $player, $cooldown, $command, $name) {
+                            $npc->setNameTag($name);
+                            $npc->setCommand($command);
+                            $npc->setCooldown($cooldown);
+                            if ($updateSkin){
+                                $npc->setSkin($player->getSkin());
+                                $npc->sendSkin();
+                            }
 
-                    MessagesUtils::sendTo($player, MessagesIds::NPC_EDITED, [ExtraTags::NPC => $npc->getNpcId()]);
-                } catch (Throwable $e){
-                    Utils::onFailure($e, $player, 'Failed to update npc ' . $npc->getNpcId() . ' by ' . $player->getName() . ' fields: ' . $name . ', ' . $command . ', ' . (int) $updateSkin . ':' . $e->getMessage());
-                }
+                            MessagesUtils::sendTo($player, MessagesIds::NPC_EDITED, [ExtraTags::NPC => $npc->getNpcId()]);
+                        });
+                    } catch (Throwable $e){
+                        Utils::onFailure($e, $player, 'Failed to update npc ' . $npc->getNpcId() . ' by ' . $player->getName() . ' fields: ' . $name . ', ' . $command . ', ' . (int) $updateSkin . ':' . $e->getMessage());
+                    }
+                });
             }
         );
         $player->sendForm($menu);

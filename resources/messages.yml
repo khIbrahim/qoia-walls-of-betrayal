@@ -310,6 +310,36 @@ commands:
     success: "{GLOBAL_PREFIX}{GREEN}You have been teleported to a random player ({PLAYER})."
   invsee:
     updated: "{GLOBAL_PREFIX}{GREEN}{PLAYER}'s inventory updated successfully."
+  lobby:
+    self:
+      message: "{GLOBAL_PREFIX}{GREEN}Successfully teleported to the lobby."
+      type: "toast"
+    other: "{GLOBAL_PREFIX}{GREEN}Successfully teleported {PLAYER} to the lobby."
+  set-lobby:
+    success: "{GLOBAL_PREFIX}{GREEN}Successfully updated lobby location."
+  spawn:
+    errors:
+      noKingdom:
+        self: "{GLOBAL_PREFIX}{RED}You need to join a kingdom to teleport into your kingdom spawn."
+        other: "{GLOBAL_PREFIX}{RED}{PLAYER} dont have a kingdom, he need to join one to teleport into their spawn."
+      noKingdomSpawn:
+        self: "{GLOBAL_PREFIX}{RED}Your kingdom ({KINGDOM}{RED}) does not have a spawn set yet."
+        other: "{GLOBAL_PREFIX}{RED}{PLAYER} Kingdom's ({KINGDOM{RED}} does not have a spawn set yet."
+    success:
+      self:
+        message: "{GLOBAL_PREFIX}{GREEN}Successfully teleported to {KINGDOM} {GREEN} spawn."
+        type: "toast"
+      other: "{GLOBAL_PREFIX}{GREEN}Successfully teleported {PLAYER} to {KINGDOM} {GREEN} spawn."
+  set-spawn:
+    success: "{GLOBAL_PREFIX}{GREEN}Successfully updated {KINGDOM}{GREEN}'s spawn location."
+  portal:
+    errors:
+      noPortal: "{GLOBAL_PREFIX}{RED}This kingdom ({KINGDOM}) does not have a portal."
+    success: "{GLOBAL_PREFIX}{GREEN}Successfully spawned {KINGDOM}{GREEN}'s portal.\n{YELLOW}Attack it with a golden carrot to despawn it."
+    remove:
+      success: "GLOBAL_PREFIX}{GREEN}Successfully removed portal."
+  set-lobby-setting:
+    success: "{GLOBAL_PREFIX}{GREEN}Successfully updated {SETTING} to {BOOL}."
 
 # ---------------------------------------------------------------------------
 
@@ -480,9 +510,6 @@ npc:
   cooldown:
     message: "{NPC_PREFIX}{RED}Wait {TIME} seconds..."
     type: "popup"
-
-# ---------------------------------------------------------------------------
-
 
 # ---------------------------------------------------------------------------
 

@@ -2,12 +2,16 @@
 
 namespace fenomeno\WallsOfBetrayal\Entities\Types;
 
+use fenomeno\WallsOfBetrayal\Config\PermissionIds;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\entity\EntitySizeInfo;
 use pocketmine\entity\Living;
 use pocketmine\entity\Location;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\VanillaItems;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\player\Player;
 
@@ -50,8 +54,14 @@ class PortalEntity extends Living
             $damager = $source->getDamager();
 
             if ($damager instanceof Player) {
-                $this->flagForDespawn();
-                $damager->sendMessage("TODO");
+                if ($damager->getInventory()->getItemInHand()->getTypeId() === VanillaItems::GOLDEN_CARROT()->getTypeId() && $damager->hasPermission(PermissionIds::PORTAL)){
+                    if(! $this->isFlaggedForDespawn()){
+                        $this->flagForDespawn();
+                        MessagesUtils::sendTo($damager, MessagesIds::PORTAL_REMOVE_SUCCESS);
+                    } else {
+                        $damager->getServer()->dispatchCommand($damager, "kingdom spawn");
+                    }
+                }
             }
         } else {
             $source->cancel();

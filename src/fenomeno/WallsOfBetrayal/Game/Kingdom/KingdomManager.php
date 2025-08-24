@@ -7,7 +7,6 @@ use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Entities\Types\PortalEntity;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\EntityFactoryUtils;
-use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
@@ -48,7 +47,7 @@ class KingdomManager
         foreach ($this->config->getAll() as $id => $kingdomData) {
             try {
                 $id = (string) $id;
-                if (! isset($kingdomData['display_name'], $kingdomData['color'], $kingdomData['icon'], $kingdomData['description'], $kingdomData['spawn'], $kingdomData['abilities'])) {
+                if (! isset($kingdomData['display_name'], $kingdomData['color'], $kingdomData['icon'], $kingdomData['description'], $kingdomData['abilities'])) {
                     $this->main->getLogger()->error("Failed to load kingdom $id, data missing, verify the config in resources/kingdoms.yml");
                     continue;
                 }
@@ -57,7 +56,6 @@ class KingdomManager
                 $item = StringToItemParser::getInstance()->parse((string ) $kingdomData['icon']) ?? VanillaItems::PAPER();
                 $item->setCustomName($displayName);
                 $item->setLore((array) $kingdomData['description']);
-                $position = PositionHelper::load((array) $kingdomData['spawn']);
                 $abilities = array_filter((array) $kingdomData['abilities'] ?? [], fn($abilityId) => is_string($abilityId) && $this->main->getAbilityManager()->getAbilityById($abilityId) !== null);
                 $this->main->getLogger()->info("Abilities of : $displayName are §6(" . implode(', ', $abilities) . ")");
 
@@ -77,7 +75,6 @@ class KingdomManager
                     color: (string) $kingdomData['color'],
                     description: implode("\n", (array) $kingdomData['description']),
                     item: $item,
-                    spawn: $position,
                     abilities: $abilities,
                     portalId: $kingdomData['portal'] ?? "",
                     enchantments: $enchantments

@@ -9,7 +9,7 @@ database:
     username: a
     password: b
     schema: c
-  worker-limit: 1
+  worker-limit: 2
 
 kit_requirements_flush_interval: 5
 day_length: 10
