@@ -4,17 +4,20 @@ namespace fenomeno\WallsOfBetrayal\Listeners;
 
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomWorldEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerLeaveKingdomWorldEvent;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Utils;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\player\Player;
+use Throwable;
 
 class KingdomListener implements Listener
 {
@@ -92,6 +95,25 @@ class KingdomListener implements Listener
                         ExtraTags::VICTIM_KINGDOM => $victimKingdom?->getDisplayName() ?? "null",
                         ExtraTags::KILLER_KINGDOM => $killerKingdom?->getDisplayName() ?? "null",
                     ]);
+
+                    $victimName = $victim->getName();
+                    $bounty = $this->main->getBountyManager()->getBountyByTarget($victimName);
+                    if ($bounty && $bounty->canClaim($killer->getName())) {
+                        Await::f2c(function () use ($victimName, $bounty, $victim, $killer) {
+                            try {
+                                yield from $this->main->getEconomyManager()->add($killer, $bounty->getAmount());
+                                yield from $this->main->getBountyManager()->deactivate($bounty, $killer->getName());
+
+                                $this->main->getServer()->broadcastMessage(MessagesUtils::getMessage(MessagesIds::KINGDOMS_BOUNTY_CLAIMED, [
+                                    ExtraTags::PLAYER => $killer->getDisplayName(),
+                                    ExtraTags::TARGET => $victim->getDisplayName(),
+                                    ExtraTags::AMOUNT => $bounty->getAmount()
+                                ]));
+                            } catch (Throwable $e) {
+                                Utils::onFailure($e, $killer, "Failed to claim bounty of $victimName by {$killer->getName()}: " . $e->getMessage());
+                            }
+                        });
+                    }
                 }
             }
         }

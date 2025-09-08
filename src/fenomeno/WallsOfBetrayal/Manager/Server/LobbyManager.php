@@ -6,7 +6,7 @@ use fenomeno\WallsOfBetrayal\Config\PermissionIds;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinLobbyEvent;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use fenomeno\WallsOfBetrayal\Utils\PositionParser;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use Generator;
 use pocketmine\entity\Location;
@@ -72,7 +72,7 @@ class LobbyManager
     private function loadLobbyLoc(): void
     {
         try {
-            $this->lobbyLoc = PositionHelper::load($this->config->get(self::LOBBY_LOC_KEY));
+            $this->lobbyLoc = PositionParser::load($this->config->get(self::LOBBY_LOC_KEY));
         } catch (Throwable){
             $this->lobbyLoc = $this->main->getServer()->getWorldManager()->getDefaultWorld()->getSpawnLocation();
         }
@@ -83,7 +83,7 @@ class LobbyManager
         return Await::promise(function ($resolve, $reject) use ($location) {
             try {
                 $this->lobbyLoc = $location;
-                $this->config->set(self::LOBBY_LOC_KEY, PositionHelper::toArray($location));
+                $this->config->set(self::LOBBY_LOC_KEY, PositionParser::toArray($location));
                 $this->config->save();
                 $resolve($location);
             } catch (Throwable $e) {$reject($e);}

@@ -17,14 +17,14 @@ use Generator;
 interface PlayerRolesRepositoryInterface extends RepositoryInterface
 {
 
-    public function load(GetPlayerRolePayload $payload, Closure $onSuccess, Closure $onFailure): void;
+    public function load(GetPlayerRolePayload $payload): Generator;
 
-    public function insert(InsertRolePlayerPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void;
+    public function insert(InsertRolePlayerPayload $payload): Generator;
 
     /**
      * @throws RolePlayerNotFoundException
     */
-    public function updateRole(UpdatePlayerRoleRolePayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void;
+    public function updateRole(UpdatePlayerRoleRolePayload $payload): Generator;
 
     public function updatePermissions(UpdatePermissionsPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void;
 

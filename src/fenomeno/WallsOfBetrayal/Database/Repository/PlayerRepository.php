@@ -18,6 +18,7 @@ use fenomeno\WallsOfBetrayal\Exceptions\RecordNotFoundException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
+use pocketmine\player\Player;
 use pocketmine\promise\Promise;
 use pocketmine\promise\PromiseResolver;
 use Throwable;
@@ -43,7 +44,7 @@ class PlayerRepository implements PlayerRepositoryInterface
                 $data = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::LOAD_PLAYER, $payload->jsonSerialize());
                 if (empty($data)){
                     $this->insert(
-                        new InsertPlayerPayload($payload->uuid, $payload->name),
+                        new InsertPlayerPayload($payload->uuid, strtolower($payload->name)),
                         fn() => $this->main->getLogger()->info("§a$payload->name successfully inserted."),
                         fn(Throwable $e) => $this->main->getLogger()->info("§aFailed to insert: $payload->name: " . $e->getMessage()),
                     );
@@ -63,6 +64,8 @@ class PlayerRepository implements PlayerRepositoryInterface
                 $deaths    = (int) ($data['deaths'] ?? 0);
 
                 $resolver->resolve(new PlayerData(
+                    uuid: $payload->uuid,
+                    name: $payload->name,
                     kingdom: $kingdom,
                     abilities: $abilities,
                     kills: $kills,
@@ -84,20 +87,10 @@ class PlayerRepository implements PlayerRepositoryInterface
         $this->main->getDatabaseManager()->executeInsert(Statements::INSERT_PLAYER, $payload->jsonSerialize(), $onSuccess, $onFailure);
     }
 
-    /**
-     * On insère ici en même temps, c'est la première requête que le joueur fera dans tous les cas
-     */
-    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
-    {
-        Await::f2c(function () use ($onFailure, $onSuccess, $payload) {
-            try {
-                yield from $this->main->getDatabaseManager()->asyncInsert(Statements::SET_KINGDOM_PLAYER, $payload->jsonSerialize());
 
-                $onSuccess?->__invoke();
-            } catch (Throwable $e){
-                $onFailure?->__invoke($e);
-            }
-        });
+    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload): Generator
+    {
+        yield from $this->main->getDatabaseManager()->asyncInsert(Statements::SET_KINGDOM_PLAYER, $payload->jsonSerialize());
     }
 
     public function updatePlayerAbilities(UpdatePlayerAbilities $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
@@ -132,16 +125,38 @@ class PlayerRepository implements PlayerRepositoryInterface
         }
 
         $data = $data[0];
+
         $kingdom   = (string) $data['kingdom'] ?? '';
         $abilities = json_decode(((string) $data['abilities']), true);
         $kills     = (int) ($data['kills'] ?? 0);
         $deaths    = (int) ($data['deaths'] ?? 0);
 
         return new PlayerData(
+            uuid: (string)$data['uuid'],
+            name: (string)$data['name'],
             kingdom: $kingdom,
             abilities: $abilities,
             kills: $kills,
             deaths: $deaths
         );
+    }
+
+    /**
+     * @throws RecordNotFoundException
+     */
+    public function getUuidAndUsernameByName(string $targetName): Generator
+    {
+        $target = $this->main->getServer()->getPlayerExact($targetName);
+        if ($target instanceof Player) {
+            return [$target->getUniqueId()->toString(), $target->getName()];
+        }
+
+        /** @var PlayerData $data */
+        $data = yield from $this->asyncLoad(new UsernamePayload(strtolower($targetName)));
+        if ($data === null) {
+            throw new RecordNotFoundException("Player with username $targetName not found.");
+        }
+
+        return [$data->uuid, $data->name];
     }
 }

@@ -139,4 +139,9 @@ class FloatingText
         ], $text);
     }
 
+    public function hideFor(Player $player): void
+    {
+        $player->getNetworkSession()->sendDataPacket(RemoveActorPacket::create($this->getRuntimeId()));
+    }
+
 }

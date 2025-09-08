@@ -1,8 +1,7 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Roles;
+namespace fenomeno\WallsOfBetrayal\Manager;
 
-use Closure;
 use Exception;
 use fenomeno\WallsOfBetrayal\Class\Roles\Role;
 use fenomeno\WallsOfBetrayal\Class\Roles\RolePlayer;
@@ -34,7 +33,7 @@ use pocketmine\utils\Config;
 use Symfony\Component\Filesystem\Path;
 use Throwable;
 
-class RolesManager
+final class RolesManager
 {
 
     /** @var RolePlayer[] */
@@ -65,33 +64,31 @@ class RolesManager
         $this->main->getScheduler()->scheduleDelayedRepeatingTask(new RolesTask($this->main), 20 * 5, (int) $this->config->getNested('parameters.nametag-task-tick', 20));
     }
 
-    public function loadPlayer(?string $uuid, ?string $username, Closure $onSuccess, Closure $onFailure): void
+    public function loadPlayer(?string $uuid, ?string $username, bool $insert = true): Generator
     {
-        $this->main->getDatabaseManager()
-            ->getRolesRepository()
-            ->load(
-                new GetPlayerRolePayload($uuid, $username),
-                function (?RolePlayerDTO $rolePlayerDTO) use ($onSuccess, $username) {
-                    if($rolePlayerDTO === null) {
-                        $onSuccess(null);
-                        return;
-                    }
+        /** @var RolePlayerDTO $rolePlayerDTO */
+        $rolePlayerDTO = yield from $this->main->getDatabaseManager()->getRolesRepository()->load(new GetPlayerRolePayload($uuid, $username));
+        if ($rolePlayerDTO === null) {
+            if ($insert) {
+                return yield from $this->insertPlayer($uuid, $username);
+            }
 
-                    $key = $this->normalizeKey($username);
+            return null;
+        }
 
-                    $rolePlayer = $this->players[$key] = new RolePlayer(
-                        role: $rolePlayerDTO->roleId,
-                        subRoles: $rolePlayerDTO->subRoles,
-                        permissions: $rolePlayerDTO->permissions,
-                        assignedAt: $rolePlayerDTO->assignedAt,
-                        expiresAt: $rolePlayerDTO->expiresAt,
-                    );
+        $key = $this->normalizeKey($username);
 
-                    $this->main->getLogger()->debug("§aROLES - Role Player $username loaded successfully.");
-                    $onSuccess($rolePlayer);
-                },
-                $onFailure
-            );
+        $rolePlayer = $this->players[$key] = new RolePlayer(
+            role: $rolePlayerDTO->roleId,
+            subRoles: $rolePlayerDTO->subRoles,
+            permissions: $rolePlayerDTO->permissions,
+            assignedAt: $rolePlayerDTO->assignedAt,
+            expiresAt: $rolePlayerDTO->expiresAt,
+        );
+
+        $this->main->getLogger()->debug("§aROLES - Role Player $username loaded successfully.");
+
+        return $rolePlayer;
     }
 
     public function getPlayer(string|Player $player): ?RolePlayer
@@ -100,7 +97,7 @@ class RolesManager
         return $this->players[$key] ?? null;
     }
 
-    public function insertPlayer(string $uuid, string $username, Closure $onSuccess, Closure $onFailure): void
+    public function insertPlayer(string $uuid, string $username): Generator
     {
         $username = $this->normalizeKey($username);
 
@@ -113,120 +110,82 @@ class RolesManager
             expiresAt: null
         );
 
-        $onSuccess = function () use ($payload, $username, $onSuccess) {
-            $this->players[$username] = $rolePlayer = new RolePlayer(
-                role: $payload->roleId,
-                subRoles: $payload->subRoles,
-                permissions: $payload->permissions,
-                assignedAt: time(),
-                expiresAt: $payload->expiresAt
-            );
-            $onSuccess($rolePlayer);
-        };
+        yield from $this->main->getDatabaseManager()->getRolesRepository()->insert($payload);
 
-        $this->main->getDatabaseManager()
-            ->getRolesRepository()
-            ->insert($payload, $onSuccess, $onFailure);
+        $this->players[$username] = $rolePlayer = new RolePlayer(
+            role: $payload->roleId,
+            subRoles: $payload->subRoles,
+            permissions: $payload->permissions,
+            assignedAt: time(),
+            expiresAt: $payload->expiresAt
+        );
+
+        return $rolePlayer;
     }
 
     /**
      * @throws RoleNotFoundException
      * @throws RolePlayerNotFoundException
-     * @throws DatabaseException
      * @throws PlayerAlreadyHasRoleException
      */
     public function setPlayerRole(Player|string $player, Role|string $role, ?int $expiresAt = null): Generator
     {
-        return Await::promise(function ($resolve, $reject) use ($expiresAt, $role, $player) {
-            $roleId = $role instanceof Role ? $role->getId() : $role;
-            if (! isset($this->roles[$roleId])) {
-                $reject(new RoleNotFoundException("Role with ID $roleId does not exist."));
-                return;
+        $roleId = $role instanceof Role ? $role->getId() : $role;
+        if (!isset($this->roles[$roleId])) {
+            throw new RoleNotFoundException("Role with ID $roleId does not exist.");
+        }
+
+        $key = $this->normalizeKey($player);
+        $rolePlayer = $this->getPlayer($player);
+        $roleId = $role instanceof Role ? $role->getId() : $role;
+
+        if ($rolePlayer) {
+            if ($rolePlayer->getRole()->getId() === $roleId) {
+                throw new PlayerAlreadyHasRoleException("Player " . (is_string($player) ? $player : $player->getName()) . " already has the role " . $role->getDisplayName());
             }
 
-            $key = $this->normalizeKey($player);
-            if (isset($this->players[$key])) {
-                $rolePlayer = $this->getPlayer($player);
+            $rolePlayer = clone $rolePlayer;
+            $rolePlayer->setRole($roleId);
+            $rolePlayer->setAssignedAt(time());
+            $rolePlayer->setExpiresAt($expiresAt);
+            unset($this->players[$key]);
+            $this->players[$key] = $rolePlayer;
 
-                if ($rolePlayer->getRole()->getId() === $role->getId()) {
-                    $reject(new PlayerAlreadyHasRoleException("Player " . (is_string($player) ? $player : $player->getName()) . " already has the role " . $role->getDisplayName()));
-                    return;
-                }
-
-                $rolePlayer->setRole($roleId);
-                $rolePlayer->setAssignedAt(time());
-                $rolePlayer->setExpiresAt($expiresAt);
-                if($player instanceof Player){
-                    $rolePlayer->applyTo($player);
-                }
-                $this->players[$this->normalizeKey($player)] = $rolePlayer;
+            if ($player instanceof Player) {
+                $rolePlayer->applyTo($player);
             }
+        }
 
-            [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower($player)];
+        [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower($player)];
 
-            $this->main->getDatabaseManager()
-                ->getRolesRepository()
-                ->updateRole(
-                    new UpdatePlayerRoleRolePayload(
-                        uuid: $uuid,
-                        username: $username,
-                        roleId: $roleId,
-                        expiresAt: $expiresAt
-                    ),
-                    function () use ($resolve) {
-                        $resolve();
-                    },
-                    function (Throwable $e) use ($reject, $player) {
-                        $reject($e);
-                    }
-                );
-        });
+        yield from $this->main->getDatabaseManager()->getRolesRepository()->updateRole(
+            new UpdatePlayerRoleRolePayload(
+                uuid: $uuid,
+                username: $username,
+                roleId: $roleId,
+                expiresAt: $expiresAt
+            )
+        );
+
+        return $this->roles[$roleId];
     }
 
     /**
-     * @param Player|string $player
-     * @return Generator
-     * @throws RolePlayerNotFoundException
+     * @throws
      */
     public function handleExpiredRole(Player|string $player): Generator
     {
-        return Await::promise(function ($resolve, $reject) use ($player) {
-            $key = $this->normalizeKey($player);
-            $rp = $this->players[$key] ?? null;
-            if ($rp === null) {
-                $reject(new RolePlayerNotFoundException());
-                return;
-            }
-
-            $fallbackRoleId = $this->defaultRole->getId();
-            $subRoles = array_values($rp->getSubRoles());
+        $fallbackRoleId = $this->defaultRole->getId();
+        $rolePlayer = $this->getPlayer($player);
+        if ($rolePlayer) {
+            $subRoles = array_values($rolePlayer->getSubRoles());
             if (! empty($subRoles)) {
                 $first = $subRoles[0];
                 $fallbackRoleId = $first instanceof Role ? $first->getId() : (string)$first;
             }
+        }
 
-            $rp->setRole($fallbackRoleId);
-            $rp->setAssignedAt(time());
-            $rp->setExpiresAt(null);
-
-            if ($player instanceof Player) {
-                $rp->applyTo($player);
-            }
-            $this->players[$key] = $rp;
-
-            [$uuid, $username] = $player instanceof Player ? [$player->getUniqueId()->toString(), strtolower($player->getName())] : [null, strtolower((string)$player)];
-
-            $this->main->getDatabaseManager()->getRolesRepository()->updateRole(
-                new UpdatePlayerRoleRolePayload(
-                    uuid: $uuid,
-                    username: $username,
-                    roleId: $fallbackRoleId,
-                    expiresAt: null
-                ),
-                function () use ($fallbackRoleId, $resolve) { $resolve($this->getRoleById($fallbackRoleId)); },
-                function (Throwable $e) use ($reject) { $reject($e); }
-            );
-        });
+        return yield from $this->setPlayerRole($player, $fallbackRoleId);
     }
 
     /**

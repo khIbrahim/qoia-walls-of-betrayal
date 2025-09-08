@@ -76,6 +76,9 @@ class ModalForm extends BaseForm{
 	}
 
 	final public function handleResponse(Player $player, $data) : void{
+        if ($data === null) {
+            return;
+        }
 		if(!is_bool($data)){
 			throw new FormValidationException("Expected bool, got " . gettype($data));
 		}

@@ -24,6 +24,7 @@ namespace fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator;
 
 use AssertionError;
 use Closure;
+use fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await;
 use Generator;
 
 /**

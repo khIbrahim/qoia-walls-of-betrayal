@@ -2,25 +2,26 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Payload\Player;
 
-use fenomeno\WallsOfBetrayal\Database\Contrasts\PayloadInterface;
+use fenomeno\WallsOfBetrayal\Database\Payload\Abstract\UuidUsernamePayload;
 
-final readonly class SetPlayerKingdomPayload implements PayloadInterface
+final readonly class SetPlayerKingdomPayload extends UuidUsernamePayload
 {
 
     public function __construct(
-        private string $uuid,
-        private string $name,
-        private string $kingdomId,
-        private array  $abilities
-    ){}
+        ?string        $uuid,
+        ?string        $username,
+        public ?string $kingdomId = null,
+        public array   $abilities = []
+    )
+    {
+        parent::__construct($uuid, $username);
+    }
 
     public function jsonSerialize(): array
     {
-        return [
-            'uuid'      => $this->uuid,
-            'name'      => $this->name,
+        return array_merge(parent::jsonSerialize(), [
             'kingdom'   => $this->kingdomId,
             'abilities' => json_encode($this->abilities)
-        ];
+        ]);
     }
 }

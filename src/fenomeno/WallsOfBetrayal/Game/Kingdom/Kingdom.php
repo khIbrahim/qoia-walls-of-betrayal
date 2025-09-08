@@ -2,7 +2,10 @@
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
 use fenomeno\WallsOfBetrayal\Class\KingdomData;
+use fenomeno\WallsOfBetrayal\Commands\Arguments\KingdomDataFilterArgument;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\ContributeKingdomPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\KingdomRallyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\UpdateKingdomSpawnPayload;
 use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
@@ -13,7 +16,9 @@ use fenomeno\WallsOfBetrayal\Utils\EnchantUtils;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
-use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use fenomeno\WallsOfBetrayal\Utils\PositionParser;
+use Generator;
+use pocketmine\color\Color;
 use pocketmine\entity\Location;
 use pocketmine\item\enchantment\AvailableEnchantmentRegistry;
 use pocketmine\item\Item;
@@ -44,7 +49,7 @@ class Kingdom
     public function broadcastMessage(string $message, array $extraTags = [], ?string $default = null): void
     {
         foreach ($this->getOnlineMembers() as $member){
-            MessagesUtils::sendTo($member, $message, $extraTags, $default);
+            $member->sendMessage($this->getDisplayName() . "§8»§r" . MessagesUtils::getMessage($message, $extraTags, $default));
         }
     }
 
@@ -155,12 +160,65 @@ class Kingdom
         return $this->kingdomData->spawn;
     }
 
-    public function updateSpawn(null|Position|Location $location): \Generator
+    public function updateSpawn(null|Position|Location $location): Generator
     {
-        yield from Main::getInstance()->getDatabaseManager()->getKingdomRepository()->updateSpawn(new UpdateKingdomSpawnPayload($this->id, PositionHelper::toArray($location)));
+        yield from Main::getInstance()->getDatabaseManager()->getKingdomRepository()->updateSpawn(new UpdateKingdomSpawnPayload($this->id, PositionParser::toArray($location)));
 
         $this->kingdomData->spawn = $location;
         return $location;
+    }
+
+    public function getKingdomData(): KingdomData
+    {
+        return $this->kingdomData;
+    }
+
+    public function contribute(int $amount, string $type): Generator
+    {
+        yield from Main::getInstance()->getDatabaseManager()->getKingdomRepository()->contribute(new ContributeKingdomPayload($this->id, $type, $amount));
+
+        switch ($type) {
+            case KingdomDataFilterArgument::XP:
+                $this->kingdomData->xp += $amount;
+                break;
+            case KingdomDataFilterArgument::BALANCE:
+                $this->kingdomData->balance += $amount;
+                break;
+        }
+    }
+
+    // du hard code, fermez les yeux
+    public function getColor(): Color
+    {
+        return match ($this->id) {
+            default => new Color(255, 0, 0),
+            'thragmar' => new Color(0, 0, 255)
+        };
+    }
+
+    public function setRallyPoint(Location $location): Generator
+    {
+        yield from Main::getInstance()->getDatabaseManager()->getKingdomRepository()->setRally(new KingdomRallyPayload(
+            id: $this->id,
+            rallyPoint: PositionParser::toArray($location)
+        ));
+
+        $this->kingdomData->rallyPoint = $location;
+    }
+
+    public function getRallyPoint(): ?Location
+    {
+        return $this->kingdomData->rallyPoint;
+    }
+
+    public function getBalance(): int
+    {
+        return $this->kingdomData->balance;
+    }
+
+    public function isExcluded(string $uuid): bool
+    {
+        return Main::getInstance()->getKingdomManager()->isPlayerSanctioned($this->id, $uuid);
     }
 
 }

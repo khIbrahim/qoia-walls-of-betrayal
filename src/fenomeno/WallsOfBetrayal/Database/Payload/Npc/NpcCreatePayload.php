@@ -5,7 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Payload\Npc;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\PayloadInterface;
 use fenomeno\WallsOfBetrayal\Entities\Types\NpcEntity;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use fenomeno\WallsOfBetrayal\Utils\PositionParser;
 
 readonly class NpcCreatePayload implements PayloadInterface
 {
@@ -32,7 +32,7 @@ readonly class NpcCreatePayload implements PayloadInterface
             name: $entity->getNameTag(),
             command: $entity->getStoredCommand(),
             cooldown: $entity->getCooldown(),
-            position: PositionHelper::toArray($entity->getPosition()),
+            position: PositionParser::toArray($entity->getPosition()),
             yaw: $entity->getLocation()->yaw,
             pitch: $entity->getLocation()->pitch,
             skin: Main::getInstance()->getDatabaseManager()->getBinaryStringParser()->encode(base64_encode($entity->getSkin()->getSkinData())) ?? "",

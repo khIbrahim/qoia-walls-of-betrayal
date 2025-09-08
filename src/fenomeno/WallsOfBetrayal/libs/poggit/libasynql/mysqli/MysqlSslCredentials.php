@@ -39,7 +39,7 @@ class MysqlSslCredentials implements JsonSerializable{
 
 
 	/**
-	 * Creates a new {@link MysqlSslCredentials} instance from an array (e.g. from Config), with empty default values.
+     * Creates a new {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\mysqli\MysqlSslCredentials} instance from an array (e.g. from Config), with empty default values.
 	 * @param array $array
 	 * @return MysqlSslCredentials
 	 */
@@ -54,7 +54,7 @@ class MysqlSslCredentials implements JsonSerializable{
 	}
 
 	/**
-	 * Constructs a new {@link MysqlSslCredentials} by passing parameters directly.
+     * Constructs a new {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\mysqli\MysqlSslCredentials} by passing parameters directly.
 	 *
 	 * @param string|null $key - The path name to the key file
 	 * @param string|null $certificate - The path name to the certificate file

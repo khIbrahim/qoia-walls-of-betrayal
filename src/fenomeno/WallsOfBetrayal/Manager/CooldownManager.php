@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\UpsertCooldownPayload;
 use fenomeno\WallsOfBetrayal\DTO\CooldownEntry;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Utils\DurationParser;
 use pocketmine\scheduler\ClosureTask;
 
 final class CooldownManager
@@ -63,14 +64,20 @@ final class CooldownManager
         }
     }
 
-    public function getCooldownRemaining(string $type, string $identifier): int
+    public function getCooldownRemaining(string $type, string $identifier, bool $format = false): string|int
     {
+        $timestamp = 0;
+
         if ($this->isOnCooldown($type, $identifier)) {
             if (isset($this->cached[$type][$identifier])){
-                return $this->cached[$type][$identifier] - time();
+                $timestamp = $this->cached[$type][$identifier] - time();
             } else {
-                return $this->persisted[$type][$identifier] - time();
+                $timestamp = $this->persisted[$type][$identifier] - time();
             }
+        }
+
+        if ($format) {
+            return DurationParser::getReadableDuration($timestamp, false);
         }
 
         return 0;

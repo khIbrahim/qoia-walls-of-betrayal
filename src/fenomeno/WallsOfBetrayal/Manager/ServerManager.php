@@ -5,7 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Manager;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\Server\LobbyManager;
 
-class ServerManager
+final class ServerManager
 {
 
     public const KINGDOM_WORLD = 'kingdoms';

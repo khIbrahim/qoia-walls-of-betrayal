@@ -13,7 +13,8 @@ class KingdomData
         public int $balance = 0,
         public int $kills = 0,
         public int $deaths = 0,
-        public null|Location|Position $spawn = null
+        public null|Location|Position $spawn = null,
+        public null|Location|Position $rallyPoint = null,
     ){}
 
 }

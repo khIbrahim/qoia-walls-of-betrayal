@@ -12,7 +12,7 @@ use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyBalanceIsSameException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordNotFoundException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\InvalidEconomyAmount;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\FloatArgument;
-use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
+use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\TargetPlayerArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
@@ -33,7 +33,7 @@ class SetBalanceCommand extends WCommand
      */
     protected function prepare(): void
     {
-        $this->registerArgument(0, new RawStringArgument(SetBalanceCommand::ARGUMENT_PLAYER));
+        $this->registerArgument(0, new TargetPlayerArgument(SetBalanceCommand::ARGUMENT_PLAYER));
         $this->registerArgument(1, new FloatArgument(SetBalanceCommand::ARGUMENT_AMOUNT));
     }
 

@@ -30,7 +30,7 @@ interface PlayerRepositoryInterface extends RepositoryInterface
 
     public function insert(InsertPlayerPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
 
-    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
+    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload): \Generator;
 
     public function updatePlayerAbilities(UpdatePlayerAbilities $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
 
@@ -42,5 +42,7 @@ interface PlayerRepositoryInterface extends RepositoryInterface
      * @throws RecordNotFoundException
      */
     public function asyncLoad(UsernamePayload $payload): \Generator;
+
+    public function getUuidAndUsernameByName(string $targetName): \Generator;
 
 }

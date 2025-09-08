@@ -9,7 +9,8 @@ use pocketmine\network\mcpe\protocol\types\ScorePacketEntry;
 use pocketmine\player\Player;
 use WeakReference;
 
-class ScoreboardManager {
+final class ScoreboardManager
+{
 
     /** @var WeakReference<Player> */
     private WeakReference $sender;

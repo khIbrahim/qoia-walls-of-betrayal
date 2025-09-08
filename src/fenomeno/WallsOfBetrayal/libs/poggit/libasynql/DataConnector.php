@@ -22,12 +22,14 @@ declare(strict_types=1);
 
 namespace fenomeno\WallsOfBetrayal\libs\poggit\libasynql;
 
+use fenomeno\SimpleRanks\libs\poggit\libasynql\SqlError;
+use fenomeno\SimpleRanks\libs\poggit\libasynql\SqlResult;
+use fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\generic\GenericStatementFileParseException;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\result\SqlColumnInfo;
 use Generator;
 use InvalidArgumentException;
 use Logger;
-use SOFe\AwaitGenerator\Await;
 
 /**
  * Represents a database connection or a group of database connections

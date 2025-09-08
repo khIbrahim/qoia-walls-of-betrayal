@@ -80,13 +80,15 @@ use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Listeners\StaffListener;
+use fenomeno\WallsOfBetrayal\Manager\BountyManager;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\FloatingTextManager;
+use fenomeno\WallsOfBetrayal\Manager\KingdomVoteManager;
 use fenomeno\WallsOfBetrayal\Manager\NpcManager;
 use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
+use fenomeno\WallsOfBetrayal\Manager\RolesManager;
 use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
-use fenomeno\WallsOfBetrayal\Roles\RolesManager;
 use fenomeno\WallsOfBetrayal\Services\NickService;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
 use fenomeno\WallsOfBetrayal\Tiles\TileManager;
@@ -114,6 +116,8 @@ class Main extends PluginBase
     private NpcManager          $npcManager;
     private FloatingTextManager $floatingTextManager;
     private ServerManager       $serverManager;
+    private BountyManager $bountyManager;
+    private KingdomVoteManager $kingdomVoteManager;
 
     protected function onLoad(): void
     {
@@ -151,6 +155,8 @@ class Main extends PluginBase
             $this->punishmentManager   = new PunishmentManager($this);
             $this->npcManager          = new NpcManager($this);
             $this->floatingTextManager = new FloatingTextManager($this);
+            $this->bountyManager = new BountyManager($this);
+            $this->kingdomVoteManager = new KingdomVoteManager($this);
 
             EntityManager::getInstance()->startup($this);
             TileManager::getInstance()->startup();
@@ -208,7 +214,7 @@ class Main extends PluginBase
                 new SetSpawnCommand($this),
                 new KingdomCommand($this),
                 new PortalCommand($this),
-                new SetLobbySettingCommand($this)
+                new SetLobbySettingCommand($this),
             ]);
 
             $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -311,6 +317,16 @@ class Main extends PluginBase
     public function getServerManager(): ServerManager
     {
         return $this->serverManager;
+    }
+
+    public function getBountyManager(): BountyManager
+    {
+        return $this->bountyManager;
+    }
+
+    public function getKingdomVoteManager(): KingdomVoteManager
+    {
+        return $this->kingdomVoteManager;
     }
 
     protected function onDisable(): void

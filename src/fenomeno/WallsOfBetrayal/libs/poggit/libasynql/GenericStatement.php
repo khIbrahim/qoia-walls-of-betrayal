@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace fenomeno\WallsOfBetrayal\libs\poggit\libasynql;
 
+use fenomeno\SimpleRanks\libs\poggit\libasynql\SqlDialect;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\generic\GenericVariable;
 
 interface GenericStatement{

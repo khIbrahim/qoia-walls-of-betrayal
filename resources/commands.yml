@@ -485,12 +485,6 @@ kingdom-addxp:
   usage: "§e/kingdom addxp <kingdom> <amount>"
   aliases: ["givexp"]
 
-kingdom-setborder:
-  name: "setborders"
-  description: "§7Define or edit a Kingdom’s border."
-  usage: "§e/kingdom setborder <kingdom>"
-  aliases: ["borderedit"]
-
 kingdom-manage:
   name: "manage"
   description: "§7Open the admin Kingdom management menu."
@@ -500,7 +494,7 @@ kingdom-manage:
 kingdom-kick:
   name: "kick"
   description: "§7Start a democratic vote to expel a member from your Kingdom."
-  usage: "§e/kingdom kick <player> [reason]"
+  usage: "§e/kingdom kick <player> <duration> [reason]"
   aliases: ["votekick", "vk"]
 
 kingdom-ban:
@@ -512,25 +506,8 @@ kingdom-ban:
 kingdom-vote:
   name: "vote"
   description: "§7Cast your vote for the ongoing proposal in your Kingdom."
-  usage: "§e/kingdom vote"
+  usage: "§e/kingdom vote <type>"
   aliases: ["v"]
-
-kingdom-truce:
-  name: "truce"
-  description: "§7Start a truce vote with another Kingdom."
-  usage: "§e/kingdom truce <kingdom>"
-  aliases: ["peaceoffer", "armistice"]
-
-kingdom-war:
-  name: "war"
-  description: "§7Start a war declaration vote."
-  usage: "§e/kingdom declare-war <kingdom>"
-
-kingdom-peace:
-  name: "peace"
-  description: "§7Propose a peace treaty (both Kingdoms must pass a vote)."
-  usage: "§e/kingdom peace <kingdom>"
-  aliases: ["treaty"]
 
 kingdom-upgrade:
   name: "upgrade"
@@ -550,17 +527,33 @@ kingdom-alarm:
   usage: "§e/kingdom alarm"
   aliases: ["alert"]
 
+kingdom-set-rally:
+  name: "setrally"
+  description: "§7Place a rally point and allow members to teleport to it."
+  usage: "§e/kingdom setrally"
+
 kingdom-rally:
   name: "rally"
-  description: "§7Place a rally point and allow members to teleport to it."
+  description: "§7Teleport to the rally point set by a member."
   usage: "§e/kingdom rally"
   aliases: ["rly"]
 
 kingdom-bounty:
   name: "bounty"
   description: "§7Propose a bounty on an enemy player."
-  usage: "§e/kingdom bounty <player> <amount>"
+  usage: "§e/kingdom bounty <player> <amount> <strict=false>"
   aliases: ["reward"]
+
+kingdom-bounties:
+  name: "bounties"
+  description: "§7List of all the bounties placed by your kingdom."
+  usage: "§e/kingdom bounties <page=0> <filter=false>"
+
+kingdom-betray:
+  name: "betray"
+  description: "§7Betray your kingdom and join the enemy."
+  usage: "§e/kingdom betray <kingdom> [confirm]"
+  aliases: [ "trahir", "switch" ]
 
 portal:
   name: "portal"

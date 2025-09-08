@@ -20,7 +20,7 @@ use Throwable;
 class RichCommand extends WCommand
 {
 
-    private const ARGUMENT_PAGE = "page";
+    private const PAGE_ARGUMENT = "page";
     private const DEFAULT_LIMIT = 10;
 
     /**
@@ -28,12 +28,12 @@ class RichCommand extends WCommand
      */
     protected function prepare(): void
     {
-        $this->registerArgument(0, new IntegerArgument(RichCommand::ARGUMENT_PAGE, true));
+        $this->registerArgument(0, new IntegerArgument(RichCommand::PAGE_ARGUMENT, true));
     }
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
-        $offset = $args[RichCommand::ARGUMENT_PAGE] ?? 0;
+        $offset = $args[RichCommand::PAGE_ARGUMENT] ?? 0;
         $offset = max($offset, 1);
         $offset = ($offset - 1) * RichCommand::DEFAULT_LIMIT;
 

@@ -52,7 +52,7 @@ class Await extends PromiseState{
 
 	/**
 	 * @var Generator
-	 * @phpstan-var Generator<mixed, Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator>, mixed, T>
+     * @phpstan-var Generator<mixed, \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator>, mixed, T>
 	 * */
 	private $generator;
 	/**
@@ -73,7 +73,7 @@ class Await extends PromiseState{
 	private $lastResolveUnrejected = null;
 	/**
 	 * @var string|string[]|null
-	 * @phpstan-var Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator<mixed, mixed, mixed, mixed>|null
+     * @phpstan-var \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator<mixed, mixed, mixed, mixed>|null
 	 */
 	private $current = null;
 
@@ -84,7 +84,7 @@ class Await extends PromiseState{
 	 * Converts a `Function<AwaitGenerator>` to a VoidCallback
 	 *
 	 * @param callable            $closure
-	 * @phpstan-param callable(): Generator<mixed, Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator, mixed, T> $closure
+     * @phpstan-param callable(): Generator<mixed, \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator, mixed, T> $closure
 	 * @param callable|null       $onComplete
 	 * @phpstan-param (callable(T): void)|null $onComplete This argument has been deprecated. Append the call to the generator closure instead.
 	 * @param callable[]|callable $catches This argument has been deprecated. Use a try-catch block in the generator closure instead.
@@ -100,7 +100,7 @@ class Await extends PromiseState{
 	 * Converts an AwaitGenerator to a VoidCallback
 	 *
 	 * @param Generator           $generator
-	 * @phpstan-param Generator<mixed, Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator, mixed, T> $generator
+     * @phpstan-param Generator<mixed, \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator, mixed, T> $generator
 	 * @param callable|null       $onComplete
 	 * @phpstan-param (callable(T): void)|null $onComplete This argument has been deprecated. Append the call to the generator closure instead.
 	 * @param callable[]|callable $catches This argument has been deprecated. Use a try-catch block in the generator instead.
@@ -133,7 +133,7 @@ class Await extends PromiseState{
 	 *
 	 * @template U
 	 * @param Generator $generators
-	 * @return Generator<mixed, Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator, mixed, U[]>
+     * @return Generator<mixed, \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator, mixed, U[]>
 	 */
 	public static function all(array $generators) : Generator{
 		if(count($generators) === 0){
@@ -173,10 +173,10 @@ class Await extends PromiseState{
 	 * @template K
 	 * @template U
 	 * @param Generator $generators
-	 * @return Generator<mixed, Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator, mixed, array{K, U}>
+     * @return Generator<mixed, \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator, mixed, array{K, U}>
 	 *
 	 * @deprecated `Await::race` does not clean up losing generators. Use `safeRace` instead.
-	 * @see Await::safeRace
+     * @see \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::safeRace
 	 */
 	public static function race(array $generators) : Generator{
 		if(count($generators) === 0){
@@ -248,7 +248,7 @@ class Await extends PromiseState{
 	 * @template K
 	 * @template U
 	 * @param Generator $generators
-	 * @return Generator<mixed, Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator, mixed, array{K, U}>
+     * @return Generator<mixed, \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator, mixed, array{K, U}>
 	 */
 	public static function safeRace(array $generators) : Generator{
 		$generators = self::raceSemaphore($generators);;
@@ -288,7 +288,7 @@ class Await extends PromiseState{
 	 *
 	 * @template U
 	 * @param Closure(Closure(U=): void, Closure(Throwable): void): void $closure
-	 * @return Generator<mixed, Await::RESOLVE|null|Await::RESOLVE_MULTI|Await::REJECT|Await::ONCE|Await::ALL|Await::RACE|Generator, mixed, U>
+     * @return Generator<mixed, \fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE|null|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RESOLVE_MULTI|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::REJECT|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ONCE|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::ALL|\fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await::RACE|Generator, mixed, U>
 	 */
 	public static function promise(Closure $closure) : Generator{
 		$resolve = yield Await::RESOLVE;

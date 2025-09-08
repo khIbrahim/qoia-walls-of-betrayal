@@ -10,6 +10,7 @@ interface Statements
     public const LOAD_PLAYER_BY_NAME            = 'players.loadByName';
     public const INSERT_PLAYER                  = 'players.insert';
     public const SET_KINGDOM_PLAYER             = 'players.setKingdom';
+    public const GET_KINGDOMS_PLAYERS_COUNT = 'players.getKingdomPlayersCount';
 
     public const LOAD_KIT_REQUIREMENT           = 'kit_requirements.getByKingdomAndKit';
     public const INSERT_KIT_REQUIREMENT         = 'kit_requirements.insert';
@@ -61,6 +62,7 @@ interface Statements
     public const INCREMENT_KINGDOM_KILLS        = 'kingdoms.incrementKills';
     public const INCREMENT_KINGDOM_DEATHS       = 'kingdoms.incrementDeaths';
     public const UPDATE_KINGDOM_SPAWN           = 'kingdoms.updateSpawn';
+    public const UPDATE_KINGDOM_RALLY_POINT = 'kingdoms.updateRallyPoint';
     
     public const INIT_MUTE    = 'mute.init';
     public const MUTE_GET     = 'mute.get';
@@ -104,5 +106,33 @@ interface Statements
     public const LOAD_SERVER             = 'server.load';
     public const INSERT_SERVER           = 'server.insert';
     public const UPDATE_LOBBY_LOC_SERVER = 'server.updateLobbyLoc';
+    public const ADD_KINGDOM_XP = 'kingdoms.addXP';
+    const ADD_KINGDOM_BALANCE = 'kingdoms.addBalance';
+
+    public const INIT_KINGDOMS_BOUNTY = 'kingdom_bounties.init';
+    public const CREATE_KINGDOMS_BOUNTY = 'kingdom_bounties.create';
+    public const GET_ALL_ACTIVE_KINGDOMS_BOUNTY = 'kingdom_bounties.getAllActive';
+    public const DEACTIVATE_KINGDOM_BOUNTY = 'kingdom_bounties.deactivate';
+
+    public const INIT_KINGDOM_SANCTIONS = 'kingdom_bans.init';
+    public const CREATE_KINGDOM_SANCTION = 'kingdom_bans.create';
+    public const DEACTIVATE_KINGDOM_SANCTION = 'kingdom_bans.deactivate';
+    public const IS_PLAYER_SANCTIONED = 'kingdom_bans.isBanned';
+    public const LOAD_ACTIVE_SANCTIONS = 'kingdom_bans.getActive';
+    public const GET_PLAYER_SANCTION_HISTORY = 'kingdom_bans.getPlayerHistory';
+
+    // Kingdom votes
+    public const LOAD_KINGDOM_VOTES = 'kingdom_votes.load';
+    public const INIT_KINGDOM_VOTES = 'kingdom_votes.init';
+    public const CREATE_KINGDOM_VOTE = 'kingdom_votes.create';
+    public const GET_ACTIVE_KINGDOM_VOTES = 'kingdom_votes.getActive';
+    public const CAST_KINGDOM_VOTE = 'kingdom_votes.vote';
+    public const UPDATE_KINGDOM_VOTE_STATUS = 'kingdom_votes.updateStatus';
+    public const INIT_KINGDOM_VOTE_VOTES = 'kingdom_vote_votes.init';
+    public const COUNT_KINGDOM_VOTE_VOTES = 'kingdom_vote_votes.count';
+    public const GET_KINGDOM_VOTE = 'kingdom_votes.get';
+    public const GET_KINGDOM_VOTER_CHOICE = 'kingdom_vote_votes.getVoterChoice';
+    public const UPDATE_KINGDOM_VOTE_VOTES = 'kingdom_votes.updateVotes';
+    public const DELETE_EXPIRED_KINGDOM_VOTES = 'kingdom_votes.deleteExpired';
 
 }

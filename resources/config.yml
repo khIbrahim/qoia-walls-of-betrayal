@@ -28,6 +28,33 @@ vault:
   size: 27
   max_vault_number: 5
 
+# Configuration du système de vote
+voting:
+  # Durée standard pendant laquelle un vote reste actif (en secondes)
+  # 259200 secondes = 3 jours
+  vote_duration_seconds: 259200
+  quorum:
+    # Pourcentage minimum de membres qui doivent voter pour valider un vote
+    minimum_participation_percent: 50.0
+    # Nombre minimum absolu de votes requis (priorité sur le pourcentage)
+    minimum_votes_required: 3
+    # Pourcentage de votes FOR requis pour passer (ex: 60% = majorité qualifiée)
+    majority_threshold_percent: 60.0
+  
+  notifications:
+    # Notifications lors de la création d'un vote
+    on_vote_created: true
+    # Notifications lors du vote d'un membre
+    on_member_voted: true
+    # Notifications lors de l'expiration d'un vote
+    on_vote_expired: true
+    # Notifications lors du résultat final
+    on_vote_result: true
+    # Notifications de rappel pour les membres qui n'ont pas voté
+    reminder_enabled: true
+    reminder_interval_minutes: 30
+    reminder_max_count: 3
+
 webhook:
   global:
     user-agent: "Discord Webhook Client (+PocketMine)"

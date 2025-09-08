@@ -3,6 +3,7 @@ namespace fenomeno\WallsOfBetrayal\Database;
 
 use fenomeno\WallsOfBetrayal\Database\BinaryParser\MySQLBinaryStringParser;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\BinaryStringParserInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\BountyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\CooldownRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\FloatingTextRepositoryInterface;
@@ -16,7 +17,9 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\VaultRepositoryInterf
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\FloatingTextRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\KingdomBountyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KingdomRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\KingdomVoteRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\NpcRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
@@ -36,7 +39,7 @@ use pocketmine\nbt\tag\ListTag;
 use pocketmine\nbt\TreeRoot;
 use Throwable;
 
-/***
+/**
  * @mixin DataConnector
  */
 class DatabaseManager
@@ -56,6 +59,8 @@ class DatabaseManager
     private PunishmentRepositoryInterface $reportRepository;
     private FloatingTextRepositoryInterface $floatingTextRepository;
     private NpcRepositoryInterface $npcRepository;
+    private BountyRepositoryInterface $bountyRepository;
+    private KingdomVoteRepository $kingdomVoteRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
     private BigEndianNbtSerializer $nbtSerializer;
@@ -106,6 +111,12 @@ class DatabaseManager
 
             $this->npcRepository = new NpcRepository($this->main);
             $this->npcRepository->init($this);
+
+            $this->bountyRepository = new KingdomBountyRepository($this->main);
+            $this->bountyRepository->init($this);
+
+            $this->kingdomVoteRepository = new KingdomVoteRepository($this->main);
+            $this->kingdomVoteRepository->init($this);
 
             $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
@@ -174,9 +185,14 @@ class DatabaseManager
         return $this->npcRepository;
     }
 
-    public function __call(string $name, array $arguments)
+    public function getBountyRepository(): BountyRepositoryInterface
     {
-        return call_user_func_array([$this->database, $name], $arguments);
+        return $this->bountyRepository;
+    }
+
+    public function getKingdomVoteRepository(): KingdomVoteRepository
+    {
+        return $this->kingdomVoteRepository;
     }
 
     public function getBinaryStringParser(): BinaryStringParserInterface
@@ -208,6 +224,11 @@ class DatabaseManager
         return zlib_encode($this->nbtSerializer->write(new TreeRoot(CompoundTag::create()
             ->setTag($tagInventory, new ListTag($contents, NBT::TAG_Compound))
         )), ZLIB_ENCODING_GZIP);
+    }
+
+    public function __call(string $name, array $arguments)
+    {
+        return call_user_func_array([$this->database, $name], $arguments);
     }
 
 }

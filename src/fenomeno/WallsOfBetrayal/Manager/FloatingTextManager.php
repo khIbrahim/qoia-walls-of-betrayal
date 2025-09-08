@@ -16,7 +16,7 @@ use pocketmine\scheduler\ClosureTask;
 use pocketmine\world\Position;
 use Throwable;
 
-class FloatingTextManager
+final class FloatingTextManager
 {
 
     /** @var FloatingText[] */
@@ -46,7 +46,7 @@ class FloatingTextManager
     /**
      * @throws FloatingTextAlreadyExistsException
      */
-    public function create(string $id, Position $position, string $text): Generator
+    public function create(string $id, Position $position, string $text, bool $save = true): Generator
     {
         if ($this->exists($id)){
             throw new FloatingTextAlreadyExistsException("FloatingText with id $id already exists");
@@ -54,9 +54,11 @@ class FloatingTextManager
 
         $floatingText = new FloatingText($id, $position, $text);
 
-        yield from $this->main->getDatabaseManager()->getFloatingTextRepository()->create(CreateFloatingTextPayload::fromObject($floatingText));
+        if ($save) {
+            yield from $this->main->getDatabaseManager()->getFloatingTextRepository()->create(CreateFloatingTextPayload::fromObject($floatingText));
 
-        $this->floatingTexts[$id] = $floatingText;
+            $this->floatingTexts[$id] = $floatingText;
+        }
 
         return $floatingText;
     }

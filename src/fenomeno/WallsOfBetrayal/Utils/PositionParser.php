@@ -7,7 +7,8 @@ use pocketmine\Server;
 use pocketmine\world\Position;
 use RuntimeException;
 
-class PositionHelper {
+class PositionParser
+{
 
     public static function load(array $data) : Position
     {
@@ -30,7 +31,7 @@ class PositionHelper {
         return new Position((float) $data["x"], (float) $data["y"], (float) $data["z"], $world);
     }
 
-    public static function toArray(Position $position): array
+    public static function toArray(Location|Position $position): array
     {
         $default = [
             'x'     => (float) $position->x,

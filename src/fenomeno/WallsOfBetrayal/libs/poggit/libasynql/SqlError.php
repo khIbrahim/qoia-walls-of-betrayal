@@ -39,19 +39,19 @@ use function sprintf;
  */
 class SqlError extends RuntimeException{
 	/**
-	 * Returned by {@link SqlError::getStage() getStage()}, indicating that an error occurred while connecting to the database
+     * Returned by {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\SqlError::getStage() getStage()}, indicating that an error occurred while connecting to the database
 	 */
 	public const STAGE_CONNECT = "CONNECT";
 	/**
-	 * Returned by {@link SqlError::getStage() getStage()}, indicating that an error occurred while preparing the query
+     * Returned by {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\SqlError::getStage() getStage()}, indicating that an error occurred while preparing the query
 	 */
 	public const STAGE_PREPARE = "PREPARE";
 	/**
-	 * Returned by {@link SqlError::getStage() getStage()}, indicating that an error occurred while the SQL backend is executing the query
+     * Returned by {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\SqlError::getStage() getStage()}, indicating that an error occurred while the SQL backend is executing the query
 	 */
 	public const STAGE_EXECUTE = "EXECUTION";
 	/**
-	 * Returned by {@link SqlError::getStage() getStage()}, indicating that an error occurred while handling the response of the query
+     * Returned by {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\SqlError::getStage() getStage()}, indicating that an error occurred while handling the response of the query
 	 */
 	public const STAGE_RESPONSE = "RESPONSE";
 

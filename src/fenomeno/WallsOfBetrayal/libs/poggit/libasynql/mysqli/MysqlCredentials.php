@@ -47,7 +47,7 @@ class MysqlCredentials implements JsonSerializable{
 
 
 	/**
-	 * Creates a new {@link MysqlCredentials} instance from an array (e.g. from Config), with the following defaults:
+     * Creates a new {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\mysqli\MysqlCredentials} instance from an array (e.g. from Config), with the following defaults:
 	 * <pre>
 	 * host: 127.0.0.1
 	 * username: root
@@ -78,7 +78,7 @@ class MysqlCredentials implements JsonSerializable{
 	}
 
 	/**
-	 * Constructs a new {@link MysqlCredentials} by passing parameters directly.
+     * Constructs a new {@link \fenomeno\SimpleRanks\libs\poggit\libasynql\mysqli\MysqlCredentials} by passing parameters directly.
 	 *
 	 * @param string $host
 	 * @param string $username

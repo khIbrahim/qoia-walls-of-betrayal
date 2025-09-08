@@ -85,14 +85,12 @@ final class LobbyListener implements Listener {
             return;
         }
 
-        // PVP off ?
-        if (!$this->lobbyManager->getSettingByPlayer(LobbyManager::PVP, $player) && $event instanceof EntityDamageByEntityEvent){
+        if (!$this->lobbyManager->getSettingByPlayer(LobbyManager::PVP, $player) && $event instanceof EntityDamageByEntityEvent) {
             $event->cancel();
             return;
         }
 
-        // Damage off ?
-        if (!$this->lobbyManager->getSettingByPlayer(LobbyManager::DAMAGE, $player)){
+        if (!$this->lobbyManager->getSettingByPlayer(LobbyManager::DAMAGE, $player)) {
             $event->cancel();
         }
     }

@@ -5,8 +5,10 @@ namespace fenomeno\WallsOfBetrayal\Game\Handlers;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomEvent;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
+use fenomeno\WallsOfBetrayal\Utils\DurationParser;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
@@ -33,25 +35,53 @@ class JoinKingdomHandler
         }
 
         $session->setChoosingKingdom(true);
-        $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), $player->getName(), $kingdom->id, $kingdom->abilities);
-        $ev      = new PlayerJoinKingdomEvent($player, $kingdom);
-        Main::getInstance()->getDatabaseManager()->getPlayerRepository()->updatePlayerKingdom($payload, function () use ($ev, $player, $kingdom, $session) {
-            $ev->call();
-            $session->setKingdom($kingdom);
-            $session->addAbilities($kingdom->abilities);
-            $session->setChoosingKingdom(false);
-            if($kingdom->getSpawn() !== null){
-                $player->teleport($kingdom->getSpawn());
+
+        $ev = new PlayerJoinKingdomEvent($player, $kingdom);
+        $ev->call();
+        if ($ev->isCancelled()) {
+            return;
+        }
+
+        $kingdom = $ev->getKingdom();
+        if ($kingdom->isExcluded($player->getUniqueId()->toString())) {
+            $sanction = Main::getInstance()->getKingdomManager()->getSanctionManager()->getSanction($kingdom->id, $player->getUniqueId()->toString());
+            if ($sanction === null) {
+                MessagesUtils::sendTo($player, MessagesIds::KINGDOMS_CANT_JOIN_EXCLUDED_NO_DETAILS, [ExtraTags::KINGDOM => $kingdom->getDisplayName()]);
+                $session->setChoosingKingdom(false);
+                return;
             }
-            MessagesUtils::sendTo($player, 'kingdoms.onJoin.' . $kingdom->id);
-            $player->broadcastSound(new XpLevelUpSound(1));
-            $player->getWorld()->addParticle($player->getPosition(), new EndermanTeleportParticle());
-            $kingdom->broadcastMessage('kingdoms.onFirstJoin.' . $kingdom->id, ['{PLAYER}' => $player->getName()]);
-            //TODO HISTORIQUE
-        }, function(Throwable $e) use ($ev, $session, $player) {
-            $ev->cancel();
+
+            MessagesUtils::sendTo($player, MessagesIds::KINGDOMS_CANT_JOIN_EXCLUDED_WITH_DETAILS, [
+                ExtraTags::KINGDOM => $kingdom->getDisplayName(),
+                ExtraTags::DURATION => DurationParser::getReadableDuration($sanction->expiresAt),
+                ExtraTags::PLAYER => $sanction->staff,
+                ExtraTags::REASON => $sanction->reason
+            ]);
             $session->setChoosingKingdom(false);
-            $player->sendMessage(TextFormat::RED . "An error occurred while choosing the kingdom :" . $e->getMessage());
+            return;
+        }
+
+        $payload = new SetPlayerKingdomPayload($player->getUniqueId()->toString(), strtolower($player->getName()), $kingdom->id, $kingdom->abilities);
+        Await::f2c(function () use ($kingdom, $session, $ev, $player, $payload) {
+            try {
+                yield from Main::getInstance()->getDatabaseManager()->getPlayerRepository()->updatePlayerKingdom($payload);
+
+                $session->setKingdom($kingdom);
+                $session->addAbilities($kingdom->abilities);
+                $session->setChoosingKingdom(false);
+                if ($kingdom->getSpawn() !== null) {
+                    $player->teleport($kingdom->getSpawn());
+                }
+                MessagesUtils::sendTo($player, 'kingdoms.onJoin.' . $kingdom->id);
+                $player->broadcastSound(new XpLevelUpSound(1));
+                $player->getWorld()->addParticle($player->getPosition(), new EndermanTeleportParticle());
+                $kingdom->broadcastMessage('kingdoms.onFirstJoin.' . $kingdom->id, ['{PLAYER}' => $player->getName()]);
+                //TODO HISTORIQUE
+            } catch (Throwable $e) {
+                $ev->cancel();
+                $session->setChoosingKingdom(false);
+                $player->sendMessage(TextFormat::RED . "An error occurred while choosing the kingdom :" . $e->getMessage());
+            }
         });
     }
 

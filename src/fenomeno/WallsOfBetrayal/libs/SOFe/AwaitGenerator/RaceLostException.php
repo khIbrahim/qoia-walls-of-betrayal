@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator;
 
 use Exception;
+use fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await;
 
 /**
  * The exception to throw into loser generators of

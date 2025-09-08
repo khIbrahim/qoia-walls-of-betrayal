@@ -51,6 +51,9 @@ class EconomyManager
     public function get(Player|string $name, ?string $uuid = null, bool $safe = false): Generator
     {
         $key = $this->normalizeKey($name);
+        if (!$uuid && $name instanceof Player) {
+            $uuid = $name->getUniqueId()->toString();
+        }
 
         if ($this->isInCache($name)){
             return $this->cache[$key];
@@ -68,7 +71,6 @@ class EconomyManager
             return $entry;
         } catch (Throwable $e) {
             if ($safe) {
-                $this->main->getLogger()->logException($e);
                 return new EconomyEntry($name instanceof Player ? $name->getName() : $name, $uuid, 0);
             }
             throw $e;

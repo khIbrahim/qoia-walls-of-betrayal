@@ -21,7 +21,7 @@ use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use Generator;
 use Throwable;
 
-class PunishmentManager
+final class PunishmentManager
 {
 
     private BanManager $banManager;
@@ -39,7 +39,7 @@ class PunishmentManager
         $this->muteManager   = new MuteManager($this->main);
         $this->reportManager = new ReportManager($this->main);
 
-        $this->main->getScheduler()->scheduleDelayedRepeatingTask(new PunishmentTask($this), 20 * 10, 20);
+        $this->main->getScheduler()->scheduleDelayedRepeatingTask(new PunishmentTask($this), 20 * 20, 20);
     }
 
     public function getBanManager(): BanManager

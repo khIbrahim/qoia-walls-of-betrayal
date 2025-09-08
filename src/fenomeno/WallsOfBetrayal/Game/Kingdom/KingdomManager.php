@@ -6,7 +6,10 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\LoadKingdomPayload;
 use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
 use fenomeno\WallsOfBetrayal\Entities\Types\PortalEntity;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Manager\Kingdom\KingdomSanctionManager;
 use fenomeno\WallsOfBetrayal\Utils\EntityFactoryUtils;
+use fenomeno\WallsOfBetrayal\Utils\Utils;
+use Generator;
 use pocketmine\entity\EntityDataHelper;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
@@ -23,10 +26,14 @@ class KingdomManager
     private array $kingdoms;
     private Config $config;
 
+    private KingdomSanctionManager $sanctionManager;
+
     public function __construct(private readonly Main $main)
     {
         $this->main->saveResource('kingdoms.yml', true);
         $this->config = new Config($this->main->getDataFolder() . 'kingdoms.yml', Config::YAML);
+
+        $this->sanctionManager = new KingdomSanctionManager($main);
 
         $this->loadKingdoms();
 
@@ -111,4 +118,60 @@ class KingdomManager
         return null;
     }
 
+    public function getSanctionManager(): KingdomSanctionManager
+    {
+        return $this->sanctionManager;
+    }
+
+    public function isPlayerSanctioned(string $kingdomId, string $playerUuid): bool
+    {
+        return $this->sanctionManager->isSanctioned($kingdomId, $playerUuid);
+    }
+
+    public function addSanction(Kingdom $kingdom, string $targetName, string $reason, ?int $expiresAt, string $staff = "Kingdom"): Generator
+    {
+        try {
+            [$uuid, $username] = yield from $this->main->getDatabaseManager()->getPlayerRepository()->getUuidAndUsernameByName($targetName);
+
+            $sanctionId = yield from $this->sanctionManager->addSanction(
+                $uuid,
+                $username,
+                $kingdom->id,
+                $expiresAt,
+                $reason,
+                $staff
+            );
+
+            return $sanctionId !== false;
+        } catch (Throwable $e) {
+            Utils::onFailure($e, null, "Failed to add sanction for player $targetName in kingdom $kingdom->id");
+            return false;
+        }
+    }
+
+    public function removeSanction(Kingdom $kingdom, string $targetName): Generator
+    {
+        try {
+            [$uuid,] = yield from $this->main->getDatabaseManager()->getPlayerRepository()->getUuidAndUsernameByName($targetName);
+
+            return yield from $this->sanctionManager->removeSanction($kingdom->id, $uuid);
+        } catch (Throwable $e) {
+            Utils::onFailure($e, null, "Failed to remove sanction for player $targetName in kingdom {$kingdom->id}");
+            return false;
+        }
+    }
+
+    public function kickMember(Kingdom $kingdom, string $targetName, string $reason, ?int $expiresAt, string $staff = "System"): Generator
+    {
+        if ($expiresAt === null) {
+            $expiresAt = time() + (7 * 24 * 60 * 60);
+        }
+
+        return yield from $this->addSanction($kingdom, $targetName, $reason, $expiresAt, $staff);
+    }
+
+    public function banMember(Kingdom $kingdom, string $targetName, string $reason, string $staff = "System"): Generator
+    {
+        return yield from $this->addSanction($kingdom, $targetName, $reason, null, $staff);
+    }
 }

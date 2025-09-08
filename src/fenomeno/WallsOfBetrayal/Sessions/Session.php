@@ -45,7 +45,7 @@ class Session
         $this->player->setNoClientPredictions();
         $this->player->sendTitle("§7Loading your data...");
 
-        $payload = new LoadPlayerPayload($this->player->getUniqueId()->toString(), $this->player->getName());
+        $payload = new LoadPlayerPayload($this->player->getUniqueId()->toString(), strtolower($this->player->getName()));
         Main::getInstance()->getDatabaseManager()->getPlayerRepository()->load($payload)
             ->onCompletion(function (?PlayerData $data){
                 if ($data !== null){
@@ -171,6 +171,11 @@ class Session
     public function setFrozen(bool $newState): void
     {
         $this->frozen = $newState;
+    }
+
+    public function hasKingdom(): bool
+    {
+        return $this->kingdom !== null;
     }
 
 }

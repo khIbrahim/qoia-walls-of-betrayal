@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Commands\Arguments;
 
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\Utils\DurationParser;
+use InvalidArgumentException;
 use pocketmine\command\CommandSender;
 
 final class DurationArgument extends RawStringArgument
@@ -14,7 +15,7 @@ final class DurationArgument extends RawStringArgument
         try {
             DurationParser::fromString($testString);
             return true;
-        } catch (\InvalidArgumentException) {
+        } catch (InvalidArgumentException) {
             return false;
         }
     }

@@ -22,6 +22,7 @@ declare(strict_types=1);
 
 namespace fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator;
 
+use fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await;
 use Generator;
 use function array_shift;
 use function count;

@@ -11,7 +11,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\FloatingText\CreateFloatingTextPay
 use fenomeno\WallsOfBetrayal\Database\Payload\FloatingText\UpdateFloatingTextPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use fenomeno\WallsOfBetrayal\Utils\PositionParser;
 use Generator;
 use Throwable;
 
@@ -46,7 +46,7 @@ class FloatingTextRepository implements FloatingTextRepositoryInterface
                     $id       = (string) $row['id'];
                     $text     = str_replace('\n', "\n", (string) $row['text']);
                     $posData  = json_decode($row['pos'], true);
-                    $position = PositionHelper::load($posData);
+                    $position = PositionParser::load($posData);
 
                     $floatingTexts[$id] = new FloatingText(
                         $id,

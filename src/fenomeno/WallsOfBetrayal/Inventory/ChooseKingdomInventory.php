@@ -61,8 +61,9 @@ class ChooseKingdomInventory extends WInventory
         if($session->getKingdom() !== null || $session->isChoosingKingdom()){
             return;
         }
+
         $player->setNoClientPredictions();
-        MessagesUtils::sendTo($player, 'cantCloseChooseInventory');
+//        MessagesUtils::sendTo($player, 'cantCloseChooseInventory');
         $player->getNetworkSession()->sendDataPacket(PlaySoundPacket::create(
             soundName: 'mob.villager.no',
             x: $player->getPosition()->x,
@@ -78,7 +79,7 @@ class ChooseKingdomInventory extends WInventory
             }
 
             $player->setNoClientPredictions(false);
-            (new ChooseKingdomInventory())->send($player);
+//            (new ChooseKingdomInventory())->send($player);
         }), 20 * 2);
     }
 }

@@ -23,6 +23,7 @@ declare(strict_types=1);
 namespace fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator;
 
 use AssertionError;
+use fenomeno\SimpleRanks\libs\SOFe\AwaitGenerator\Await;
 use Generator;
 use Throwable;
 

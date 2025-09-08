@@ -11,7 +11,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Npc\NpcUpdatePayload;
 use fenomeno\WallsOfBetrayal\Entities\Types\NpcEntity;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\PositionHelper;
+use fenomeno\WallsOfBetrayal\Utils\PositionParser;
 use Generator;
 use pocketmine\entity\Location;
 use pocketmine\entity\Skin;
@@ -65,7 +65,7 @@ class NpcRepository implements NpcRepositoryInterface
                             }
 
                             $id = (string) $row['id'];
-                            $pos = PositionHelper::load(json_decode($row['pos'], true));
+                            $pos = PositionParser::load(json_decode($row['pos'], true));
                             $loc = Location::fromObject($pos, $pos->getWorld());
 
                             $skin = new Skin(

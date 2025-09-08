@@ -223,3 +223,21 @@ permissions:
     default: true
   wob.command.kingdom.vote:
     default: true
+  wob.command.kingdom.betray:
+    default: true
+  wob.kingdom.rally:
+    default: true
+  wob.kingdom.alarm:
+    default: true
+  wob.kingdom.bounty:
+    default: true
+  wob.kingdom.contribute:
+    default: true
+  wob.kingdom.manage:
+    default: op
+  wob.kingdom.admin:
+    default: op
+  wob.command.kingdom.setrally:
+    default: true
+  wob.command.kingdom.bounties:
+    default: true

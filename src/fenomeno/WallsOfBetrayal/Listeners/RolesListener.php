@@ -9,12 +9,12 @@ use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Utils;
 use fenomeno\WallsOfBetrayal\Utils\WobChatFormatter;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerChatEvent;
 use pocketmine\event\player\PlayerCreationEvent;
 use pocketmine\event\player\PlayerJoinEvent;
-use pocketmine\scheduler\ClosureTask;
 use Throwable;
 
 class RolesListener implements Listener
@@ -30,32 +30,26 @@ class RolesListener implements Listener
         $name           = strtolower($playerInfo->getUsername());
 
         if ($this->main->getRolesManager()->getPlayer($name) !== null){
-            return; // sûrement a été load par qlq d'autre sur commande /role ou un truc du genre jsp
+            return;
         }
 
-        $this->main->getRolesManager()->loadPlayer(
-            $uuid,
-            $name,
-            function (?RolePlayer $rolePlayer) use ($networkSession, $uuid, $name) {
-                if ($rolePlayer !== null){
+        Await::f2c(function () use ($networkSession, $uuid, $name) {
+            try {
+                /** @var RolePlayer $playerROle */
+                $playerROle = yield from $this->main->getRolesManager()->loadPlayer($uuid, $name);
 
+                if (!$playerROle instanceof RolePlayer) {
+                    $networkSession->disconnect(MessagesUtils::getMessage(MessagesIds::UNSTABLE));
                     return;
                 }
 
-                $this->main->getRolesManager()->insertPlayer($uuid, $name, function () use ($name) {
-                    $this->main->getLogger()->info("§aPlayer role ($name) successfully inserted.");
-                }, function (Throwable $e) use ($networkSession, $name) {
-                    $networkSession->disconnect("An error occurred while creating your account. Please try again later.");
-                    $this->main->getLogger()->error("Failed to insert role record for $name: " . $e->getMessage());
-                    $this->main->getLogger()->logException($e);
-                });
-            },
-            function (Throwable $e) use ($name, $networkSession) {
-                $networkSession->disconnect("An error occurred while creating your account. Please try again later.");
-                $this->main->getLogger()->error("Failed to insert role record for $name: " . $e->getMessage());
+                $this->main->getLogger()->info("§aRoles - $name Successfully loaded");
+            } catch (Throwable $e) {
+                $networkSession->disconnect(MessagesUtils::getMessage(MessagesIds::UNSTABLE));
+                $this->main->getLogger()->error("Error occurred while loading role player $name: " . $e->getMessage());
                 $this->main->getLogger()->logException($e);
             }
-        );
+        });
     }
 
     public function onChat(PlayerChatEvent $event): void
@@ -75,38 +69,28 @@ class RolesListener implements Listener
 
     public function onJoin(PlayerJoinEvent $event): void
     {
-        $this->main->getScheduler()->scheduleDelayedTask(new ClosureTask(function () use($event) {
-            $player = $event->getPlayer();
+        $player = $event->getPlayer();
+        $rolePlayer = $this->main->getRolesManager()->getPlayer($player);
+        if ($rolePlayer === null) {
+            return;
+        }
 
-            $rolePlayer = $this->main->getRolesManager()->getPlayer($player);
-            if ($rolePlayer === null) {
-                $this->main->getLogger()->warning("RolePlayer not found for player: " . $player->getName());
-                return;
-            }
+        $rolePlayer->applyTo($player);
 
-            try {
-                if ($rolePlayer->isExpired()) {
-                    Await::g2c(
-                        $this->main->getRolesManager()->handleExpiredRole($player),
-                        function (Role $role) use ($player) {
-                            MessagesUtils::sendTo($player, MessagesIds::ROLES_EXPIRED_TO_DEFAULT, [
-                                ExtraTags::ROLE => $role->getDisplayName()
-                            ]);
-                        },
-                        function (Throwable $e) use ($player) {
-                            $this->main->getLogger()->error("Failed to handle expired role for {$player->getName()}: ".$e->getMessage());
-                            $this->main->getLogger()->logException($e);
-                        }
-                    );
-                    return;
+        if ($rolePlayer->isExpired()) {
+            Await::f2c(function () use ($player) {
+                try {
+                    /** @var Role $role */
+                    $role = yield from $this->main->getRolesManager()->handleExpiredRole($player);
+
+                    MessagesUtils::sendTo($player, MessagesIds::ROLES_EXPIRED_TO_DEFAULT, [
+                        ExtraTags::ROLE => $role->getDisplayName()
+                    ]);
+                } catch (Throwable $e) {
+                    Utils::onFailure($e, $player, 'Failed to handle expired role for ' . $player->getName() . ': ' . $e->getMessage());
                 }
-
-                $rolePlayer->applyTo($player);
-            } catch (Throwable $e) {
-                $this->main->getLogger()->error("Failed to apply role to player {$player->getName()}: ".$e->getMessage());
-                $this->main->getLogger()->logException($e);
-            }
-        }), 20 * 3);
+            });
+        }
     }
 
 }

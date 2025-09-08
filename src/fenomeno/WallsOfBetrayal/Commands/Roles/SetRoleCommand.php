@@ -75,8 +75,6 @@ class SetRoleCommand extends WCommand
                         ExtraTags::DURATION => DurationParser::getReadableDuration($duration),
                     ]);
                 }
-            } catch (DatabaseException $e) {
-                MessagesUtils::sendTo($sender, MessagesIds::ERROR, [ExtraTags::ERROR => $e->getMessage()]);
             } catch (PlayerAlreadyHasRoleException) {
                 MessagesUtils::sendTo($sender, MessagesIds::ALREADY_HAS_ROLE, [
                     ExtraTags::PLAYER => $playerName,

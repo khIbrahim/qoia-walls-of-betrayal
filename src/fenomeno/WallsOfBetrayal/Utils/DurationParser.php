@@ -39,14 +39,18 @@ class DurationParser
         return $totalSeconds;
     }
 
-    public static function getReadableDuration(?int $timestamp): string {
-        if ($timestamp === PHP_INT_MAX) {
+    public static function getReadableDuration(?int $timestamp, bool $escapeTime = true): string
+    {
+        if ($timestamp === PHP_INT_MAX || $timestamp === null) {
             return "permanently";
         }
 
-        $seconds = $timestamp - time();
+        $seconds = $timestamp;
+        if ($escapeTime) {
+            $seconds = $timestamp - time();
+        }
 
-        if ($seconds <= 0 || $timestamp === null) return "permanently";
+        if ($seconds <= 0) return "expired";
 
         $days = intdiv($seconds, 86400);
         $seconds %= 86400;

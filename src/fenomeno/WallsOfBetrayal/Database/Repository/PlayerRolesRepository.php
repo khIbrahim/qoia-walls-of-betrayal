@@ -17,13 +17,11 @@ use fenomeno\WallsOfBetrayal\DTO\RolePlayerDTO;
 use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
 use fenomeno\WallsOfBetrayal\Exceptions\MissingDataException;
 use fenomeno\WallsOfBetrayal\Exceptions\Roles\RolePlayerNotFoundException;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
 use Throwable;
 
-/**
- * On va faire un truc tarpin simple ici, c'est simple pour un system de roles car ça ne change pas souvent.
- */
 class PlayerRolesRepository implements PlayerRolesRepositoryInterface
 {
 
@@ -36,82 +34,63 @@ class PlayerRolesRepository implements PlayerRolesRepositoryInterface
         });
     }
 
-    public function load(GetPlayerRolePayload $payload, Closure $onSuccess, Closure $onFailure): void
+    public function load(GetPlayerRolePayload $payload): Generator
     {
-        $this->main->getDatabaseManager()->executeSelect(
-            Statements::GET_PLAYER_ROLE,
-            $payload->jsonSerialize(),
-            function (array $rows) use ($onFailure, $onSuccess) {
-                if (empty($rows)){
-                    $onSuccess(null);
-                    return;
-                }
-
-                $row = $rows[0];
-                if(! isset($row['role_id'], $row['assigned_at'])){
-                    $onFailure(new MissingDataException("Missing data in player role row"));
-                    return;
-                }
-
-                $roleId      = (string) $row['role_id'];
-                $assignedAt  = (int) $row['assigned_at'];
-                $expiresAt   = isset($row['expires_at']) ? (int) $row['expires_at'] : null;
-                $username    = isset($row['username']) ? (string) $row['username'] : null;
-                $uuid        = (string) $row['uuid'];
-                $subRoles    = isset($row['subRoles']) ? json_decode($row['subRoles'], true) : [];
-                $permissions = isset($row['permissions']) ? json_decode($row['permissions'], true) : [];
-
-                $onSuccess(
-                    new RolePlayerDTO(
-                        uuid: $uuid,
-                        roleId: $roleId,
-                        assignedAt: $assignedAt,
-                        expiresAt: $expiresAt,
-                        username: $username,
-                        subRoles: $subRoles,
-                        permissions: $permissions
-                    )
-                );
-            }, function (Throwable $e) use ($onFailure) {
-                $this->main->getLogger()->error("Failed to get player role: " . $e->getMessage());
-                $onFailure($e);
-            }
-        );
-    }
-
-    public function insert(InsertRolePlayerPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
-    {
-        $this->main->getDatabaseManager()->executeInsert(
-            Statements::INSERT_PLAYER_ROLE,
-            $payload->jsonSerialize(),
-            $onSuccess,
-            $onFailure
-        );
-    }
-
-    public function updateRole(UpdatePlayerRoleRolePayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
-    {
-        $this->main->getDatabaseManager()->executeChange(
-            Statements::UPDATE_PLAYER_ROLE_ROLE,
-            $payload->jsonSerialize(),
-            function (int $affectedRows) use ($onFailure, $onSuccess) {
-                if ($affectedRows === 0){
-                    if ($onFailure){
-                        $onFailure(new RolePlayerNotFoundException());
+        return Await::promise(function ($resolve, $reject) use ($payload) {
+            $this->main->getDatabaseManager()->executeSelect(
+                Statements::GET_PLAYER_ROLE,
+                $payload->jsonSerialize(),
+                function (array $rows) use ($resolve, $reject) {
+                    if (empty($rows)) {
+                        $resolve(null);
                         return;
                     }
-                }
 
-                if ($onSuccess !== null) {
-                    $onSuccess();
-                }
-            },
-            function (Throwable $e) use ($onFailure) {
-                if ($onFailure !== null) {
-                    $onFailure(new DatabaseException(Statements::UPDATE_PLAYER_ROLE_ROLE . " failed " . $e->getMessage(), $e->getCode(), $e));
-                }
-            }
+                    $row = $rows[0];
+                    if (!isset($row['role_id'])) {
+                        $reject(new MissingDataException("Missing data in player role row"));
+                        return;
+                    }
+
+                    $roleId = (string)$row['role_id'];
+                    $assignedAt = (int)$row['assigned_at'];
+                    $expiresAt = isset($row['expires_at']) ? (int)$row['expires_at'] : null;
+                    $username = isset($row['username']) ? (string)$row['username'] : null;
+                    $uuid = (string)$row['uuid'];
+                    $subRoles = isset($row['subRoles']) ? json_decode($row['subRoles'], true) : [];
+                    $permissions = isset($row['permissions']) ? json_decode($row['permissions'], true) : [];
+
+                    $resolve(
+                        new RolePlayerDTO(
+                            uuid: $uuid,
+                            roleId: $roleId,
+                            assignedAt: $assignedAt,
+                            expiresAt: $expiresAt,
+                            username: $username,
+                            subRoles: $subRoles,
+                            permissions: $permissions
+                        )
+                    );
+                }, $reject
+            );
+        });
+    }
+
+    public function insert(InsertRolePlayerPayload $payload): Generator
+    {
+        return yield from $this->main->getDatabaseManager()->asyncInsert(
+            Statements::INSERT_PLAYER_ROLE,
+            $payload->jsonSerialize(),
         );
+    }
+
+    public function updateRole(UpdatePlayerRoleRolePayload $payload): Generator
+    {
+        $affectedRows = yield from $this->main->getDatabaseManager()->asyncChange(Statements::UPDATE_PLAYER_ROLE_ROLE, $payload->jsonSerialize());
+
+        if ($affectedRows === 0) {
+            throw new RolePlayerNotFoundException("Joueur " . ($payload->username ?? "null") . " n'existe pas");
+        }
     }
 
     public function updatePermissions(UpdatePermissionsPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void

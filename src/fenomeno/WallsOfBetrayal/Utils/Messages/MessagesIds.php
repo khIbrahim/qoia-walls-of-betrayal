@@ -11,23 +11,24 @@ final class MessagesIds
     public const BALANCE_ERR_DATABASE = 'economy.errors.database';
 
     // Commande Pay
-    public const BALANCE_PAY = 'economy.balance.pay'; // Message lorsque l'on effectue un paiement
-    public const BALANCE_PAY_RECEIVE = 'economy.balance.pay_receive'; // Message lorsque l'on reçoit un paiement
-    public const BALANCE_ERR_PAY_SELF = 'economy.errors.pay.self'; // Erreur si on essaie de se payer soi-même
-    public const BALANCE_ERR_AMOUNT_INVALID = 'economy.errors.amount.invalid'; // Erreur pour un montant invalide
-    public const BALANCE_ERR_AMOUNT_SMALL = 'economy.errors.amount.small'; // Erreur pour un montant trop petit
-    public const BALANCE_ERR_AMOUNT_LARGE = 'economy.errors.amount.large'; // Erreur pour un montant trop élevé
-    public const BALANCE_ERR_ACCOUNT_INSUFFICIENT = 'economy.errors.account.insufficient'; // Erreur fonds insuffisants
+    public const BALANCE_PAY = 'economy.balance.pay';
+    public const BALANCE_PAY_RECEIVE = 'economy.balance.pay_receive';
+    public const BALANCE_ERR_PAY_SELF = 'economy.errors.pay.self';
+    public const BALANCE_ERR_AMOUNT_INVALID = 'economy.errors.amount.invalid';
+    public const BALANCE_ERR_AMOUNT_SMALL = 'economy.errors.amount.small';
+    public const BALANCE_ERR_AMOUNT_LARGE = 'economy.errors.amount.large';
+    public const BALANCE_ERR_ACCOUNT_INSUFFICIENT = 'economy.errors.account.insufficient';
 
-    public const RICH_HEADER = 'economy.rich.header'; // Message d'en-tête pour le classement des riches
-    public const RICH_ENTRY = 'economy.rich.entry'; // Entrée individuelle dans le classement
-    public const RICH_FOOTER = 'economy.rich.footer'; // Message de bas de page du classement
-    public const ERROR_RICH_NO_RECORDS = 'economy.errors.rich.no_records'; // Erreur lorsqu'il n'y a pas de records à afficher
+    public const RICH_HEADER = 'economy.rich.header';
+    public const RICH_ENTRY = 'economy.rich.entry';
+    public const RICH_FOOTER = 'economy.rich.footer';
+    public const ERROR_RICH_NO_RECORDS = 'economy.errors.rich.no_records';
     public const BALANCE_ADD = 'economy.balance.add';
     public const BALANCE_SET = 'economy.balance.set';
     public const BALANCE_REMOVE = 'economy.balance.remove';
     public const BALANCE_ERR_INSUFFICIENT_FUNDS = 'economy.errors.account.insufficient';
     public const BALANCE_ACCOUNT_MISSING_DATA = 'economy.errors.account.missingData';
+    public const GENERAL_BACK = 'common.back';
     public const ERROR = 'common.logicError';
     public const BALANCE_SAME_BALANCE = 'economy.errors.amount.same';
     public const NOT_PLAYER = 'common.notPlayer';
@@ -208,6 +209,198 @@ final class MessagesIds
     public const NO_PORTAL = 'commands.portal.errors.noPortal';
     public const PORTAL_SUCCESS = 'commands.portal.success';
     public const SET_LOBBY_SETTING_SUCCESS = 'commands.set-lobby-setting.success';
-    const PORTAL_REMOVE_SUCCESS = 'commands.portal.remove.success';
+    public const PORTAL_REMOVE_SUCCESS = 'commands.portal.remove.success';
+    public const UNSTABLE = 'common.unstable';
+    public const KINGDOMS_INFO_HEADER = 'kingdoms.info.header';
+    public const KINGDOMS_INFO_DESCRIPTION = 'kingdoms.info.description';
+    public const KINGDOMS_INFO_STATS = 'kingdoms.info.stats';
+    public const KINGDOMS_INFO_XP = 'kingdoms.info.xp';
+    public const KINGDOMS_INFO_BALANCE = 'kingdoms.info.balance';
+    public const KINGDOMS_INFO_MEMBERS = 'kingdoms.info.members';
+    public const KINGDOMS_INFO_ABILITIES = 'kingdoms.info.abilities';
 
+    // Kingdom Commands Messages
+    public const KINGDOMS_SPAWN_SUCCESS = 'kingdoms.spawn.success';
+    public const KINGDOMS_SPAWN_NO_SPAWN = 'kingdoms.spawn.noSpawn';
+    public const KINGDOMS_SPAWN_NO_KINGDOM = 'kingdoms.spawn.noKingdom';
+
+    public const KINGDOMS_TOP_HEADER = 'kingdoms.top.header';
+    public const KINGDOMS_TOP_ENTRY = 'kingdoms.top.entry';
+    public const KINGDOMS_TOP_FOOTER = 'kingdoms.top.footer';
+
+    public const KINGDOMS_MAP_HEADER = 'kingdoms.map.header';
+    public const KINGDOMS_MAP_TERRITORY = 'kingdoms.map.territory';
+    public const KINGDOMS_MAP_CLAIMS = 'kingdoms.map.claims';
+    public const KINGDOMS_MAP_BORDERS = 'kingdoms.map.borders';
+
+    public const KINGDOMS_CONTRIBUTE_USAGE = 'kingdoms.contribute.usage';
+    public const KINGDOMS_CONTRIBUTE_SUCCESS = 'kingdoms.contribute.success';
+    public const KINGDOMS_CONTRIBUTE_INSUFFICIENT = 'kingdoms.contribute.insufficient';
+    public const KINGDOMS_CONTRIBUTE_INVALID_TYPE = 'kingdoms.contribute.invalidType';
+
+    public const KINGDOMS_ABILITIES_HEADER = 'kingdoms.abilities.header';
+    public const KINGDOMS_ABILITIES_ABILITY = 'kingdoms.abilities.ability';
+    public const KINGDOMS_ABILITIES_COOLDOWN = 'kingdoms.abilities.cooldown';
+    public const KINGDOMS_ABILITIES_NO_ABILITIES = 'kingdoms.abilities.noAbilities';
+
+    public const KINGDOMS_KICK_NOT_MEMBER = 'kingdoms.kick.notMember';
+    public const KINGDOMS_KICK_SELF = 'kingdoms.kick.self';
+    public const KINGDOMS_KICK_CONFIRM_HEADER = 'kingdoms.kick.confirm.header';
+    public const KINGDOMS_KICK_CONFIRM_CONTENT = 'kingdoms.kick.confirm.content';
+
+    public const KINGDOMS_VOTE_ALREADY_VOTED = 'kingdoms.vote.alreadyVoted';
+    public const KINGDOMS_VOTE_SUCCESS = 'kingdoms.vote.success';
+    public const KINGDOMS_VOTE_INFO = 'kingdoms.vote.voteInfo';
+    // High-level vote messages
+    public const KINGDOMS_NO_VOTES = 'kingdoms.vote.errors.noVote';
+    public const KINGDOMS_VOTE_NOT_FOUND = 'kingdoms.vote.errors.notFound';
+    public const KINGDOMS_VOTE_STATISTICS_UNAVAILABLE = 'kingdoms.vote.errors.statisticsUnavailable';
+    public const KINGDOMS_VOTE_ALREADY_VOTED_SAME = 'kingdoms.vote.errors.alreadyVotedSame';
+
+// Menu (Kick) header
+
+// Menu fields
+    public const KINGDOMS_VOTE_MENU_FIELD_TARGET = 'kingdoms.vote.menu.fields.target';
+    public const KINGDOMS_VOTE_MENU_FIELD_REASON = 'kingdoms.vote.menu.fields.reason';
+    public const KINGDOMS_VOTE_MENU_FIELD_PROPOSED_BY = 'kingdoms.vote.menu.fields.proposedBy';
+    public const KINGDOMS_VOTE_MENU_FIELD_CREATED = 'kingdoms.vote.menu.fields.created';
+    public const KINGDOMS_VOTE_MENU_FIELD_EXPIRES = 'kingdoms.vote.menu.fields.expires';
+    public const KINGDOMS_VOTE_MENU_FIELD_TIMELEFT = 'kingdoms.vote.menu.fields.timeLeft';
+    public const KINGDOMS_VOTE_MENU_FIELD_SANCTION_DURATION = 'kingdoms.vote.menu.fields.sanctionDuration';
+
+// Stats / progress / leader
+    public const KINGDOMS_VOTE_MENU_COUNTS = 'kingdoms.vote.menu.counts';     // {FOR} {AGAINST} {TOTAL}
+    public const KINGDOMS_VOTE_MENU_PROGRESS = 'kingdoms.vote.menu.progress';   // {BAR}
+    public const KINGDOMS_VOTE_MENU_LEADING_FOR = 'kingdoms.vote.menu.leading.for';
+    public const KINGDOMS_VOTE_MENU_LEADING_AGAINST = 'kingdoms.vote.menu.leading.against';
+    public const KINGDOMS_VOTE_MENU_LEADING_TIED = 'kingdoms.vote.menu.leading.tied';
+
+    public const KINGDOMS_VOTE_MENU_YOU_VOTED_FOR = 'kingdoms.vote.menu.youVoted.for';
+    public const KINGDOMS_VOTE_MENU_YOU_VOTED_AGAINST = 'kingdoms.vote.menu.youVoted.against';
+
+    public const KINGDOMS_VOTE_MENU_ACTION_FOR = 'kingdoms.vote.menu.actions.for';
+    public const KINGDOMS_VOTE_MENU_ACTION_AGAINST = 'kingdoms.vote.menu.actions.against';
+    public const KINGDOMS_VOTE_MENU_ACTION_FOR_KEEP = 'kingdoms.vote.menu.actions.for.keep';
+    public const KINGDOMS_VOTE_MENU_ACTION_FOR_SWITCH = 'kingdoms.vote.menu.actions.for.switch';
+    public const KINGDOMS_VOTE_MENU_ACTION_AGAINST_KEEP = 'kingdoms.vote.menu.actions.against.keep';
+    public const KINGDOMS_VOTE_MENU_ACTION_AGAINST_SWITCH = 'kingdoms.vote.menu.actions.against.switch';
+    public const KINGDOMS_VOTE_MENU_ACTION_VIEW_STATS = 'kingdoms.vote.menu.actions.against.stats';
+
+    //res
+    public const KINGDOM_VOTE_INCORRECT_TYPE = 'kingdoms.vote.errors.incorrectType';
+
+    // High-level / feedback
+// Listing menu
+    public const KINGDOMS_VOTE_LIST_MENU_HEADER = 'kingdoms.vote.list.menu.header';
+    public const KINGDOMS_VOTE_LIST_MENU_TEXT = 'kingdoms.vote.list.menu.text';
+    public const KINGDOMS_VOTE_LIST_MENU_ROW = 'kingdoms.vote.list.menu.row';
+
+    //Vote handlers
+    public const KINGDOMS_VOTE_HANDLER_KICK_PASSED = 'kingdoms.vote.handlers.kick.passed';
+
+    public const KINGDOMS_UPGRADE_USAGE = 'kingdoms.upgrade.usage';
+    public const KINGDOMS_UPGRADE_SUCCESS = 'kingdoms.upgrade.success';
+    public const KINGDOMS_UPGRADE_INSUFFICIENT_FUNDS = 'kingdoms.upgrade.insufficientFunds';
+    public const KINGDOMS_UPGRADE_ALREADY_OWNED = 'kingdoms.upgrade.alreadyOwned';
+    public const KINGDOMS_UPGRADE_INVALID_PERK = 'kingdoms.upgrade.invalidPerk';
+
+    public const KINGDOMS_SHIELD_USAGE = 'kingdoms.shield.usage';
+    public const KINGDOMS_SHIELD_SUCCESS = 'kingdoms.shield.success';
+    public const KINGDOMS_SHIELD_ACTIVE = 'kingdoms.shield.active';
+    public const KINGDOMS_SHIELD_INSUFFICIENT_FUNDS = 'kingdoms.shield.insufficientFunds';
+
+    public const KINGDOMS_ALARM_SUCCESS = 'kingdoms.alarm.success';
+    public const KINGDOMS_ALARM_BROADCAST = 'kingdoms.alarm.broadcast';
+    public const KINGDOMS_ALARM_COOLDOWN = 'kingdoms.alarm.cooldown';
+    public const KINGDOMS_ALARM_FLOATING_TEXT = 'kingdoms.alarm.floating-text';
+
+    public const KINGDOMS_RALLY_SUCCESS = 'kingdoms.rally.success';
+    public const KINGDOMS_RALLY_TELEPORT = 'kingdoms.rally.teleport';
+    public const KINGDOMS_RALLY_NO_RALLY = 'kingdoms.rally.noRally';
+    public const KINGDOMS_RALLY_COOLDOWN = 'kingdoms.rally.cooldown';
+
+    public const KINGDOMS_BOUNTY_USAGE = 'kingdoms.bounty.usage';
+    public const KINGDOMS_BOUNTY_SUCCESS = 'kingdoms.bounty.success';
+    public const KINGDOMS_BOUNTY_INSUFFICIENT_FUNDS = 'kingdoms.bounty.insufficientFunds';
+    public const KINGDOMS_BOUNTY_SELF = 'kingdoms.bounty.self';
+    public const KINGDOMS_BOUNTY_NOT_ENEMY = 'kingdoms.bounty.notEnemy';
+    public const KINGDOMS_BOUNTY_ALREADY_EXISTS = 'kingdoms.bounty.alreadyExists';
+    public const KINGDOMS_BOUNTY_ACTIVE_ENTRY = 'kingdoms.bounty.activeEntry';
+    public const KINGDOMS_BOUNTY_INACTIVE_ENTRY = 'kingdoms.bounty.inactiveEntry';
+    public const KINGDOMS_BOUNTY_NO_PAGE = 'kingdoms.bounty.noPage';
+    public const KINGDOMS_BOUNTY_PAGE_HEADER = 'kingdoms.bounty.pageHeader';
+    public const KINGDOMS_BOUNTY_CLAIMED = 'kingdoms.bounty.claimed';
+
+    // Betrayal System
+    public const KINGDOMS_BETRAYAL_COOLDOWN = 'kingdoms.betrayal.cooldown';
+    public const KINGDOMS_BETRAYAL_CONFIRM = 'kingdoms.betrayal.confirm';
+    public const KINGDOMS_BETRAYAL_SUCCESS = 'kingdoms.betrayal.success';
+    public const KINGDOMS_BETRAYAL_BROADCAST = 'kingdoms.betrayal.broadcast';
+    public const KINGDOMS_BETRAYAL_CONSEQUENCES = 'kingdoms.betrayal.consequences';
+    public const KINGDOMS_BETRAYAL_NOT_BATTLE_PHASE = 'kingdoms.betrayal.notInBattle';
+    public const KINGDOMS_BETRAYAL_SELF = 'kingdoms.betrayal.self';
+
+    // Loyalty System
+    public const KINGDOMS_LOYALTY_HIGH = 'kingdoms.loyalty.high';
+    public const KINGDOMS_LOYALTY_MEDIUM = 'kingdoms.loyalty.medium';
+    public const KINGDOMS_LOYALTY_LOW = 'kingdoms.loyalty.low';
+    public const KINGDOMS_LOYALTY_BONUS = 'kingdoms.loyalty.bonus';
+    public const KINGDOMS_VOTE_ALREADY_VOTED_KICK = 'kingdoms.kick.errors.alreadyKick';
+
+    // Messages du système de vote
+    public const KINGDOMS_VOTE_CREATED_NOTIFICATION = 'kingdoms.vote.created_notification';
+    public const KINGDOMS_VOTE_MEMBER_VOTED_NOTIFICATION = 'kingdoms.vote.member_voted_notification';
+    public const KINGDOMS_VOTE_EXPIRED_NOTIFICATION = 'kingdoms.vote.expired_notification';
+    public const KINGDOMS_VOTE_PASSED_NOTIFICATION = 'kingdoms.vote.passed_notification';
+    public const KINGDOMS_VOTE_FAILED_NOTIFICATION = 'kingdoms.vote.failed_notification';
+    public const KINGDOMS_VOTE_REMINDER_NOTIFICATION = 'kingdoms.vote.reminder_notification';
+    public const KINGDOMS_VOTE_QUORUM_NOT_MET = 'kingdoms.vote.quorum_not_met';
+    public const KINGDOMS_VOTE_MAJORITY_NOT_MET = 'kingdoms.vote.majority_not_met';
+
+    // Qorum Settings Messages & Menus
+    const KINGDOMS_VOTE_QUORUM_MENU_TITLE = 'kingdoms.vote.quorum.menu.title';
+
+    // Quorum menu sections
+    public const KINGDOMS_VOTE_QUORUM_GENERAL_HEADER = 'kingdoms.vote.quorum.menu.sections.general.header';
+    public const KINGDOMS_VOTE_QUORUM_GENERAL_TYPE = 'kingdoms.vote.quorum.menu.sections.general.type';
+    public const KINGDOMS_VOTE_QUORUM_GENERAL_TARGET = 'kingdoms.vote.quorum.menu.sections.general.target';
+    public const KINGDOMS_VOTE_QUORUM_GENERAL_REASON = 'kingdoms.vote.quorum.menu.sections.general.reason';
+    public const KINGDOMS_VOTE_QUORUM_GENERAL_PROPOSED_BY = 'kingdoms.vote.quorum.menu.sections.general.proposedBy';
+
+    public const KINGDOMS_VOTE_QUORUM_PARTICIPATION_HEADER = 'kingdoms.vote.quorum.menu.sections.participation.header';
+    public const KINGDOMS_VOTE_QUORUM_PARTICIPATION_TOTAL = 'kingdoms.vote.quorum.menu.sections.participation.totalMembers';
+    public const KINGDOMS_VOTE_QUORUM_PARTICIPATION_VOTES = 'kingdoms.vote.quorum.menu.sections.participation.votesCount';
+    public const KINGDOMS_VOTE_QUORUM_PARTICIPATION_RATE = 'kingdoms.vote.quorum.menu.sections.participation.participation';
+
+    public const KINGDOMS_VOTE_QUORUM_RESULTS_HEADER = 'kingdoms.vote.quorum.menu.sections.results.header';
+    public const KINGDOMS_VOTE_QUORUM_RESULTS_FOR = 'kingdoms.vote.quorum.menu.sections.results.for';
+    public const KINGDOMS_VOTE_QUORUM_RESULTS_AGAINST = 'kingdoms.vote.quorum.menu.sections.results.against';
+
+    public const KINGDOMS_VOTE_QUORUM_REQUIREMENTS_HEADER = 'kingdoms.vote.quorum.menu.sections.requirements.header';
+    public const KINGDOMS_VOTE_QUORUM_REQUIREMENTS_MIN_PARTICIPATION = 'kingdoms.vote.quorum.menu.sections.requirements.minParticipation';
+    public const KINGDOMS_VOTE_QUORUM_REQUIREMENTS_MIN_MAJORITY = 'kingdoms.vote.quorum.menu.sections.requirements.minMajority';
+    public const KINGDOMS_VOTE_QUORUM_REQUIREMENTS_MIN_VOTES = 'kingdoms.vote.quorum.menu.sections.requirements.minVotes';
+
+    public const KINGDOMS_VOTE_QUORUM_CONDITIONS_HEADER = 'kingdoms.vote.quorum.menu.sections.conditions.header';
+    public const KINGDOMS_VOTE_QUORUM_CONDITIONS_QUORUM_MET = 'kingdoms.vote.quorum.menu.sections.conditions.quorumMet';
+    public const KINGDOMS_VOTE_QUORUM_CONDITIONS_MAJORITY_MET = 'kingdoms.vote.quorum.menu.sections.conditions.majorityMet';
+
+    public const KINGDOMS_VOTE_QUORUM_FINAL_HEADER = 'kingdoms.vote.quorum.menu.sections.final.header';
+    public const KINGDOMS_VOTE_QUORUM_FINAL_SUCCESS = 'kingdoms.vote.quorum.menu.sections.final.success';
+    public const KINGDOMS_VOTE_QUORUM_FINAL_FAILURE = 'kingdoms.vote.quorum.menu.sections.final.failure';
+    public const KINGDOMS_VOTE_QUORUM_FINAL_REASON_QUORUM = 'kingdoms.vote.quorum.menu.sections.final.reasons.quorum';
+    public const KINGDOMS_VOTE_QUORUM_FINAL_REASON_MAJORITY = 'kingdoms.vote.quorum.menu.sections.final.reasons.majority';
+
+    // Vote confirmation system
+    public const KINGDOMS_VOTE_CONFIRM_HEADER = 'kingdoms.vote.confirm.header';
+    public const KINGDOMS_VOTE_CONFIRM_CONTENT = 'kingdoms.vote.confirm.content';
+    public const KINGDOMS_VOTE_CONFIRM_YES = 'kingdoms.vote.confirm.yes';
+    public const KINGDOMS_VOTE_CONFIRM_NO = 'kingdoms.vote.confirm.no';
+    public const KINGDOMS_VOTE_CANCELLED = 'kingdoms.vote.confirm.cancelled';
+    public const KINGDOMS_VOTE_CREATED = 'kingdoms.vote.confirm.created';
+    public const KINGDOMS_VOTE_ALREADY_EXISTS = 'kingdoms.vote.confirm.alreadyExists';
+    public const KINGDOMS_BAN_CONFIRM_HEADER = 'kingdoms.ban.confirm.header';
+    public const KINGDOMS_BAN_CONFIRM_CONTENT = 'kingdoms.ban.confirm.content';
+    public const KINGDOMS_CANT_JOIN_EXCLUDED_WITH_DETAILS = 'kingdoms.onJoin.errors.excluded.withDetails';
+    public const KINGDOMS_CANT_JOIN_EXCLUDED_NO_DETAILS = 'kingdoms.onJoin.errors.excluded.noDetails';
 }

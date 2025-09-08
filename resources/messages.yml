@@ -1,5 +1,5 @@
 theme:
-  # Préfixes
+  # Prefixes
   prefixes:
     global: "§r§l§6Walls§eOf§6Betrayal §8»§r "
     kingdoms: "§r§4§lKingdoms §8»§r "
@@ -50,14 +50,19 @@ common:
   pageNotFound: "{GLOBAL_PREFIX}{RED}Page {PAGE} not found, total: {TOTAL_PAGES}."
   serverEmpty: "{GLOBAL_PREFIX}{RED}The server is currently empty."
   noOtherPlayers: "{GLOBAL_PREFIX}{GRAY}No other players are connected."
+  back: "{RED}Back"
 
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
 # ---------------------------------------------------------------------------
 
 kingdoms:
-  # On garde un ton RP marqué (épique), avec annonce serveur + messages ciblés
+  # Keep a strong RP tone (epic), with server broadcast + targeted messages
   onJoin:
+    errors:
+      excluded:
+        withDetails: "{KINGDOMS_PREFIX}{RED}You cannot join {KINGDOM}{RED}. You are excluded {DURATION} by unanimous vote proposed by {PLAYER}. Reason: {REASON}"
+        noDetails: "{KINGDOMS_PREFIX}{RED}You cannot join {KINGDOM}{RED}. You are excluded by unanimous vote."
     broadcast:
       message: "{GLOBAL_PREFIX}{YELLOW}{PLAYER} has joined the ranks of {KINGDOM}!"
       type: "popup"
@@ -84,6 +89,235 @@ kingdoms:
     cantCloseChooseInventory:
       message: "{KINGDOMS_PREFIX}{RED}You need to choose a kingdom to start your adventure."
       type: "title"
+
+  # Kingdom Commands Messages
+  spawn:
+    success:
+      message: "{KINGDOMS_PREFIX}{GREEN}Teleported to {KINGDOM} spawn!"
+      type: "toast"
+    noSpawn: "{KINGDOMS_PREFIX}{RED}Your kingdom doesn't have a spawn set yet."
+    noKingdom: "{KINGDOMS_PREFIX}{RED}You need to join a kingdom first."
+
+  info:
+    header: "{KINGDOMS_PREFIX}{BOLD}{COLOR}{KINGDOM}{RESET}"
+    description: "{GRAY}{DESCRIPTION}"
+    stats: "{GRAY}Kills: {YELLOW}{KILLS} {GRAY}| Deaths: {YELLOW}{DEATHS} {GRAY}| K/D: {YELLOW}{KDR}"
+    xp: "{GRAY}Kingdom XP: {YELLOW}{XP}"
+    balance: "{GRAY}Kingdom Balance: {GOLD}{BALANCE}"
+    members: "{GRAY}Online Members: {GREEN}{ONLINE}/{TOTAL}"
+    abilities: "{GRAY}Abilities: {YELLOW}{ABILITIES}"
+
+  top:
+    header: "{KINGDOMS_PREFIX}{BOLD}Kingdom Leaderboard by {GOLD}{FILTER}{RESET}"
+    entry: "{YELLOW}{POSITION}. {KINGDOM} {GRAY}- {YELLOW}{DATA}"
+    footer: "{GRAY}Your kingdom: {KINGDOM} {GRAY}(#{POSITION})"
+
+  map:
+    header: "{KINGDOMS_PREFIX}{BOLD}Kingdom Territory Map{RESET}"
+    territory: "{GRAY}Territory: {YELLOW}{SIZE} chunks"
+    claims: "{GRAY}Claims: {YELLOW}{CLAIMS}"
+    borders: "{GRAY}Borders: {YELLOW}{BORDERS}"
+
+  contribute:
+    usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom contribute <xp|money|resource> [amount]"
+    success:
+      message: "{KINGDOMS_PREFIX}{GREEN}{PLAYER} Contributed {YELLOW}{AMOUNT} {TYPE}{GREEN} to {KINGDOM}!"
+      type: "toast"
+    insufficient: "{KINGDOMS_PREFIX}{RED}Insufficient {TYPE}. You have: {YELLOW}{HAVE}{RED}, needed: {YELLOW}{NEEDED}"
+    invalidType: "{KINGDOMS_PREFIX}{RED}Invalid contribution type. Use: xp, money, or resource"
+
+  abilities:
+    header: "{KINGDOMS_PREFIX}{BOLD}Kingdom Abilities{RESET}"
+    ability: "{YELLOW}{ABILITY} {GRAY}- {DESCRIPTION}"
+    cooldown: "{GRAY}Your Cooldown: {YELLOW}{TIME}"
+    noAbilities: "{KINGDOMS_PREFIX}{GRAY}No abilities available for your kingdom."
+
+  kick:
+    errors:
+      alreadyKick: "{KINGDOMS_PREFIX}{RED}You have already lunched an exil proposal for you kingdom to kick {PLAYER}, type /kingdom vote kick"
+    usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom kick <player> [duration_minutes] [reason]"
+    success: "§6⚔ §fYou have proclaimed an §cExile Vote§f against §e{TARGET} §7for §f{REASON} §7(duration: §f{DURATION}§7). Use §a/kingdom vote kick§7 to cast your choice."
+    broadcast: "§6⚔ §e{PLAYER} §7has invoked an §cExile Vote§7 upon §e{TARGET} §7for §f{REASON} §7(duration: §f{DURATION}§7)! Citizens, rally and cast your vote with §a/kingdom vote kick§7."
+    notMember: "{KINGDOMS_PREFIX}{RED}{PLAYER} is not a member of {KINGDOM}."
+    self: "{KINGDOMS_PREFIX}{RED}You cannot kick yourself."
+    youWereKicked: "{KINGDOMS_PREFIX}{RED}You were expelled from {KINGDOM}. Reason: {REASON}"
+    bannedDeny: "{KINGDOMS_PREFIX}{RED}You cannot join {KINGDOM}. You are banned for a time."
+    confirm:
+      header: "§4⚔ §fRoyal Decree — §7Exile Proposal"
+      yes: "§4Confirm Exile"
+      no: "Cancel"
+      content: |
+        §4⚔ §fRoyal Decree — §7Exile Proposal
+
+        §7Target: §6{PLAYER}
+        §7Kingdom: §6{KINGDOM}
+        §7Reason: §f{REASON}
+        §7Duration: §f{DURATION}
+
+        §7Do you confirm initiating an §4Exile Vote§7 against this subject?
+
+  ban:
+    usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom ban <player> [reason]"
+    success: "{KINGDOMS_PREFIX}{GREEN}Started vote to ban {PLAYER} from {KINGDOM}."
+    reason: "{GRAY}Reason: {YELLOW}{REASON}"
+    notMember: "{KINGDOMS_PREFIX}{RED}{PLAYER} is not a member of {KINGDOM}."
+    self: "{KINGDOMS_PREFIX}{RED}You cannot ban yourself."
+
+  vote:
+    errors:
+      incorrectType: "{KINGDOMS_PREFIX}{RED}Incorrect Kingdom Vote type, Available: {AVAILABLE}"
+      noVote: "{KINGDOMS_PREFIX}{RED}No {FILTER} vote in your kingdom."
+      notFound: "{KINGDOMS_PREFIX}{RED}Vote with ID {ID} not found."
+      statisticsUnavailable: "{KINGDOMS_PREFIX}{RED}Vote statistics are unavailable at this time."
+      alreadyVotedSame: "{KINGDOMS_PREFIX}{RED}You have already voted {VOTE_CHOICE} on this vote."
+    list:
+      menu:
+        header: "§4⚔ §fRoyal Decrees — §7Council Ledger"
+        text: "§7Kingdom: §e{KINGDOM} §7· Filter: §e{FILTERS}\n\n§7Peruse the Council Ledger. Select a decree to reveal its purpose, review its voice, and cast your fate in the hall of banners."
+        row: "§6{TARGET} §7(§f{STATUS}§7)\n§7Proposed by §e{PROPOSED_BY} §7| §a{FOR} §7/ §c{AGAINST}"
+    alreadyVoted: "{KINGDOMS_PREFIX}{RED}You have already voted."
+    voteInfo: "{KINGDOMS_PREFIX}{GRAY}Vote: {YELLOW}{TYPE} {PLAYER} {GRAY}({VOTES_FOR}/{VOTES_AGAINST})"
+    success: "§aYour vote has been recorded."
+
+    handlers:
+      kick:
+        passed: "§6⚔ §cYou have been expelled from §e{KINGDOM}§c until {TIME}! Reason: §f{REASON}§c, proposed by §e{PROPOSED_BY}§c."
+
+    quorum:
+      menu:
+        title: "§4⚔ §fRoyal Census — §7Vote Analysis"
+        sections:
+          general:
+            header: "§6Royal Decree Details:"
+            type: "§7Nature: §e{TYPE}"
+            target: "§7Subject: §6{TARGET}"
+            reason: "§7Grounds: §f{REASON}"
+            proposedBy: "§7Proclaimed by: §e{PROPOSED_BY}"
+            created: "§7Created: §f{DATE}"
+            expires: "§7Vote Ends: §f{DATE}"
+            sanctionDuration: "§7Sanction: §f{DURATION}"
+
+          participation:
+            header: "§6Council Attendance:"
+            totalMembers: "§7Total Council Members: §f{TOTAL}"
+            votesCount: "§7Votes Cast: §f{VOTES}"
+            participation: "§7Participation Rate: §e{PARTICIPATION_PERCENT}%"
+
+          results:
+            header: "§6Council's Voice:"
+            for: "§7Support: §a{FOR} §7(§e{PERCENT}%§7)"
+            against: "§7Opposition: §c{AGAINST} §7(§e{PERCENT}%§7)"
+
+          requirements:
+            header: "§6Royal Mandates:"
+            minParticipation: "§7Required Attendance: §e{QUORUM_PERCENT}%"
+            minMajority: "§7Required Majority: §e{MAJORITY_PERCENT}%"
+            minVotes: "§7Minimum Votes: §e{MINIMUM_VOTES}"
+
+          conditions:
+            header: "§6Decree Status:"
+            quorumMet: "§7Quorum Achieved: {STATUS}"
+            majorityMet: "§7Majority Achieved: {STATUS}"
+
+          final:
+            header: "§6Royal Judgment:"
+            success: "§a✓ The decree shall pass!"
+            failure: "§c✗ The decree cannot pass."
+            reasons:
+              quorum: "§7» The council lacks sufficient attendance"
+              majority: "§7» The majority mandate remains unfulfilled"
+
+    created_notification: "§6⚔ §fA new vote has been created! §e{TYPE} §7against §6{TARGET} §7for §f{REASON} §7by §e{PROPOSED_BY} §7(expires on §f{EXPIRES_AT}§7)"
+    member_voted_notification: "§6⚔ §e{PLAYER} §7voted §e{VOTE_CHOICE} §7in the §e{TYPE} §7vote against §6{TARGET}"
+    expired_notification: "§6⚔ §fThe §e{TYPE} §7vote against §6{TARGET} §7has expired! Result: §a{FOR} §7FOR, §c{AGAINST} §7AGAINST"
+    passed_notification: "§6⚔ §fThe §e{TYPE} §7vote against §6{TARGET} §7HAS PASSED! Result: §a{FOR} §7FOR, §c{AGAINST} §7AGAINST (§f{TOTAL} §7votes)"
+    failed_notification: "§6⚔ §fThe §e{TYPE} §7vote against §6{TARGET} §7HAS FAILED! Result: §a{FOR} §7FOR, §c{AGAINST} §7AGAINST (§f{TOTAL} §7votes)"
+    reminder_notification: "§6⚔ §fReminder #§e{REMINDER_NUMBER} §7- §e{TYPE} §7vote against §6{TARGET} §7expires in §f{REMAINING_TIME} §7! Vote now!"
+
+    confirm:
+      header: "§4⚔ §fRoyal Decree — §7Vote Proposal"
+      content: |
+        §4⚔ §fRoyal Decree — §7{TYPE} Vote
+        
+        §7Target: §6{PLAYER}
+        §7Kingdom: §6{KINGDOM}
+        §7Reason: §f{REASON}
+        §7Duration: §f{DURATION}
+        
+        §7Do you confirm initiating this vote?
+      yes: "§4Confirm Vote"
+      no: "§7Cancel"
+      cancelled: "§6⚔ §7Vote proposal cancelled."
+      created: "§6⚔ §fYou have proclaimed a §e{TYPE} Vote§f against §e{TARGET} §7for §f{REASON} §7(duration: §f{DURATION}§7)."
+      alreadyExists: "§6⚔ §cA {TYPE} vote against §e{TARGET}§c is already in progress."
+    ban:
+      confirm:
+        header: "§4⚔ §fRoyal Decree — §cBanishment Proposal"
+        content: |
+          §4⚔ §fRoyal Decree — §cBanishment Vote
+          
+          §7Target: §6{PLAYER}
+          §7Kingdom: §6{KINGDOM}
+          §7Reason: §f{REASON}
+          §7Duration: §f{DURATION}
+          
+          §cWarning: This action will permanently ban the player from your kingdom.
+          §7Do you confirm this banishment vote?
+
+  upgrade:
+    usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom upgrade <perkId>"
+    success: "{KINGDOMS_PREFIX}{GREEN}Started vote to upgrade {PERK}."
+    insufficientFunds: "{KINGDOMS_PREFIX}{RED}Insufficient kingdom funds. Needed: {YELLOW}{COST}"
+    alreadyOwned: "{KINGDOMS_PREFIX}{RED}Kingdom already owns this upgrade."
+    invalidPerk: "{KINGDOMS_PREFIX}{RED}Invalid perk ID: {PERK}"
+
+  shield:
+    usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom shield <duration>"
+    success: "{KINGDOMS_PREFIX}{GREEN}Kingdom shield activated for {DURATION}!"
+    active: "{KINGDOMS_PREFIX}{RED}Kingdom shield is already active."
+    insufficientFunds: "{KINGDOMS_PREFIX}{RED}Insufficient kingdom funds for shield."
+
+  alarm:
+    success: '{KINGDOMS_PREFIX}{RED}/!\! KINGDOM ALARM ACTIVATED! /!\!'
+    broadcast: '{KINGDOMS_PREFIX}{RED}/!\! {PLAYER} activated the kingdom alarm in position {POSITION} : {REASON}! /!\!'
+    cooldown: "{KINGDOMS_PREFIX}{RED}Alarm is on cooldown for {TIME}."
+    floating-text: '{RED}/!\! ALARM ACTIVATED BY {PLAYER}! /!\\n\n{GRAY}Reason: {REASON}'
+
+  rally:
+    success: "{KINGDOMS_PREFIX}{GREEN}Rally point set at {PLAYER} location!"
+    teleport: "{KINGDOMS_PREFIX}{GREEN}Teleported to rally point!"
+    noRally: "{KINGDOMS_PREFIX}{RED}No rally point set."
+    cooldown: "{KINGDOMS_PREFIX}{RED}You can set a new rally point in {TIME}."
+
+  bounty:
+    usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom bounty <player> <amount>"
+    success: "{GREEN}A bounty of {YELLOW}{AMOUNT} gold {GREEN}has been proclaimed upon the head of {PLAYER}!"
+    insufficientFunds: "{KINGDOMS_PREFIX}{RED}Your kingdom’s treasury lacks the required {YELLOW}{AMOUNT}$."
+    self: "{KINGDOMS_PREFIX}{RED}You cannot place a bounty upon your own head, fool!"
+    notEnemy: "{KINGDOMS_PREFIX}{RED}Bounties may only be declared against sworn enemies."
+    alreadyExists: "{KINGDOMS_PREFIX}{RED}Your kingdom has already set a bounty upon {YELLOW}{PLAYER}."
+    pageHeader: "{GOLD}--- Bounties Ledger {GRAY}[Page {POSITION}/{AMOUNT}] ---"
+    noPage: "{RED}No such page exists. {GRAY}(Max: {AMOUNT})"
+    activeEntry: "{DARK_RED}⚔  {GRAY}[{POSITION}] {YELLOW}{TARGET} {GRAY}- {AMOUNT}$ {GRAY}| Placed by {PLAYER} on {CREATED_AT} (Strict: {BOOL})"
+    inactiveEntry: "{DARK_GRAY}☠  {GRAY}[{POSITION}] {YELLOW}{TARGET} {GRAY}- {AMOUNT}$ {GRAY}| Claimed by {TAKEN} (Placed by {PLAYER} on {CREATED_AT})"
+    claimed: "{KINGDOMS_PREFIX}{GOLD}{PLAYER} {GREEN}has claimed the bounty on {RED}{TARGET}{GREEN}’s head! {YELLOW}{AMOUNT}$ {GREEN}has been awarded."
+
+  # Betrayal System
+  betrayal:
+    cooldown: "{KINGDOMS_PREFIX}{RED}You cannot betray your kingdom yet. Cooldown: {TIME}"
+    confirm: "{KINGDOMS_PREFIX}{RED}⚠ WARNING: Betrayal is permanent! Type /kingdom betray {KINGDOM} confirm"
+    success: "{KINGDOMS_PREFIX}{RED}You have betrayed {OLD_KINGDOM} and joined {NEW_KINGDOM}!"
+    broadcast: '{KINGDOMS_PREFIX}{RED}/!\! {PLAYER} has betrayed {OLD_KINGDOM} and joined {NEW_KINGDOM}! /!\!'
+    consequences: "{KINGDOMS_PREFIX}{RED}Betrayal consequences: -{XP} XP, -{MONEY} money, 24h cooldown"
+    notInBattle: "{KINGDOMS_PREFIX}{RED}Betrayal is only allowed during battle phase."
+    self: "{KINGDOMS_PREFIX}{RED}You cannot betray yourself!"
+
+  # Loyalty System
+  loyalty:
+    high: "{KINGDOMS_PREFIX}{GREEN}Your loyalty to {KINGDOM} is unwavering!"
+    medium: "{KINGDOMS_PREFIX}{YELLOW}Your loyalty to {KINGDOM} is tested..."
+    low: "{KINGDOMS_PREFIX}{RED}Your loyalty to {KINGDOM} is questionable!"
+    bonus: "{KINGDOMS_PREFIX}{GREEN}Loyalty bonus: +{BONUS}% XP and money"
   enchantingTable:
     errors:
       notAvailable: "{KINGDOMS_PREFIX}{RED}This item ({ITEM}) cannot be enchanted with {ENCHANTMENT}."
@@ -100,7 +334,7 @@ kingdoms:
 # ---------------------------------------------------------------------------
 
 kits:
-  # Ton propre, lisible, moins RP (infos, progression, succès)
+  # Clean, readable tone, less RP (info, progression, success)
   unknown: "{KITS_PREFIX}{RED}Unknown Kit Id: {KIT}"
   requirementAchieved: "{KITS_PREFIX}{GRAY}⚔ {WHITE}{PLAYER} {GRAY}made progress on {DARK_RED}{KIT}"
   achieved:
@@ -124,7 +358,7 @@ kits:
 # ---------------------------------------------------------------------------
 
 abilities:
-  # RP mais lisible; feedback clair (cooldown, no access, success)
+  # RP but readable; clear feedback (cooldown, no access, success)
   unknown: "{ABILITIES_PREFIX}{RED}Unknown Ability Id: {ABILITY}"
   noAccess: "{ABILITIES_PREFIX}{RED}You don't have this ability."
   noUse: "{ABILITIES_PREFIX}{RED}This ability is not usable by interacting."
@@ -144,7 +378,7 @@ abilities:
     message: "{ABILITIES_PREFIX}{COLOR}{NAME}\n{GRAY}Ability Expired"
     type: "title"
 
-  # Sub‑themes par ability (RP augmenté)
+  # Sub-themes per ability (increased RP)
   blood_rage:
     victimEnter: "{ABILITIES_PREFIX}{RED}⚠ {GRAY}{KILLER} entered {RED}Blood Rage{GRAY}!"
   shadow_step:
@@ -161,7 +395,7 @@ abilities:
 # ---------------------------------------------------------------------------
 
 shop:
-  # Ton “market” clair, peu RP, très UX (prix, quantité, solde, erreurs…)
+  # Clear 'market' tone, low RP, strong UX (price, quantity, balance, errors...)
   categoryNotFound: "{SHOP_PREFIX}{RED}Shop Category Not Found."
   itemNotFound: "{SHOP_PREFIX}{RED}Item Not Found."
   notEnoughMoney: "{SHOP_PREFIX}{RED}You don't have enough balance. Needed: {YELLOW}{PRICE}"

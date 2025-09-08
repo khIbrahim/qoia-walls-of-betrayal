@@ -172,4 +172,10 @@ final class MessagesUtils {
             }
         } catch (Throwable) {}
     }
+
+    public static function defaultReason(?string $default = null, array $extraTags = null): string
+    {
+        return MessagesUtils::getMessage(MessagesIds::DEFAULT_REASON, $extraTags, $default);
+    }
+
 }
