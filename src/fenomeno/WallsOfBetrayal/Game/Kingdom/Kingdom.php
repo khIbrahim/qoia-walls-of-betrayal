@@ -1,13 +1,18 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
+use fenomeno\WallsOfBetrayal\Class\Kingdom\KingdomBase;
 use fenomeno\WallsOfBetrayal\Class\KingdomData;
+use fenomeno\WallsOfBetrayal\Commands\Arguments\BorderArgument;
 use fenomeno\WallsOfBetrayal\Commands\Arguments\KingdomDataFilterArgument;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\ContributeKingdomPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\KingdomRallyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\UpdateKingdomSpawnPayload;
 use fenomeno\WallsOfBetrayal\DTO\KingdomEnchantment;
+use fenomeno\WallsOfBetrayal\Events\Kingdom\PlayerEnterKingdomBaseEvent;
+use fenomeno\WallsOfBetrayal\Events\Kingdom\PlayerQuitKingdomBaseEvent;
+use fenomeno\WallsOfBetrayal\Exceptions\Kingdom\InvalidBorderException;
 use fenomeno\WallsOfBetrayal\Game\Kit\Kit;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
@@ -17,12 +22,17 @@ use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\PositionParser;
+use fenomeno\WallsOfBetrayal\Utils\Utils;
 use Generator;
+use InvalidArgumentException;
 use pocketmine\color\Color;
 use pocketmine\entity\Location;
 use pocketmine\item\enchantment\AvailableEnchantmentRegistry;
 use pocketmine\item\Item;
+use pocketmine\math\AxisAlignedBB;
+use pocketmine\math\Vector3;
 use pocketmine\player\Player;
+use pocketmine\scheduler\ClosureTask;
 use pocketmine\Server;
 use pocketmine\world\Position;
 use pocketmine\world\sound\PopSound;
@@ -33,6 +43,7 @@ class Kingdom
 {
 
     private KingdomData $kingdomData;
+    private KingdomBase $base;
 
     public function __construct(
         public string $id,
@@ -44,12 +55,14 @@ class Kingdom
         public array $abilities = [],
         public string $portalId = "",
         public array $enchantments = [],
-    ){}
+    ){
+        Main::getInstance()->getScheduler()->scheduleRepeatingTask(new ClosureTask(fn() => $this->tick()), 1);
+    }
 
     public function broadcastMessage(string $message, array $extraTags = [], ?string $default = null): void
     {
         foreach ($this->getOnlineMembers() as $member){
-            $member->sendMessage($this->getDisplayName() . "§8»§r" . MessagesUtils::getMessage($message, $extraTags, $default));
+            MessagesUtils::sendTo($member, $message, $extraTags, $default);
         }
     }
 
@@ -187,7 +200,6 @@ class Kingdom
         }
     }
 
-    // du hard code, fermez les yeux
     public function getColor(): Color
     {
         return match ($this->id) {
@@ -219,6 +231,126 @@ class Kingdom
     public function isExcluded(string $uuid): bool
     {
         return Main::getInstance()->getKingdomManager()->isPlayerSanctioned($this->id, $uuid);
+    }
+
+    public function getBase(): KingdomBase
+    {
+        return $this->base ??= new KingdomBase(AxisAlignedBB::one(), Main::getInstance()->getServerManager()->getKingdomsWorld());
+    }
+
+    public function setBase(KingdomBase $base): void
+    {
+        $this->base = $base;
+    }
+
+    /**
+     * @throws InvalidArgumentException
+     * @throws InvalidBorderException
+     */
+    public function updateBorders(string $type, Location $location): Generator
+    {
+        if(! isset(BorderArgument::$VALUES[$type])) {
+            throw new InvalidArgumentException("Border type must be one of: " . implode(", ", BorderArgument::$VALUES));
+        }
+
+        $borders = $this->getBase()->borders;
+        $this->getBase()->world = $location->getWorld();
+
+        $x = $location->getX();
+        $y = $location->getY();
+        $z = $location->getZ();
+        if ($type === BorderArgument::MIN){
+            if (! Utils::isAABBOne($borders) && ($x > $borders->maxX || $y > $borders->maxY || $z > $borders->maxZ)){
+                throw new InvalidBorderException("Minimum border cannot be greater than maximum border");
+            }
+
+            $borders->minX = (float) $location->getX();
+            $borders->minY = (float) $location->getY();
+            $borders->minZ = (float) $location->getZ();
+        } else {
+            if (! Utils::isAABBOne($borders) && ($x < $borders->minX || $y < $borders->minY || $z < $borders->minZ)){
+                throw new InvalidBorderException("Maximum border cannot be less than minimum border");
+            }
+
+            $borders->maxX = (float) $location->getX();
+            $borders->maxY = (float) $location->getY();
+            $borders->maxZ = (float) $location->getZ();
+        }
+
+        yield from Main::getInstance()->getDatabaseManager()->getKingdomRepository()->updateKingdomBorders($this->id, $this->getBase()->toArray());
+    }
+
+    private function isBaseDefined(): bool
+    {
+        return isset($this->base) && $this->base->isDefined();
+    }
+
+    private function tick(): void
+    {
+        if (! $this->isBaseDefined()) {
+            return;
+        }
+
+        foreach (Server::getInstance()->getOnlinePlayers() as $player) {
+            $position  = $player->getPosition();
+            $isInside  = $this->base->contains($position);
+            $wasInside = $this->base->isPlayerInBase($player);
+
+            if ($isInside === $wasInside) {
+                continue;
+            }
+
+            if ($isInside) {
+                $ev = new PlayerEnterKingdomBaseEvent($this, $player);
+                $ev->call();
+
+                if ($ev->isCancelled()) {
+                    $this->teleportPlayerAway($player, $position);
+                    MessagesUtils::sendTo($player, MessagesIds::KINGDOM_BASE_ENTER_CANCELLED, [
+                        ExtraTags::KINGDOM => $this->getDisplayName()
+                    ]);
+                    continue;
+                }
+
+                $this->base->addPlayerInBase($player);
+            } else {
+                $ev = new PlayerQuitKingdomBaseEvent($this, $player);
+                $ev->call();
+
+                if ($ev->isCancelled()) {
+                    $this->teleportPlayerAway($player, $position);
+                    MessagesUtils::sendTo($player, MessagesIds::KINGDOM_BASE_QUIT_CANCELLED, [
+                        ExtraTags::KINGDOM => $this->getDisplayName()
+                    ]);
+                    continue;
+                }
+
+                $this->base->removePlayerFromBase($player);
+            }
+        }
+    }
+
+    private function teleportPlayerAway(Player $player, Position $position): void
+    {
+        $center = $this->base->getCenter();
+        $isInside = $this->base->borders->isVectorInside($position);
+
+        $direction = $isInside
+            ? $position->subtractVector($center)->normalize() // inside
+            : $center->subtractVector($position)->normalize()->multiply(-1); // outside
+
+        $force = 1.5;
+        $knockbackX = $direction->x * $force;
+        $knockbackY = 0.4;
+        $knockbackZ = $direction->z * $force;
+
+        $player->setMotion(new Vector3($knockbackX, $knockbackY, $knockbackZ));
+
+        MessagesUtils::sendTo($player, $isInside
+            ? MessagesIds::KINGDOM_BASE_QUIT_CANCELLED
+            : MessagesIds::KINGDOM_BASE_ENTER_CANCELLED, [
+            ExtraTags::KINGDOM => $this->getDisplayName()
+        ]);
     }
 
 }

@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Repository;
 
+use fenomeno\WallsOfBetrayal\Class\Kingdom\KingdomBase;
 use fenomeno\WallsOfBetrayal\Class\Kingdom\KingdomSanction;
 use fenomeno\WallsOfBetrayal\Class\KingdomData;
 use fenomeno\WallsOfBetrayal\Commands\Arguments\KingdomDataFilterArgument;
@@ -70,10 +71,14 @@ class KingdomRepository implements KingdomRepositoryInterface
                 $kingdom->setKingdomData($kingdomData);
 
                 $this->main->getLogger()->info("§aKingdom data for ID: $payload->kingdomId has been successfully loaded");
-            } catch (Throwable $e) {
-                $this->main->getLogger()->error("§cFailed to load kingdom data for ID: $payload->kingdomId. Error: " . $e->getMessage());
+            } catch (Throwable $e) {Utils::onFailure($e, null, "Failed to load kingdom data for ID: " . $payload->kingdomId);}
+
+            if (isset($data['borders'])){
+                try {
+                    $kingdom->setBase(KingdomBase::fromArray((array) json_decode((string) $data['borders'], true)));
+                } catch (Throwable $e) {Utils::onFailure($e, null, "Failed to load kingdom borders for kingdom " . $payload->kingdomId);}
             }
-        }, fn(Throwable $e) => $this->main->getLogger()->error("§cAn error occurred while loading kingdom data for ID: $payload->kingdomId. Error: " . $e->getMessage()));
+        }, fn(Throwable $e) => $this->main->getLogger()->error("§cAn error occurred while loading kingdom data for ID: $payload->kingdomId"));
     }
 
     public function insert(InsertKingdomPayload $payload): void
@@ -187,5 +192,13 @@ class KingdomRepository implements KingdomRepositoryInterface
         }
 
         return $sanctions;
+    }
+
+    public function updateKingdomBorders(string $id, array $borders): Generator
+    {
+        yield from $this->main->getDatabaseManager()->asyncChange(Statements::UPDATE_KINGDOM_BORDERS, [
+            'id'      => $id,
+            'borders' => json_encode($borders),
+        ]);
     }
 }

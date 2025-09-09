@@ -46,6 +46,7 @@ class KingdomManager
             }
         }
 
+        $this->main->getServer()->getPluginManager()->registerEvents(new KingdomEvents(), $this->main);
         $this->main->getLogger()->info(TextFormat::GREEN . count($this->kingdoms) . " kingdoms loaded §6(" . implode(", ", array_map(fn(Kingdom $kingdom) => $kingdom->displayName, $this->kingdoms)) . "§6)");
     }
 

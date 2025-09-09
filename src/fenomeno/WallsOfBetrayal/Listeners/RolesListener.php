@@ -38,12 +38,12 @@ class RolesListener implements Listener
                 /** @var RolePlayer $playerROle */
                 $playerROle = yield from $this->main->getRolesManager()->loadPlayer($uuid, $name);
 
-                if (!$playerROle instanceof RolePlayer) {
+                if (! $playerROle instanceof RolePlayer) {
                     $networkSession->disconnect(MessagesUtils::getMessage(MessagesIds::UNSTABLE));
                     return;
                 }
 
-                $this->main->getLogger()->info("§aRoles - $name Successfully loaded");
+                $this->main->getLogger()->debug("§aRoles - $name Successfully loaded");
             } catch (Throwable $e) {
                 $networkSession->disconnect(MessagesUtils::getMessage(MessagesIds::UNSTABLE));
                 $this->main->getLogger()->error("Error occurred while loading role player $name: " . $e->getMessage());

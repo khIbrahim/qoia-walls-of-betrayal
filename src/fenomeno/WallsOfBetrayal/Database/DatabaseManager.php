@@ -10,6 +10,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\FloatingTextRepositor
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KingdomRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface\NpcRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerInventoriesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
@@ -22,6 +23,7 @@ use fenomeno\WallsOfBetrayal\Database\Repository\KingdomRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KingdomVoteRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\NpcRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\PlayerInventoriesRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRolesRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\BanRepository;
@@ -61,6 +63,7 @@ class DatabaseManager
     private NpcRepositoryInterface $npcRepository;
     private BountyRepositoryInterface $bountyRepository;
     private KingdomVoteRepository $kingdomVoteRepository;
+    private PlayerInventoriesRepositoryInterface $playerInventoriesRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
     private BigEndianNbtSerializer $nbtSerializer;
@@ -117,6 +120,9 @@ class DatabaseManager
 
             $this->kingdomVoteRepository = new KingdomVoteRepository($this->main);
             $this->kingdomVoteRepository->init($this);
+
+            $this->playerInventoriesRepository = new PlayerInventoriesRepository($this->main);
+            $this->playerInventoriesRepository->init($this);
 
             $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
@@ -198,6 +204,11 @@ class DatabaseManager
     public function getBinaryStringParser(): BinaryStringParserInterface
     {
         return $this->binaryStringParser;
+    }
+
+    public function getPlayerInventoriesRepository(): PlayerInventoriesRepositoryInterface
+    {
+        return $this->playerInventoriesRepository;
     }
 
     public function readItems(?string $data, string $tagInventory) : array{

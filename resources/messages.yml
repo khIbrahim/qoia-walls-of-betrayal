@@ -51,6 +51,8 @@ common:
   serverEmpty: "{GLOBAL_PREFIX}{RED}The server is currently empty."
   noOtherPlayers: "{GLOBAL_PREFIX}{GRAY}No other players are connected."
   back: "{RED}Back"
+  invalidArgument: "{GLOBAL_PREFIX}{RED}Invalid argument, Available : {AVAILABLE}"
+  inventoriesTransferred: "{GLOBAL_PREFIX}{GREEN}Your inventories have been transferred."
 
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
@@ -81,6 +83,18 @@ kingdoms:
       message: "{KINGDOMS_PREFIX}{AQUA}{PLAYER} has pledged loyalty to the {BOLD}Thrag'Mar Legion{RESET}!\n{GRAY}Another pawn for the shadows has risen..."
       type: "popup"
 
+  onEnterBase:
+    cancelled: "{KINGDOMS_PREFIX}{RED}You cannot enter {KINGDOM} {RED}base."
+    playerEnteredOwn:
+      message: "{GREEN}{PLAYER} have entered the {GREEN}base."
+      type: "popup"
+
+  onQuitBase:
+    cancelled: "{KINGDOMS_PREFIX}{RED}You cannot leave {KINGDOM} {RED}base."
+    playerQuitOwn:
+      message: "{GOLD}{PLAYER} have left the base."
+      type: "popup"
+
   errors:
     unstable: "{KINGDOMS_PREFIX}{RED}Your connection is unstable, please reconnect."
     alreadyInKingdom: "{KINGDOMS_PREFIX}{RED}You are already in kingdom {KINGDOM}{RED}!"
@@ -97,6 +111,9 @@ kingdoms:
       type: "toast"
     noSpawn: "{KINGDOMS_PREFIX}{RED}Your kingdom doesn't have a spawn set yet."
     noKingdom: "{KINGDOMS_PREFIX}{RED}You need to join a kingdom first."
+    cooldown: "{KINGDOMS_PREFIX}{RED}You can teleport to your kingdom spawn in {TIME}."
+    notYourKingdom: "{KINGDOMS_PREFIX}{RED}You can only teleport to your own kingdom spawn."
+    successOther: "{KINGDOMS_PREFIX}{GREEN}Teleported {PLAYER} to {KINGDOM} spawn!"
 
   info:
     header: "{KINGDOMS_PREFIX}{BOLD}{COLOR}{KINGDOM}{RESET}"
@@ -156,12 +173,20 @@ kingdoms:
 
         §7Do you confirm initiating an §4Exile Vote§7 against this subject?
 
+
   ban:
     usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom ban <player> [reason]"
     success: "{KINGDOMS_PREFIX}{GREEN}Started vote to ban {PLAYER} from {KINGDOM}."
     reason: "{GRAY}Reason: {YELLOW}{REASON}"
     notMember: "{KINGDOMS_PREFIX}{RED}{PLAYER} is not a member of {KINGDOM}."
     self: "{KINGDOMS_PREFIX}{RED}You cannot ban yourself."
+
+  borders:
+    errors:
+      invalidBorder: ""
+    updated: "{KINGDOMS_PREFIX}{GREEN}Kingdom {KINGDOM} {GREEN}borders ({TYPE}) updated."
+    nowViewing: "{KINGDOMS_PREFIX}{GREEN}You are now viewing {KINGDOM} {GREEN}borders."
+    noLongerViewing: "{KINGDOMS_PREFIX}{GREEN}You are no longer viewing kingdom borders."
 
   vote:
     errors:
@@ -318,6 +343,7 @@ kingdoms:
     medium: "{KINGDOMS_PREFIX}{YELLOW}Your loyalty to {KINGDOM} is tested..."
     low: "{KINGDOMS_PREFIX}{RED}Your loyalty to {KINGDOM} is questionable!"
     bonus: "{KINGDOMS_PREFIX}{GREEN}Loyalty bonus: +{BONUS}% XP and money"
+
   enchantingTable:
     errors:
       notAvailable: "{KINGDOMS_PREFIX}{RED}This item ({ITEM}) cannot be enchanted with {ENCHANTMENT}."

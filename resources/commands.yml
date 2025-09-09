@@ -446,8 +446,10 @@ kingdom:
 kingdom-spawn:
   name: "spawn"
   description: "§7Teleport to your Kingdom’s spawn."
-  usage: "§e/kingdom spawn"
+  usage: "§e/kingdom spawn <kingdom:admin> <player:admin>"
   aliases: ["home", "base", "tp", "go"]
+  metadata:
+    cooldown: 300
 
 kingdom-info:
   name: "info"
@@ -554,6 +556,22 @@ kingdom-betray:
   description: "§7Betray your kingdom and join the enemy."
   usage: "§e/kingdom betray <kingdom> [confirm]"
   aliases: [ "trahir", "switch" ]
+
+kingdom-setborder:
+  name: "setborders"
+  description: "§7Define or update the borders of a Kingdom."
+  usage: "§e/kingdom setborders <kingdom> <type=min|max>"
+
+kingdom-see-borders:
+  name: "seeborders"
+  description: "§7See the borders of all kingdoms."
+  usage: "§e/kingdom seeborders"
+  aliases: ["borders"]
+
+kingdom-set-spawn:
+  name: "setspawn"
+  description: "§7Set or update the spawn point of a Kingdom."
+  usage: "§e/kingdom setspawn <kingdom>"
 
 portal:
   name: "portal"

@@ -10,7 +10,8 @@ final readonly class CommandDTO
         public string $name,
         public string $description,
         public string $usage,
-        public array  $aliases
+        public array  $aliases,
+        public array  $metadata = []
     ){}
 
 }

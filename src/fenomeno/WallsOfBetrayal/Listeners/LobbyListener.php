@@ -5,6 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Listeners;
 
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\Server\LobbyManager;
+use fenomeno\WallsOfBetrayal\Sessions\Session;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -77,31 +78,36 @@ final class LobbyListener implements Listener {
     }
 
     public function onDamage(EntityDamageEvent $event): void{
-        $player = $event->getEntity();
-        if(!$player instanceof Player){
-            return;
-        }
-        if(!$this->lobbyManager->isInLobby($player)){
+        $victim = $event->getEntity();
+        if(! $victim instanceof Player){
             return;
         }
 
-        if (!$this->lobbyManager->getSettingByPlayer(LobbyManager::PVP, $player) && $event instanceof EntityDamageByEntityEvent) {
-            $event->cancel();
+        if(! $this->lobbyManager->isInLobby($victim)){
             return;
         }
 
-        if (!$this->lobbyManager->getSettingByPlayer(LobbyManager::DAMAGE, $player)) {
+        if ($event instanceof EntityDamageByEntityEvent) {
+            $attacker = $event->getDamager();
+            if ($attacker instanceof Player) {
+                if (! $this->lobbyManager->getSettingByPlayer(LobbyManager::PVP, $attacker) || ! $this->lobbyManager->getSettingByPlayer(LobbyManager::PVP, $victim)) {
+                    $event->cancel();
+                    return;
+                }
+            }
+        }
+
+        if (! $this->lobbyManager->getSettingByPlayer(LobbyManager::DAMAGE, $victim)) {
             $event->cancel();
         }
     }
 
     public function onMove(PlayerMoveEvent $event): void{
         $player = $event->getPlayer();
-        if(!$this->lobbyManager->isInLobby($player)){
+        if(! $this->lobbyManager->isInLobby($player)){
             return;
         }
-        if ($this->lobbyManager->getSetting(LobbyManager::VOID_TP)
-            && $player->getPosition()->y < 2){
+        if ($this->lobbyManager->getSetting(LobbyManager::VOID_TP) && $player->getPosition()->y < 2){
             $this->lobbyManager->teleport($player);
         }
     }

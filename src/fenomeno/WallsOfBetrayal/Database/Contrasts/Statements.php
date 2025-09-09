@@ -122,17 +122,21 @@ interface Statements
     public const GET_PLAYER_SANCTION_HISTORY = 'kingdom_bans.getPlayerHistory';
 
     // Kingdom votes
-    public const LOAD_KINGDOM_VOTES = 'kingdom_votes.load';
-    public const INIT_KINGDOM_VOTES = 'kingdom_votes.init';
-    public const CREATE_KINGDOM_VOTE = 'kingdom_votes.create';
-    public const GET_ACTIVE_KINGDOM_VOTES = 'kingdom_votes.getActive';
-    public const CAST_KINGDOM_VOTE = 'kingdom_votes.vote';
-    public const UPDATE_KINGDOM_VOTE_STATUS = 'kingdom_votes.updateStatus';
-    public const INIT_KINGDOM_VOTE_VOTES = 'kingdom_vote_votes.init';
-    public const COUNT_KINGDOM_VOTE_VOTES = 'kingdom_vote_votes.count';
-    public const GET_KINGDOM_VOTE = 'kingdom_votes.get';
-    public const GET_KINGDOM_VOTER_CHOICE = 'kingdom_vote_votes.getVoterChoice';
-    public const UPDATE_KINGDOM_VOTE_VOTES = 'kingdom_votes.updateVotes';
+    public const LOAD_KINGDOM_VOTES           = 'kingdom_votes.load';
+    public const INIT_KINGDOM_VOTES           = 'kingdom_votes.init';
+    public const CREATE_KINGDOM_VOTE          = 'kingdom_votes.create';
+    public const CAST_KINGDOM_VOTE            = 'kingdom_votes.vote';
+    public const UPDATE_KINGDOM_VOTE_STATUS   = 'kingdom_votes.updateStatus';
+    public const INIT_KINGDOM_VOTE_VOTES      = 'kingdom_vote_votes.init';
+    public const COUNT_KINGDOM_VOTE_VOTES     = 'kingdom_vote_votes.count';
+    public const GET_KINGDOM_VOTE             = 'kingdom_votes.get';
+    public const GET_KINGDOM_VOTER_CHOICE     = 'kingdom_vote_votes.getVoterChoice';
+    public const UPDATE_KINGDOM_VOTE_VOTES    = 'kingdom_votes.updateVotes';
     public const DELETE_EXPIRED_KINGDOM_VOTES = 'kingdom_votes.deleteExpired';
+    public const UPDATE_KINGDOM_BORDERS       = 'kingdoms.updateBorders';
+
+    public const INIT_PLAYER_INVENTORIES = 'player_inventories.init';
+    public const LOAD_PLAYER_INVENTORIES   = 'player_inventories.load';
+    public const SAVE_PLAYER_INVENTORIES = 'player_inventories.save';
 
 }

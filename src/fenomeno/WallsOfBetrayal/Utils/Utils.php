@@ -16,6 +16,7 @@ use pocketmine\item\enchantment\StringToEnchantmentParser;
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
+use pocketmine\math\AxisAlignedBB;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -23,7 +24,6 @@ class Utils
 {
 
     public static function getInvMenuSize(int $size): string {
-        // plus strict et prévisible
         return match ($size) {
             5   => InvMenuTypeIds::TYPE_HOPPER,
             9,18,27 => InvMenuTypeIds::TYPE_CHEST,
@@ -325,6 +325,13 @@ class Utils
         }
         Main::getInstance()->getLogger()->error($context);
         Main::getInstance()->getLogger()->logException($e);
+    }
+
+    public static function isAABBOne(AxisAlignedBB $alignedBB): bool
+    {
+        return ($alignedBB->maxX - $alignedBB->minX <= 1) &&
+               ($alignedBB->maxY - $alignedBB->minY <= 1) &&
+               ($alignedBB->maxZ - $alignedBB->minZ <= 1);
     }
 
 }

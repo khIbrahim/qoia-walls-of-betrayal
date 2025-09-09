@@ -107,5 +107,6 @@ final class CommandsIds
 //    public const KINGDOM_SHIELD = 'kingdom-shield';
     public const KINGDOM_SET_RALLY = 'kingdom-set-rally';
     public const KINGDOM_BOUNTIES = 'kingdom-bounties';
+    public const KINGDOM_SEE_BORDERS = 'kingdom-see-borders';
 
 }

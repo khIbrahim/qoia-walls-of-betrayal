@@ -410,6 +410,7 @@ WHERE kingdom = :id;
             kills INT NOT NULL DEFAULT 0,
             deaths INT NOT NULL DEFAULT 0,
             spawn JSON,
+            borders JSON,
             rally_point    JSON,
             shield_active  TINYINT(1) DEFAULT 0,
             shield_expires BIGINT     DEFAULT NULL,
@@ -448,108 +449,116 @@ WHERE kingdom = :id;
     -- # { updateRallyPoint
     -- # :id string
     -- # :rally_point string
-UPDATE kingdoms
-SET rally_point = :rally_point
-WHERE id = :id;
--- # }
+        UPDATE kingdoms
+        SET rally_point = :rally_point
+        WHERE id = :id;
+    -- # }
 
--- # { updateShield
--- # :id string
--- # :shield_active int
--- # :shield_expires int
-UPDATE kingdoms
-SET shield_active  = :shield_active,
-    shield_expires = :shield_expires
-WHERE id = :id;
--- # }
+    -- # { updateShield
+    -- # :id string
+    -- # :shield_active int
+    -- # :shield_expires int
+        UPDATE kingdoms
+        SET shield_active  = :shield_active,
+            shield_expires = :shield_expires
+        WHERE id = :id;
+    -- # }
 
--- # { addXP
--- # :id string
--- # :amount int
-UPDATE kingdoms
-SET xp = xp + :amount
-WHERE id = :id;
--- # }
+    -- # { addXP
+    -- # :id string
+    -- # :amount int
+        UPDATE kingdoms
+        SET xp = xp + :amount
+        WHERE id = :id;
+    -- # }
 
--- # { addBalance
--- # :id string
--- # :amount int
-UPDATE kingdoms
-SET balance = balance + :amount
-WHERE id = :id;
--- # }
+    -- # { addBalance
+    -- # :id string
+    -- # :amount int
+        UPDATE kingdoms
+        SET balance = balance + :amount
+        WHERE id = :id;
+    -- # }
 
--- # { subtractBalance
--- # :id string
--- # :amount int
-UPDATE kingdoms
-SET balance = balance - :amount
-WHERE id = :id
-  AND balance >= :amount;
--- # }
+    -- # { subtractBalance
+    -- # :id string
+    -- # :amount int
+        UPDATE kingdoms
+        SET balance = balance - :amount
+        WHERE id = :id
+          AND balance >= :amount;
+    -- # }
+
+    -- # { updateBorders
+    -- # :id string
+    -- # :borders string
+        UPDATE kingdoms
+        SET borders = :borders
+        WHERE id = :id;
+    -- # }
 -- #}
 
 -- # { kingdom_bans
--- # { init
-CREATE TABLE IF NOT EXISTS kingdom_bans
-(
-    id          INT AUTO_INCREMENT PRIMARY KEY,
-    kingdom_id  VARCHAR(50) NOT NULL,
-    target_uuid VARCHAR(36) NOT NULL,
-    target_name VARCHAR(32) NOT NULL,
-    reason      TEXT,
-    staff       VARCHAR(32),
-    created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
-    expires_at  BIGINT     DEFAULT NULL,
-    active      TINYINT(1) DEFAULT 1,
-    INDEX idx_kingdom_id (kingdom_id),
-    INDEX idx_target_uuid (target_uuid),
-    INDEX idx_active (active)
-);
--- # }
+    -- # { init
+        CREATE TABLE IF NOT EXISTS kingdom_bans
+        (
+            id          INT AUTO_INCREMENT PRIMARY KEY,
+            kingdom_id  VARCHAR(50) NOT NULL,
+            target_uuid VARCHAR(36) NOT NULL,
+            target_name VARCHAR(32) NOT NULL,
+            reason      TEXT,
+            staff       VARCHAR(32),
+            created_at  TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+            expires_at  BIGINT     DEFAULT NULL,
+            active      TINYINT(1) DEFAULT 1,
+            INDEX idx_kingdom_id (kingdom_id),
+            INDEX idx_target_uuid (target_uuid),
+            INDEX idx_active (active)
+        );
+    -- # }
 
--- # { create
--- # :kingdom_id string
--- # :uuid string
--- # :name string
--- # :reason string
--- # :staff string
--- # :expires int
-INSERT INTO kingdom_bans(kingdom_id, target_uuid, target_name, reason, staff, expires_at, active)
-VALUES (:kingdom_id, :uuid, :name, :reason, :staff, :expires, 1);
--- # }
+    -- # { create
+    -- # :kingdom_id string
+    -- # :uuid string
+    -- # :name string
+    -- # :reason string
+    -- # :staff string
+    -- # :expires int
+        INSERT INTO kingdom_bans(kingdom_id, target_uuid, target_name, reason, staff, expires_at, active)
+        VALUES (:kingdom_id, :uuid, :name, :reason, :staff, :expires, 1);
+    -- # }
 
--- # { deactivate
--- # :kingdom_id string
--- # :uuid string
-UPDATE kingdom_bans
-SET active = 0
-WHERE kingdom_id = :kingdom_id
-  AND target_uuid = :uuid
-  AND active = 1;
--- # }
+    -- # { deactivate
+    -- # :kingdom_id string
+    -- # :uuid string
+        UPDATE kingdom_bans
+        SET active = 0
+        WHERE kingdom_id = :kingdom_id
+          AND target_uuid = :uuid
+          AND active = 1;
+    -- # }
 
--- # { isBanned
--- # :kingdom_id string
--- # :uuid string
--- # :time int
-SELECT expires_at
-FROM kingdom_bans
-WHERE kingdom_id = :kingdom_id
-  AND target_uuid = :uuid
-  AND active = 1
-  AND (expires_at IS NULL OR expires_at > :time)
-ORDER BY expires_at DESC
-LIMIT 1;
--- # }
+    -- # { isBanned
+    -- # :kingdom_id string
+    -- # :uuid string
+    -- # :time int
+        SELECT expires_at
+        FROM kingdom_bans
+        WHERE kingdom_id = :kingdom_id
+          AND target_uuid = :uuid
+          AND active = 1
+          AND (expires_at IS NULL OR expires_at > :time)
+        ORDER BY expires_at DESC
+        LIMIT 1;
+    -- # }
 
--- # { getActive
--- # :time int
-SELECT *
-FROM kingdom_bans
-WHERE active = 1
-  AND (expires_at IS NULL OR expires_at > :time);
--- # }
+    -- # { getActive
+    -- # :time int
+        SELECT *
+        FROM kingdom_bans
+        WHERE active = 1
+          AND (expires_at IS NULL OR expires_at > :time);
+    -- # }
 
 -- # }
 
@@ -875,250 +884,295 @@ WHERE active = 1
 
 -- # { kingdom_bounties
     -- # { init
-CREATE TABLE IF NOT EXISTS kingdom_bounties
-(
-    id            INT AUTO_INCREMENT PRIMARY KEY,
-    kingdom_id    VARCHAR(50) NOT NULL,
-    target_player VARCHAR(32) NOT NULL,
-    amount        INT         NOT NULL,
-    placed_by     VARCHAR(32) NOT NULL,
-    created_at    TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
-    active        TINYINT(1) DEFAULT 1,
-    taken_by      VARCHAR(32) NULL,
-    strict        TINYINT(1) DEFAULT 0,
-    INDEX idx_kingdom_id (kingdom_id),
-    INDEX idx_target_player (target_player),
-    INDEX idx_active (active)
-);
--- # }
+        CREATE TABLE IF NOT EXISTS kingdom_bounties
+        (
+            id            INT AUTO_INCREMENT PRIMARY KEY,
+            kingdom_id    VARCHAR(50) NOT NULL,
+            target_player VARCHAR(32) NOT NULL,
+            amount        INT         NOT NULL,
+            placed_by     VARCHAR(32) NOT NULL,
+            created_at    TIMESTAMP  DEFAULT CURRENT_TIMESTAMP,
+            active        TINYINT(1) DEFAULT 1,
+            taken_by      VARCHAR(32) NULL,
+            strict        TINYINT(1) DEFAULT 0,
+            INDEX idx_kingdom_id (kingdom_id),
+            INDEX idx_target_player (target_player),
+            INDEX idx_active (active)
+        );
+    -- # }
 
--- # { create
--- # :kingdom_id string
--- # :target_player string
--- # :amount int
--- # :placed_by string
--- # :strict int
-INSERT INTO kingdom_bounties(kingdom_id, target_player, amount, placed_by, strict)
-VALUES (:kingdom_id, :target_player, :amount, :placed_by, :strict);
--- # }
+    -- # { create
+    -- # :kingdom_id string
+    -- # :target_player string
+    -- # :amount int
+    -- # :placed_by string
+    -- # :strict int
+        INSERT INTO kingdom_bounties(kingdom_id, target_player, amount, placed_by, strict)
+        VALUES (:kingdom_id, :target_player, :amount, :placed_by, :strict);
+    -- # }
 
--- # { getAllActive
-SELECT *
-FROM kingdom_bounties
-WHERE active = 1
-ORDER BY amount DESC;
--- # }
+    -- # { getAllActive
+        SELECT *
+        FROM kingdom_bounties
+        WHERE active = 1
+        ORDER BY amount DESC;
+    -- # }
 
--- # { getActive
--- # :target_player string
-SELECT *
-FROM kingdom_bounties
-WHERE target_player = :target_player
-  AND active = 1
-ORDER BY amount DESC;
--- # }
+    -- # { getActive
+    -- # :target_player string
+        SELECT *
+        FROM kingdom_bounties
+        WHERE target_player = :target_player
+          AND active = 1
+        ORDER BY amount DESC;
+    -- # }
 
--- # { deactivate
--- # :id int
--- # :takenBy ?string
-UPDATE kingdom_bounties
-SET active   = 0,
-    taken_by = :takenBy
-WHERE id = :id;
--- # }
--- # }
+    -- # { deactivate
+        -- # :id int
+        -- # :takenBy ?string
+        UPDATE kingdom_bounties
+        SET active   = 0,
+            taken_by = :takenBy
+        WHERE id = :id;
+        -- # }
+    -- # }
 
--- # { player_loyalty
--- # { init
-CREATE TABLE IF NOT EXISTS player_loyalty
-(
-    uuid                VARCHAR(36) PRIMARY KEY,
-    username            VARCHAR(32) NOT NULL,
-    kingdom_id          VARCHAR(50) NOT NULL,
-    loyalty_score       INT       DEFAULT 50,
-    join_date           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    last_contribution   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    contributions_count INT       DEFAULT 0,
-    betrayals_count     INT       DEFAULT 0,
-    last_betrayal       TIMESTAMP   NULL,
-    INDEX idx_kingdom_id (kingdom_id),
-    INDEX idx_username (username)
-);
--- # }
+    -- # { player_loyalty
+    -- # { init
+        CREATE TABLE IF NOT EXISTS player_loyalty
+        (
+            uuid                VARCHAR(36) PRIMARY KEY,
+            username            VARCHAR(32) NOT NULL,
+            kingdom_id          VARCHAR(50) NOT NULL,
+            loyalty_score       INT       DEFAULT 50,
+            join_date           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            last_contribution   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            contributions_count INT       DEFAULT 0,
+            betrayals_count     INT       DEFAULT 0,
+            last_betrayal       TIMESTAMP   NULL,
+            INDEX idx_kingdom_id (kingdom_id),
+            INDEX idx_username (username)
+        );
+    -- # }
 
--- # { get
--- # :uuid string
-SELECT *
-FROM player_loyalty
-WHERE uuid = :uuid;
--- # }
+    -- # { get
+    -- # :uuid string
+        SELECT *
+        FROM player_loyalty
+        WHERE uuid = :uuid;
+    -- # }
 
--- # { update
--- # :uuid string
--- # :username string
--- # :kingdom_id string
--- # :loyalty_score int
--- # :contributions_count int
--- # :betrayals_count int
--- # :last_betrayal int
-INSERT INTO player_loyalty(uuid, username, kingdom_id, loyalty_score, contributions_count, betrayals_count,
-                           last_betrayal)
-VALUES (:uuid, :username, :kingdom_id, :loyalty_score, :contributions_count, :betrayals_count, :last_betrayal)
-ON DUPLICATE KEY UPDATE username            = VALUES(username),
-                        kingdom_id          = VALUES(kingdom_id),
-                        loyalty_score       = VALUES(loyalty_score),
-                        contributions_count = VALUES(contributions_count),
-                        betrayals_count     = VALUES(betrayals_count),
-                        last_betrayal       = VALUES(last_betrayal);
--- # }
+    -- # { update
+    -- # :uuid string
+    -- # :username string
+    -- # :kingdom_id string
+    -- # :loyalty_score int
+    -- # :contributions_count int
+    -- # :betrayals_count int
+    -- # :last_betrayal int
+        INSERT INTO player_loyalty(uuid, username, kingdom_id, loyalty_score, contributions_count, betrayals_count, last_betrayal)
+        VALUES (:uuid, :username, :kingdom_id, :loyalty_score, :contributions_count, :betrayals_count, :last_betrayal)
+        ON DUPLICATE KEY UPDATE
+            username            = VALUES(username),
+            kingdom_id          = VALUES(kingdom_id),
+            loyalty_score       = VALUES(loyalty_score),
+            contributions_count = VALUES(contributions_count),
+            betrayals_count     = VALUES(betrayals_count),
+            last_betrayal       = VALUES(last_betrayal);
+    -- # }
 
--- # { addContribution
--- # :uuid string
--- # :username string
--- # :kingdom_id string
-INSERT INTO player_loyalty(uuid, username, kingdom_id, contributions_count)
-VALUES (:uuid, :username, :kingdom_id, 1)
-ON DUPLICATE KEY UPDATE contributions_count = contributions_count + 1,
-                        last_contribution   = CURRENT_TIMESTAMP;
--- # }
+    -- # { addContribution
+    -- # :uuid string
+    -- # :username string
+    -- # :kingdom_id string
+        INSERT INTO player_loyalty(uuid, username, kingdom_id, contributions_count)
+        VALUES (:uuid, :username, :kingdom_id, 1)
+        ON DUPLICATE KEY UPDATE contributions_count = contributions_count + 1,
+            last_contribution   = CURRENT_TIMESTAMP;
+    -- # }
 -- # }
 
 -- # { kingdom_votes
--- # { init
-CREATE TABLE IF NOT EXISTS kingdom_votes
-(
-    id                INT AUTO_INCREMENT PRIMARY KEY,
-    kingdom_id        VARCHAR(50)                               NOT NULL,
-    vote_type         ENUM ('kick', 'ban', 'upgrade', 'shield') NOT NULL,
-    target            VARCHAR(32)                               NOT NULL,
-    proposed_by       VARCHAR(32)                               NOT NULL,
-    reason            TEXT,
-    votes_for         INT                                                DEFAULT 0,
-    votes_against     INT                                                DEFAULT 0,
-    created_at        TIMESTAMP                                          DEFAULT CURRENT_TIMESTAMP,
-    expires_at        INT UNSIGNED                              NOT NULL,
-    sanction_duration INT UNSIGNED                              NOT NULL DEFAULT 0,
-    status            ENUM ('active', 'passed', 'failed', 'expired')     DEFAULT 'active',
-    INDEX idx_kingdom_id (kingdom_id),
-    INDEX idx_status (status),
-    INDEX idx_expires_at (expires_at),
-    UNIQUE (kingdom_id, target, vote_type)
-);
--- # }
+    -- # { init
+        CREATE TABLE IF NOT EXISTS kingdom_votes
+        (
+            id                INT AUTO_INCREMENT PRIMARY KEY,
+            kingdom_id        VARCHAR(50)                               NOT NULL,
+            vote_type         ENUM ('kick', 'ban', 'upgrade', 'shield') NOT NULL,
+            target            VARCHAR(32)                               NOT NULL,
+            proposed_by       VARCHAR(32)                               NOT NULL,
+            reason            TEXT,
+            votes_for         INT                                                DEFAULT 0,
+            votes_against     INT                                                DEFAULT 0,
+            created_at        TIMESTAMP                                          DEFAULT CURRENT_TIMESTAMP,
+            expires_at        INT UNSIGNED                              NOT NULL,
+            sanction_duration INT UNSIGNED                              NOT NULL DEFAULT 0,
+            status            ENUM ('active', 'passed', 'failed', 'expired')     DEFAULT 'active',
+            INDEX idx_kingdom_id (kingdom_id),
+            INDEX idx_status (status),
+            INDEX idx_expires_at (expires_at),
+            UNIQUE (kingdom_id, target, vote_type)
+        );
+    -- # }
 
--- # { load
-SELECT *
-FROM kingdom_votes;
--- # }
+    -- # { load
+        SELECT *
+        FROM kingdom_votes;
+    -- # }
 
--- # { get
--- # :id int
-SELECT id,
-       kingdom_id,
-       vote_type,
-       target,
-       proposed_by,
-       reason,
-       votes_for,
-       votes_against,
-       created_at,
-       expires_at,
-       status,
-       sanction_duration
-FROM kingdom_votes
-WHERE id = :id;
--- # }
+    -- # { get
+    -- # :id int
+        SELECT id,
+               kingdom_id,
+               vote_type,
+               target,
+               proposed_by,
+               reason,
+               votes_for,
+               votes_against,
+               created_at,
+               expires_at,
+               status,
+               sanction_duration
+        FROM kingdom_votes
+        WHERE id = :id;
+    -- # }
 
--- # { create
--- # :kingdom_id string
--- # :vote_type string
--- # :target string
--- # :proposed_by string
--- # :reason string
--- # :sanction_duration int
--- # :expires_at int
-INSERT INTO kingdom_votes(kingdom_id, vote_type, target, proposed_by, reason, sanction_duration, expires_at)
-VALUES (:kingdom_id, :vote_type, :target, :proposed_by, :reason, :sanction_duration, :expires_at)
-ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id);
--- # }
+    -- # { create
+    -- # :kingdom_id string
+    -- # :vote_type string
+    -- # :target string
+    -- # :proposed_by string
+    -- # :reason string
+    -- # :sanction_duration int
+    -- # :expires_at int
+        INSERT INTO kingdom_votes(kingdom_id, vote_type, target, proposed_by, reason, sanction_duration, expires_at)
+        VALUES (:kingdom_id, :vote_type, :target, :proposed_by, :reason, :sanction_duration, :expires_at)
+        ON DUPLICATE KEY UPDATE id = LAST_INSERT_ID(id);
+    -- # }
 
--- # { getActive
--- # :kingdom_id string
-SELECT *
-FROM kingdom_votes
-WHERE kingdom_id = :kingdom_id
-  AND status = 'active'
-  AND expires_at > UNIX_TIMESTAMP()
-ORDER BY created_at DESC;
--- # }
+    -- # { getActive
+    -- # :kingdom_id string
+        SELECT *
+        FROM kingdom_votes
+        WHERE kingdom_id = :kingdom_id
+          AND status = 'active'
+          AND expires_at > UNIX_TIMESTAMP()
+        ORDER BY created_at DESC;
+    -- # }
 
--- # { vote
--- # :vote_id int
--- # :voter_uuid string
--- # :voter_name string
--- # :vote_for int
-INSERT INTO kingdom_vote_votes(vote_id, voter_uuid, voter_name, vote_for)
-VALUES (:vote_id, :voter_uuid, :voter_name, :vote_for)
-ON DUPLICATE KEY UPDATE vote_for = VALUES(vote_for);
--- # }
+    -- # { vote
+    -- # :vote_id int
+    -- # :voter_uuid string
+    -- # :voter_name string
+    -- # :vote_for int
+        INSERT INTO kingdom_vote_votes(vote_id, voter_uuid, voter_name, vote_for)
+        VALUES (:vote_id, :voter_uuid, :voter_name, :vote_for)
+        ON DUPLICATE KEY UPDATE vote_for = VALUES(vote_for);
+    -- # }
 
--- # { updateStatus
--- # :id int
--- # :status string
-UPDATE kingdom_votes
-SET status = :status
-WHERE id = :id;
--- # }
+    -- # { updateStatus
+    -- # :id int
+    -- # :status string
+        UPDATE kingdom_votes
+        SET status = :status
+        WHERE id = :id;
+    -- # }
 
--- # { updateVotes
--- # :id int
--- # :votesFor int
--- # :votesAgainst int
-UPDATE kingdom_votes
-SET votes_for     = :votesFor,
-    votes_against = :votesAgainst
-WHERE id = :id;
--- # }
+    -- # { updateVotes
+    -- # :id int
+    -- # :votesFor int
+    -- # :votesAgainst int
+        UPDATE kingdom_votes
+        SET votes_for     = :votesFor,
+            votes_against = :votesAgainst
+        WHERE id = :id;
+    -- # }
 
--- # { deleteExpired
-DELETE
-FROM kingdom_votes
-WHERE expires_at < UNIX_TIMESTAMP();
--- # }
+    -- # { deleteExpired
+        DELETE
+        FROM kingdom_votes
+        WHERE expires_at < UNIX_TIMESTAMP();
+    -- # }
 -- #}
 
 -- # { kingdom_vote_votes
--- # { init
-CREATE TABLE IF NOT EXISTS kingdom_vote_votes
-(
-    vote_id    INT         NOT NULL,
-    voter_uuid VARCHAR(36) NOT NULL,
-    voter_name VARCHAR(36) NOT NULL,
-    vote_for   TINYINT(1)  NOT NULL,
-    voted_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (vote_id, voter_uuid),
-    INDEX idx_vote_id (vote_id),
-    INDEX idx_voter_uuid (voter_uuid),
-    UNIQUE (voter_uuid, vote_id),
-    UNIQUE (voter_name, vote_id)
-);
+    -- # { init
+        CREATE TABLE IF NOT EXISTS kingdom_vote_votes
+        (
+            vote_id    INT         NOT NULL,
+            voter_uuid VARCHAR(36) NOT NULL,
+            voter_name VARCHAR(36) NOT NULL,
+            vote_for   TINYINT(1)  NOT NULL,
+            voted_at   TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (vote_id, voter_uuid),
+            INDEX idx_vote_id (vote_id),
+            INDEX idx_voter_uuid (voter_uuid),
+            UNIQUE (voter_uuid, vote_id),
+            UNIQUE (voter_name, vote_id)
+        );
+    -- # }
+
+    -- # { count
+    -- # :id int
+        SELECT SUM(CASE WHEN vote_for = 1 THEN 1 ELSE 0 END) AS votes_for,
+               SUM(CASE WHEN vote_for = 0 THEN 1 ELSE 0 END) AS votes_against,
+               COUNT(*)                                      AS total
+        FROM kingdom_vote_votes
+        WHERE vote_id = :id;
+    -- # }
+
+    -- # { getVoterChoice
+    -- # :id int
+    -- # :name string
+        SELECT vote_for
+        FROM kingdom_vote_votes
+        WHERE vote_id = :id
+          AND voter_name = :name;
+    -- # }
 -- # }
 
--- # { count
--- # :id int
-SELECT SUM(CASE WHEN vote_for = 1 THEN 1 ELSE 0 END) AS votes_for,
-       SUM(CASE WHEN vote_for = 0 THEN 1 ELSE 0 END) AS votes_against,
-       COUNT(*)                                      AS total
-FROM kingdom_vote_votes
-WHERE vote_id = :id;
--- # }
+-- # { player_inventories
+    -- # { init
+        CREATE TABLE IF NOT EXISTS player_inventories(
+            uuid VARCHAR(36) NOT NULL,
+            name VARCHAR(64) NOT NULL,
+            context VARCHAR(32) NOT NULL,
+            inventory BLOB,
+            armor BLOB,
+            offhand BLOB,
+            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            PRIMARY KEY (uuid, name),
+            INDEX idx_uuid(uuid),
+            INDEX idx_name(name)
+        );
+    -- # }
 
--- # { getVoterChoice
--- # :id int
--- # :name string
-SELECT vote_for
-FROM kingdom_vote_votes
-WHERE vote_id = :id
-  AND voter_name = :name;
--- # }
+    -- # { save
+    -- # :uuid string
+    -- # :name string
+    -- # :context string
+    -- # :inventory string
+    -- # :armor string
+    -- # :offhand string
+        INSERT INTO player_inventories(uuid, name, context, inventory, armor, offhand)
+        VALUES (:uuid, :name, :context, :inventory, :armor, :offhand)
+        ON DUPLICATE KEY UPDATE
+            name = VALUES(name),
+            inventory = VALUES(inventory),
+            armor = VALUES(armor),
+            offhand = VALUES(offhand);
+    -- # }
+
+    -- # { load
+    -- # :uuid string
+    -- # :context string
+        SELECT
+            inventory,
+            armor,
+            offhand
+        FROM player_inventories
+        WHERE uuid = :uuid AND context = :context;
+    -- # }
+
 -- # }

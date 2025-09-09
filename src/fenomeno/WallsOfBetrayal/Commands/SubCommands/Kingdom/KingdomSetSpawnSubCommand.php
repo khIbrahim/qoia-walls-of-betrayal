@@ -1,13 +1,13 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Commands\Admin;
+namespace fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom;
 
+use fenomeno\WallsOfBetrayal\Commands\Arguments\KingdomArgument;
 use fenomeno\WallsOfBetrayal\Commands\CommandsIds;
-use fenomeno\WallsOfBetrayal\Commands\WCommand;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\WSubCommand;
 use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
-use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\args\RawStringArgument;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\constraint\InGameRequiredConstraint;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\exception\ArgumentOrderException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
@@ -20,10 +20,10 @@ use pocketmine\entity\Location;
 use pocketmine\player\Player;
 use Throwable;
 
-class SetSpawnCommand extends WCommand
+class KingdomSetSpawnSubCommand extends WSubCommand
 {
 
-    private const KINGDOM_ID_ARGUMENT = 'kingdom';
+    private const KINGDOM_ARGUMENT = 'kingdom';
 
     /**
      * @throws ArgumentOrderException
@@ -31,20 +31,21 @@ class SetSpawnCommand extends WCommand
     protected function prepare(): void
     {
         $this->addConstraint(new InGameRequiredConstraint($this));
-        $this->registerArgument(0, new RawStringArgument(self::KINGDOM_ID_ARGUMENT)); // todo kingdom argument
+        $this->registerArgument(0, new KingdomArgument(self::KINGDOM_ARGUMENT, false));
     }
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void
     {
         assert($sender instanceof Player);
 
-        $kingdomId = (string) $args[self::KINGDOM_ID_ARGUMENT];
-        $kingdom   = $this->main->getKingdomManager()->getKingdomById($kingdomId);
-        if(! $kingdom instanceof Kingdom){
-            MessagesUtils::sendTo($sender, MessagesIds::UNKNOWN_KINGDOM, [ExtraTags::KINGDOM => $kingdomId]);
+        /** @var null|Kingdom $kingdom */
+        $kingdom = $args[self::KINGDOM_ARGUMENT];
+        if(! $kingdom){
+            MessagesUtils::sendTo($sender, MessagesIds::UNKNOWN_KINGDOM, [ExtraTags::KINGDOM => (string) $args[self::KINGDOM_ARGUMENT]]);
             return;
         }
 
+        $kingdomId = $kingdom->getId();
         Await::g2c(
             $kingdom->updateSpawn($sender->getLocation()),
             function (Location $newLocation) use ($kingdomId, $kingdom, $sender) {
@@ -56,8 +57,9 @@ class SetSpawnCommand extends WCommand
         );
     }
 
+
     public function getCommandDTO(): CommandDTO
     {
-        return CommandsConfig::getCommandById(CommandsIds::SET_SPAWN);
+        return CommandsConfig::getCommandById(CommandsIds::KINGDOM_SET_SPAWN);
     }
 }

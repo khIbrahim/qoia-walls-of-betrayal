@@ -220,9 +220,12 @@ final class MessagesIds
     public const KINGDOMS_INFO_ABILITIES = 'kingdoms.info.abilities';
 
     // Kingdom Commands Messages
-    public const KINGDOMS_SPAWN_SUCCESS = 'kingdoms.spawn.success';
-    public const KINGDOMS_SPAWN_NO_SPAWN = 'kingdoms.spawn.noSpawn';
-    public const KINGDOMS_SPAWN_NO_KINGDOM = 'kingdoms.spawn.noKingdom';
+    public const KINGDOMS_SPAWN_SUCCESS          = 'kingdoms.spawn.success';
+    public const KINGDOMS_SPAWN_NO_SPAWN         = 'kingdoms.spawn.noSpawn';
+    public const KINGDOMS_SPAWN_NO_KINGDOM       = 'kingdoms.spawn.noKingdom';
+    public const KINGDOMS_SPAWN_COOLDOWN         = 'kingdoms.spawn.cooldown';
+    public const KINGDOMS_SPAWN_NOT_YOUR_KINGDOM = 'kingdoms.spawn.notYourKingdom';
+    public const KINGDOMS_SPAWN_SUCCESS_OTHER    = 'kingdoms.spawn.successOther';
 
     public const KINGDOMS_TOP_HEADER = 'kingdoms.top.header';
     public const KINGDOMS_TOP_ENTRY = 'kingdoms.top.entry';
@@ -403,4 +406,15 @@ final class MessagesIds
     public const KINGDOMS_BAN_CONFIRM_CONTENT = 'kingdoms.ban.confirm.content';
     public const KINGDOMS_CANT_JOIN_EXCLUDED_WITH_DETAILS = 'kingdoms.onJoin.errors.excluded.withDetails';
     public const KINGDOMS_CANT_JOIN_EXCLUDED_NO_DETAILS = 'kingdoms.onJoin.errors.excluded.noDetails';
+    public const INVALID_ARGUMENT = 'common.invalidArgument';
+    public const KINGDOM_BORDERS_UPDATED = 'kingdoms.borders.updated';
+    public const NOW_VIEWING_KINGDOM_BORDERS = 'kingdoms.borders.nowViewing';
+    public const NO_LONGER_VIEWING_KINGDOM_BORDERS = 'kingdoms.borders.noLongerViewing';
+    public const INVALID_BORDER = 'kingdoms.borders.errors.invalidBorder';
+
+    public const KINGDOM_BASE_ENTER_CANCELLED    = 'kingdoms.onEnterBase.cancelled';
+    public const KINGDOM_BASE_QUIT_CANCELLED     = 'kingdoms.onQuitBase.cancelled';
+    public const KINGDOM_BASE_PLAYER_ENTERED_OWN = 'kingdoms.onEnterBase.playerEnteredOwn';
+    public const KINGDOM_BASE_PLAYER_QUIT_OWN    = 'kingdoms.onQuitBase.playerQuitOwn';
+    public const INVENTORIES_TRANSFERRED = 'common.inventoriesTransferred';
 }

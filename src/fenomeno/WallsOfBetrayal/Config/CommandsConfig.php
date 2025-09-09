@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Config;
 
 use fenomeno\WallsOfBetrayal\DTO\CommandDTO;
 use fenomeno\WallsOfBetrayal\Main;
+use InvalidArgumentException;
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
 use Throwable;
@@ -35,16 +36,18 @@ final class CommandsConfig
                 $description = self::applyTheme((string)($commandData['description'] ?? ""));
                 $usage       = self::applyTheme((string)($commandData['usage'] ?? "/" . $commandId));
                 $aliases     = array_values((array)($commandData['aliases'] ?? []));
+                $metadata    = (array) ($commandData['metadata'] ?? []);
 
                 if ($name === '') {
-                    throw new \InvalidArgumentException("Command name is empty for ID: $commandId");
+                    throw new InvalidArgumentException("Command name is empty for ID: $commandId");
                 }
 
                 self::$commandsDTO[$commandId] = new CommandDTO(
-                    $name,
-                    $description,
-                    $usage,
-                    $aliases
+                    name: $name,
+                    description: $description,
+                    usage: $usage,
+                    aliases: $aliases,
+                    metadata: $metadata
                 );
             } catch (Throwable $e) {
                 Main::getInstance()->getLogger()->error(

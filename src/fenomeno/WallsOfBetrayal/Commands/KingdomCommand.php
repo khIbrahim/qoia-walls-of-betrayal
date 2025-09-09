@@ -15,8 +15,10 @@ use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomManageSubComman
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomMapSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomPeaceSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomRallySubCommand;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomSeeBordersSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomSetBordersSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomSetRallySubCommand;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomSetSpawnSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomShieldSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomSpawnSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomTopSubCommand;
@@ -33,14 +35,16 @@ class KingdomCommand extends WCommand
 
     protected function prepare(): void
     {
-//        $this->registerSubCommand(new KingdomSpawnSubCommand($this->main));
+        $this->registerSubCommand(new KingdomSetSpawnSubCommand($this->main));
+        $this->registerSubCommand(new KingdomSpawnSubCommand($this->main));
         $this->registerSubCommand(new KingdomInfoSubCommand($this->main));
         $this->registerSubCommand(new KingdomTopSubCommand($this->main));
 //        $this->registerSubCommand(new KingdomMapSubCommand($this->main));
         $this->registerSubCommand(new KingdomContributeSubCommand($this->main));
         $this->registerSubCommand(new KingdomAbilitiesSubCommand($this->main));
         $this->registerSubCommand(new KingdomAddXpSubCommand($this->main));
-//        $this->registerSubCommand(new KingdomSetBordersSubCommand($this->main));
+        $this->registerSubCommand(new KingdomSetBordersSubCommand($this->main));
+        $this->registerSubCommand(new KingdomSeeBordersSubCommand($this->main));
 //        $this->registerSubCommand(new KingdomManageSubCommand($this->main));
         $this->registerSubCommand(new KingdomKickSubCommand($this->main));
         $this->registerSubCommand(new KingdomBanSubCommand($this->main));

@@ -4,8 +4,10 @@ namespace fenomeno\WallsOfBetrayal\Database\Payload;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\PayloadInterface;
 
-readonly class UsernamePayload implements PayloadInterface
+class UsernamePayload implements PayloadInterface
 {
+
+    protected string $usernameColumn = "username";
 
     public function __construct(
         public string $username
@@ -14,7 +16,7 @@ readonly class UsernamePayload implements PayloadInterface
     public function jsonSerialize(): array
     {
         return [
-            'username' => $this->username
+            $this->usernameColumn => $this->username
         ];
     }
 }

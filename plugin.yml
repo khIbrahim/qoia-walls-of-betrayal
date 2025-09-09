@@ -241,3 +241,11 @@ permissions:
     default: true
   wob.command.kingdom.bounties:
     default: true
+  wob.command.kingdom.seeborders:
+    default: true
+  wob.command.kingdom.setspawn:
+    default: op
+  wob.command.kingdom.spawn.other:
+    default: op
+  wob.bypass.spawn.cooldown:
+    default: op

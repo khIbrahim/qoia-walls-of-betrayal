@@ -35,4 +35,6 @@ interface KingdomRepositoryInterface extends RepositoryInterface
 
     public function deactivateSanction(string $kingdomId, string $targetUuid): Generator;
 
+    public function updateKingdomBorders(string $id, array $borders): Generator;
+
 }

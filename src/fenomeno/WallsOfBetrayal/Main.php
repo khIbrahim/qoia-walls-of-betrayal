@@ -9,7 +9,6 @@ use fenomeno\WallsOfBetrayal\Commands\Admin\NpcCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\PortalCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SetLobbyCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SetLobbySettingCommand;
-use fenomeno\WallsOfBetrayal\Commands\Admin\SetSpawnCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SpawnerCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\AddBalanceCommand;
 use fenomeno\WallsOfBetrayal\Commands\Economy\Admin\RemoveBalanceCommand;
@@ -27,7 +26,6 @@ use fenomeno\WallsOfBetrayal\Commands\Player\LobbyCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\NickCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\SellCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
-use fenomeno\WallsOfBetrayal\Commands\Player\SpawnCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\StatsCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\VaultCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\BanCommand;
@@ -72,6 +70,7 @@ use fenomeno\WallsOfBetrayal\Listeners\BlocksListener;
 use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\FloatingTextListener;
+use fenomeno\WallsOfBetrayal\Listeners\InventoryListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\LobbyListener;
@@ -85,6 +84,7 @@ use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\FloatingTextManager;
 use fenomeno\WallsOfBetrayal\Manager\KingdomVoteManager;
 use fenomeno\WallsOfBetrayal\Manager\NpcManager;
+use fenomeno\WallsOfBetrayal\Manager\PlayerInventoriesManager;
 use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
 use fenomeno\WallsOfBetrayal\Manager\RolesManager;
 use fenomeno\WallsOfBetrayal\Manager\ServerManager;
@@ -103,21 +103,22 @@ class Main extends PluginBase
 {
     use SingletonTrait;
 
-    private KingdomManager      $kingdomManager;
-    private DatabaseManager     $databaseManager;
-    private PhaseManager        $phaseManager;
-    private KitsManager         $kitsManager;
-    private AbilityManager      $abilityManager;
-    private ShopManager         $shopManager;
-    private CooldownManager     $cooldownManager;
-    private EconomyManager      $economyManager;
-    private RolesManager        $rolesManager;
-    private PunishmentManager   $punishmentManager;
-    private NpcManager          $npcManager;
-    private FloatingTextManager $floatingTextManager;
-    private ServerManager       $serverManager;
-    private BountyManager $bountyManager;
-    private KingdomVoteManager $kingdomVoteManager;
+    private KingdomManager           $kingdomManager;
+    private DatabaseManager          $databaseManager;
+    private PhaseManager             $phaseManager;
+    private KitsManager              $kitsManager;
+    private AbilityManager           $abilityManager;
+    private ShopManager              $shopManager;
+    private CooldownManager          $cooldownManager;
+    private EconomyManager           $economyManager;
+    private RolesManager             $rolesManager;
+    private PunishmentManager        $punishmentManager;
+    private NpcManager               $npcManager;
+    private FloatingTextManager      $floatingTextManager;
+    private ServerManager            $serverManager;
+    private BountyManager            $bountyManager;
+    private KingdomVoteManager       $kingdomVoteManager;
+    private PlayerInventoriesManager $playerInventoriesManager;
 
     protected function onLoad(): void
     {
@@ -142,21 +143,22 @@ class Main extends PluginBase
                 DiscordWebhook::init($this);
             }
 
-            $this->databaseManager     = new DatabaseManager($this);
-            $this->serverManager       = new ServerManager($this);
-            $this->abilityManager      = new AbilityManager($this);
-            $this->kingdomManager      = new KingdomManager($this);
-            $this->phaseManager        = new PhaseManager($this);
-            $this->kitsManager         = new KitsManager($this);
-            $this->shopManager         = new ShopManager($this);
-            $this->cooldownManager     = new CooldownManager($this);
-            $this->economyManager      = new EconomyManager($this);
-            $this->rolesManager        = new RolesManager($this);
-            $this->punishmentManager   = new PunishmentManager($this);
-            $this->npcManager          = new NpcManager($this);
-            $this->floatingTextManager = new FloatingTextManager($this);
-            $this->bountyManager = new BountyManager($this);
-            $this->kingdomVoteManager = new KingdomVoteManager($this);
+            $this->databaseManager          = new DatabaseManager($this);
+            $this->serverManager            = new ServerManager($this);
+            $this->abilityManager           = new AbilityManager($this);
+            $this->kingdomManager           = new KingdomManager($this);
+            $this->phaseManager             = new PhaseManager($this);
+            $this->kitsManager              = new KitsManager($this);
+            $this->shopManager              = new ShopManager($this);
+            $this->cooldownManager          = new CooldownManager($this);
+            $this->economyManager           = new EconomyManager($this);
+            $this->rolesManager             = new RolesManager($this);
+            $this->punishmentManager        = new PunishmentManager($this);
+            $this->npcManager               = new NpcManager($this);
+            $this->floatingTextManager      = new FloatingTextManager($this);
+            $this->bountyManager            = new BountyManager($this);
+            $this->kingdomVoteManager       = new KingdomVoteManager($this);
+            $this->playerInventoriesManager = new PlayerInventoriesManager($this);
 
             EntityManager::getInstance()->startup($this);
             TileManager::getInstance()->startup();
@@ -210,8 +212,6 @@ class Main extends PluginBase
                 new FloatingTextCommand($this),
                 new LobbyCommand($this),
                 new SetLobbyCommand($this),
-                new SpawnCommand($this),
-                new SetSpawnCommand($this),
                 new KingdomCommand($this),
                 new PortalCommand($this),
                 new SetLobbySettingCommand($this),
@@ -231,6 +231,7 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new NpcListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new FloatingTextListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new LobbyListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new InventoryListener($this), $this);
 
             Await::g2c(
                 $this->loadDependencies(),
@@ -327,6 +328,11 @@ class Main extends PluginBase
     public function getKingdomVoteManager(): KingdomVoteManager
     {
         return $this->kingdomVoteManager;
+    }
+
+    public function getPlayerInventoriesManager(): PlayerInventoriesManager
+    {
+        return $this->playerInventoriesManager;
     }
 
     protected function onDisable(): void

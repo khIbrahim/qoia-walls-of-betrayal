@@ -3,9 +3,11 @@
 namespace fenomeno\WallsOfBetrayal\Manager\Server;
 
 use fenomeno\WallsOfBetrayal\Config\PermissionIds;
+use fenomeno\WallsOfBetrayal\Constants\InventoriesContext;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinLobbyEvent;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Utils\PositionParser;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
 use Generator;
@@ -136,6 +138,14 @@ class LobbyManager
         $ev->call();
         if($ev->isCancelled()){
             return;
+        }
+
+        if ($player->getWorld()->getFolderName() === ServerManager::KINGDOM_WORLD) {
+            Await::g2c(
+                $this->main->getPlayerInventoriesManager()->save($player, InventoriesContext::KINGDOMS),
+                function (bool $success){},
+                fn (Throwable $e) => Utils::onFailure($e, $player, "Failed to save " . $player->getName() . " kingdom inventorie when teleporting to lobby: " . $e->getMessage())
+            );
         }
 
         $pos = $ev->getLocation();

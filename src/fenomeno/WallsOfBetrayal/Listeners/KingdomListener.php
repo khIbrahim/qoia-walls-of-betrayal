@@ -4,7 +4,6 @@ namespace fenomeno\WallsOfBetrayal\Listeners;
 
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomWorldEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerLeaveKingdomWorldEvent;
-use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
@@ -12,6 +11,7 @@ use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
+use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
@@ -43,26 +43,6 @@ class KingdomListener implements Listener
             $ev = new PlayerLeaveKingdomWorldEvent($player);
         }
         $ev->call();
-    }
-
-    public function onJoinKingdomWorld(PlayerJoinKingdomWorldEvent $event): void
-    {
-        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
-        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
-        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
-        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
-        var_dump($event->getPlayer()->getName() . ' joined kingdom world');
-        var_dump("-------------------------------------------------------");
-    }
-
-    public function onLeaveKingdom(PlayerLeaveKingdomWorldEvent $event): void
-    {
-        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
-        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
-        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
-        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
-        var_dump($event->getPlayer()->getName() . ' LEAVED kingdom world');
-        var_dump("-------------------------------------------------------");
     }
 
     public function onKill(PlayerDeathEvent $event): void

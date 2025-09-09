@@ -32,7 +32,7 @@ class SessionListener implements Listener
     public function onChat(PlayerChatEvent $event): void
     {
         $player = $event->getPlayer();
-        if (!Session::get($player)->isLoaded()) {
+        if (! Session::get($player)->isLoaded()) {
             $event->cancel();
             return;
         }

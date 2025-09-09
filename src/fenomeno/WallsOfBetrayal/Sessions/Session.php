@@ -57,7 +57,7 @@ class Session
 
                 $this->player->setNoClientPredictions(false);
                 $this->loaded = true;
-                Main::getInstance()->getLogger()->info(TextFormat::GREEN . "{$this->player->getName()} data's has been loaded successfully.");
+                Main::getInstance()->getLogger()->debug(TextFormat::GREEN . "{$this->player->getName()} data's has been loaded successfully.");
 
                 if ($this->kingdom === null){
                     $this->promptKingdomChoice();
