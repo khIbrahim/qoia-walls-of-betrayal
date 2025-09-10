@@ -412,9 +412,53 @@ final class MessagesIds
     public const NO_LONGER_VIEWING_KINGDOM_BORDERS = 'kingdoms.borders.noLongerViewing';
     public const INVALID_BORDER = 'kingdoms.borders.errors.invalidBorder';
 
-    public const KINGDOM_BASE_ENTER_CANCELLED    = 'kingdoms.onEnterBase.cancelled';
-    public const KINGDOM_BASE_QUIT_CANCELLED     = 'kingdoms.onQuitBase.cancelled';
-    public const KINGDOM_BASE_PLAYER_ENTERED_OWN = 'kingdoms.onEnterBase.playerEnteredOwn';
-    public const KINGDOM_BASE_PLAYER_QUIT_OWN    = 'kingdoms.onQuitBase.playerQuitOwn';
+    public const KINGDOM_BASE_ENTER_CANCELLED             = 'kingdoms.onEnterBase.cancelled';
+    public const KINGDOM_BASE_QUIT_CANCELLED              = 'kingdoms.onQuitBase.cancelled';
+    public const KINGDOM_BASE_PLAYER_ENTERED_OWN          = 'kingdoms.onEnterBase.playerEnteredOwn';
+    public const KINGDOM_BASE_PLAYER_QUIT_OWN             = 'kingdoms.onQuitBase.playerQuitOwn';
+    public const KINGDOM_BASE_PLAYER_ENTERED_FOREIGN      = 'kingdoms.onEnterBase.playerEnteredForeign';
+    public const KINGDOM_BASE_CANT_ENTER_NOT_BATTLE_PHASE = 'kingdoms.onEnterBase.cantEnterNotBattlePhase';
     public const INVENTORIES_TRANSFERRED = 'common.inventoriesTransferred';
+
+    // Combat messages
+    public const KINGDOM_CANT_HURT_FRIEND   = 'kingdoms.combat.cantHurtFriend';
+    public const STARTED_COMBAT             = 'kingdoms.combat.startedCombat';
+    public const CANT_USE_COMMAND_IN_COMBAT = 'kingdoms.combat.cantUseCommandInCombat';
+    public const NOTICE_COMBAT              = 'kingdoms.combat.noticeCombat';
+    public const PLAYER_COMBAT_UNTAGGED     = 'kingdoms.combat.untagged';
+    public const ALL_OPPONENTS_LEFT_COMBAT  = 'kingdoms.combat.allOpponentsLeftCombat';
+
+    public const PLAYER_JOINED_SERVER = 'common.playerJoinedServer';
+    public const PLAYER_LEFT_SERVER   = 'common.playerLeftServer';
+
+    public const KINGDOM_CANT_HURT_ENEMY_WALL_INTACT = 'kingdoms.combat.cantHurtEnemyWallIntact';
+
+    public const PHASE_LOBBY_BROADCAST       = 'kingdoms.phase.lobby.broadcast';
+    public const PHASE_PREPARATION_BROADCAST = 'kingdoms.phase.preparation.broadcast';
+    public const PHASE_GRIND_BROADCAST       = 'kingdoms.phase.grind.broadcast';
+    public const PHASE_BATTLE_BROADCAST      = 'kingdoms.phase.battle.broadcast';
+    public const PHASE_END_BROADCAST         = 'kingdoms.phase.end.broadcast';
+    public const PHASE_PAUSE_BROADCAST       = 'kingdoms.phase.pause.broadcast';
+
+    // Seasons
+    public const SEASON_ENDED_NEW_SEASON = 'seasons.ended.newSeason';
+    public const SEASON_STARTED          = 'seasons.started';
+    public const SEASON_ENDED            = 'seasons.ended';
+    public const SEASON_PAUSED           = 'seasons.paused';
+    public const SEASON_RESUMED          = 'seasons.resumed';
+    public const SEASON_ALREADY_ACTIVE   = 'seasons.errors.alreadyActive';
+    public const SEASON_STARTED_SUCCESS  = 'seasons.startedSuccess';
+    public const SEASON_ALREADY_PAUSED   = 'seasons.errors.alreadyPaused';
+    public const NO_ACTIVE_SEASON        = 'seasons.errors.noActiveSeason';
+    public const SEASON_PAUSED_SUCCESS   = 'seasons.pausedSuccess';
+    public const SEASON_ENDED_SUCCESS    = 'seasons.endedSuccess';
+    public const SEASON_NOT_PAUSED       = 'seasons.errors.notPaused';
+    public const SEASON_RESUMED_SUCCESS  = 'seasons.resumedSuccess';
+    public const SEASON_NAME_EXISTS      = 'seasons.errors.nameExists';
+    public const SEASON_NO_SEASONS       = 'seasons.errors.noSeasons';
+    public const SEASON_LIST_HEADER      = 'seasons.list.header';
+    public const SEASON_LIST_ACTIVE_TAG  = 'seasons.list.activeTag';
+    public const SEASON_LIST_ENDED_TAG   = 'seasons.list.endedTag';
+    public const SEASON_LIST_PAUSED_TAG  = 'seasons.list.pausedTag';
+    public const SEASON_LIST_ENTRY       = 'seasons.list.entry';
 }

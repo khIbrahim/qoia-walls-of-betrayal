@@ -23,7 +23,8 @@ class SeeKingdomBordersUtils
 
     private const PARTICLE_DENSITY = 1.0;
 
-    private const BORDER_HEIGHT = 10;
+    private const BORDER_HEIGHT = 15;
+    private const BORDER_THICKNESS = 0.2;
 
     public static function isViewingBorders(string $playerName): bool
     {
@@ -127,7 +128,7 @@ class SeeKingdomBordersUtils
         $maxY    = $playerY + $height;
 
         $yPositions = [];
-        for ($y = $minY; $y <= $maxY; $y += 2) {
+        for ($y = $minY; $y <= $maxY; $y += 3) {
             $yPositions[] = $y;
         }
 
@@ -139,9 +140,15 @@ class SeeKingdomBordersUtils
 
             foreach ($borderPoints as $point) {
                 foreach ($yPositions as $y) {
+                    $thickness = self::BORDER_THICKNESS;
+
                     $particle = new DustParticle($color);
-                    $player->getWorld()->addParticle(new Vector3($point->x + 0.2, $y, $point->z), $particle, [$player]);
-                    $player->getWorld()->addParticle(new Vector3($point->x - 0.2, $y, $point->z), $particle, [$player]);
+
+                    $player->getWorld()->addParticle(new Vector3($point->x, $y, $point->z), $particle, [$player]);
+                    $player->getWorld()->addParticle(new Vector3($point->x + $thickness, $y, $point->z), $particle, [$player]);
+                    $player->getWorld()->addParticle(new Vector3($point->x - $thickness, $y, $point->z), $particle, [$player]);
+                    $player->getWorld()->addParticle(new Vector3($point->x, $y, $point->z + $thickness), $particle, [$player]);
+                    $player->getWorld()->addParticle(new Vector3($point->x, $y, $point->z - $thickness), $particle, [$player]);
                 }
             }
         }

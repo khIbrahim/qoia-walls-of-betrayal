@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
+use fenomeno\WallsOfBetrayal\Enum\WallStateEnum;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomWorldEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerLeaveKingdomWorldEvent;
 use fenomeno\WallsOfBetrayal\Main;
@@ -43,6 +44,38 @@ class KingdomListener implements Listener
             $ev = new PlayerLeaveKingdomWorldEvent($player);
         }
         $ev->call();
+    }
+
+    public function onDamage(EntityDamageByEntityEvent $event): void
+    {
+        $damager = $event->getDamager();
+        $victim  = $event->getEntity();
+
+        if(! $damager instanceof Player || ! $victim instanceof Player){
+            return;
+        }
+
+        $damagerSession = Session::get($damager);
+        $victimSession  = Session::get($victim);
+        if(! $damagerSession->isLoaded() || ! $victimSession->isLoaded()) {
+            return;
+        }
+
+        $damagerKingdom = $damagerSession->getKingdom();
+        $victimKingdom  = $victimSession->getKingdom();
+        if($damagerKingdom === null || $victimKingdom === null){
+            return;
+        }
+
+        if($damagerKingdom->getId() === $victimKingdom->getId()){
+            $event->cancel();
+            MessagesUtils::sendTo($damager, MessagesIds::KINGDOM_CANT_HURT_FRIEND, [ExtraTags::PLAYER => $victim->getDisplayName()]);
+        } else {
+            if($this->main->getPhaseManager()->getWallState()->value === WallStateEnum::INTACT->value){
+                $event->cancel();
+                MessagesUtils::sendTo($damager, MessagesIds::KINGDOM_CANT_HURT_ENEMY_WALL_INTACT, [ExtraTags::PLAYER => $victim->getDisplayName()]);
+            }
+        }
     }
 
     public function onKill(PlayerDeathEvent $event): void

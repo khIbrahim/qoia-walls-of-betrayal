@@ -135,8 +135,17 @@ interface Statements
     public const DELETE_EXPIRED_KINGDOM_VOTES = 'kingdom_votes.deleteExpired';
     public const UPDATE_KINGDOM_BORDERS       = 'kingdoms.updateBorders';
 
+    // Player Inventories
     public const INIT_PLAYER_INVENTORIES = 'player_inventories.init';
     public const LOAD_PLAYER_INVENTORIES   = 'player_inventories.load';
     public const SAVE_PLAYER_INVENTORIES = 'player_inventories.save';
+
+    // Seasons
+    public const INIT_SEASONS         = 'seasons.init';
+    public const LOAD_CURRENT_SEASON  = 'seasons.loadCurrent';
+    public const LOAD_SEASON_BY_ID    = 'seasons.loadById';
+    public const LOAD_SEASONS_HISTORY = 'seasons.loadHistory';
+    public const INSERT_SEASON        = 'seasons.insert';
+    public const UPDATE_SEASON        = 'seasons.update';
 
 }

@@ -74,4 +74,9 @@ class MuteRepository implements PunishmentRepositoryInterface
     {
         return yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::MUTE_DELETE, $payload->jsonSerialize());
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/mute.sql';
+    }
 }

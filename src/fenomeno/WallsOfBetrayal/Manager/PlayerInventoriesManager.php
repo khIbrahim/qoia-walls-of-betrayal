@@ -14,7 +14,7 @@ use Generator;
 use pocketmine\player\Player;
 use Throwable;
 
-class PlayerInventoriesManager
+final class PlayerInventoriesManager
 {
 
     /** @var array<string, array<string, SavedPlayerInventories>> playerName => context => inventories */
@@ -133,6 +133,25 @@ class PlayerInventoriesManager
     {
         if (isset($this->inventories[$playerName])) {
             unset($this->inventories[$playerName]);
+        }
+    }
+
+    public function hadSavedInventories(Player $player, string $context): Generator
+    {
+        if ($this->hasSavedInventoriesByContext($player, $context)) {
+            return true;
+        }
+
+        try {
+            $inventories = yield from $this->main->getDatabaseManager()->getPlayerInventoriesRepository()->load(new LoadPlayerInventoriesPayload(
+                uuid: $player->getUniqueId()->toString(),
+                context: $context
+            ));
+
+            return $inventories !== null;
+        } catch (Throwable $e) {
+            $this->main->getLogger()->warning("Erreur lors de la vérification des inventaires sauvegardés pour {$player->getName()}: " . $e->getMessage());
+            return false;
         }
     }
 }

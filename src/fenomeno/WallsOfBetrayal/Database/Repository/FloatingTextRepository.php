@@ -77,4 +77,9 @@ class FloatingTextRepository implements FloatingTextRepositoryInterface
     {
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::UPDATE_FLOATING_TEXT, $payload->jsonSerialize());
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/floating_text.sql';
+    }
 }

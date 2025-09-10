@@ -94,4 +94,9 @@ class ReportRepository implements PunishmentRepositoryInterface
     {
         return yield from $this->main->getDatabaseManager()->asyncChange(Statements::REPORT_ARCHIVE, ['id' => $report->getId()]);
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/report.sql';
+    }
 }

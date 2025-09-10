@@ -305,7 +305,7 @@ class Kingdom
                 $ev->call();
 
                 if ($ev->isCancelled()) {
-                    $this->teleportPlayerAway($player, $position);
+                    $this->teleportPlayerAway($player, $position, true);
                     MessagesUtils::sendTo($player, MessagesIds::KINGDOM_BASE_ENTER_CANCELLED, [
                         ExtraTags::KINGDOM => $this->getDisplayName()
                     ]);
@@ -318,10 +318,8 @@ class Kingdom
                 $ev->call();
 
                 if ($ev->isCancelled()) {
-                    $this->teleportPlayerAway($player, $position);
-                    MessagesUtils::sendTo($player, MessagesIds::KINGDOM_BASE_QUIT_CANCELLED, [
-                        ExtraTags::KINGDOM => $this->getDisplayName()
-                    ]);
+                    $this->teleportPlayerAway($player, $position, false);
+                    MessagesUtils::sendTo($player, MessagesIds::KINGDOM_BASE_QUIT_CANCELLED, [ExtraTags::KINGDOM => $this->getDisplayName()]);
                     continue;
                 }
 
@@ -330,14 +328,12 @@ class Kingdom
         }
     }
 
-    private function teleportPlayerAway(Player $player, Position $position): void
+    private function teleportPlayerAway(Player $player, Position $position, bool $state): void
     {
         $center = $this->base->getCenter();
-        $isInside = $this->base->borders->isVectorInside($position);
 
-        $direction = $isInside
-            ? $position->subtractVector($center)->normalize() // inside
-            : $center->subtractVector($position)->normalize()->multiply(-1); // outside
+        $direction = $state ? $center->subtractVector($position)->normalize() // going inside
+            : $position->subtractVector($center)->normalize()->multiply(-1); // going outside
 
         $force = 1.5;
         $knockbackX = $direction->x * $force;
@@ -346,11 +342,7 @@ class Kingdom
 
         $player->setMotion(new Vector3($knockbackX, $knockbackY, $knockbackZ));
 
-        MessagesUtils::sendTo($player, $isInside
-            ? MessagesIds::KINGDOM_BASE_QUIT_CANCELLED
-            : MessagesIds::KINGDOM_BASE_ENTER_CANCELLED, [
-            ExtraTags::KINGDOM => $this->getDisplayName()
-        ]);
+        MessagesUtils::sendTo($player, $state ? MessagesIds::KINGDOM_BASE_ENTER_CANCELLED : MessagesIds::KINGDOM_BASE_QUIT_CANCELLED, [ExtraTags::KINGDOM => $this->getDisplayName()]);
     }
 
 }

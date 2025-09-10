@@ -99,4 +99,8 @@ class NpcRepository implements NpcRepositoryInterface
         });
     }
 
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/npc.sql';
+    }
 }

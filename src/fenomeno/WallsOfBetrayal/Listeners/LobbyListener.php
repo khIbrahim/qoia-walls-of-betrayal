@@ -6,6 +6,9 @@ namespace fenomeno\WallsOfBetrayal\Listeners;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\Server\LobbyManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
+use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\event\block\BlockBreakEvent;
 use pocketmine\event\block\BlockPlaceEvent;
 use pocketmine\event\entity\EntityDamageByEntityEvent;
@@ -18,6 +21,7 @@ use pocketmine\event\player\PlayerInteractEvent;
 use pocketmine\event\player\PlayerItemUseEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerMoveEvent;
+use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\player\Player;
 
 final class LobbyListener implements Listener {
@@ -28,40 +32,59 @@ final class LobbyListener implements Listener {
         $this->lobbyManager = $this->main->getServerManager()->getLobbyManager();
     }
 
-    public function onJoin(PlayerJoinEvent $event): void{
-        $event->setJoinMessage("");
+    public function onJoin(PlayerJoinEvent $event): void
+    {
+        $event->setJoinMessage(MessagesUtils::getMessage(MessagesIds::PLAYER_JOINED_SERVER, [
+            ExtraTags::PLAYER     => $event->getPlayer()->getDisplayName(),
+            ExtraTags::ONLINE     => count($this->main->getServer()->getOnlinePlayers()),
+            ExtraTags::MAX        => $this->main->getServer()->getMaxPlayers()
+        ]));
         $this->lobbyManager->teleport($event->getPlayer());
     }
 
-    public function onPlace(BlockPlaceEvent $event): void{
+    public function onQuit(PlayerQuitEvent $event): void
+    {
+        $event->setQuitMessage(MessagesUtils::getMessage(MessagesIds::PLAYER_LEFT_SERVER, [
+            ExtraTags::PLAYER     => $event->getPlayer()->getDisplayName(),
+            ExtraTags::ONLINE     => count($this->main->getServer()->getOnlinePlayers()) - 1,
+            ExtraTags::MAX        => $this->main->getServer()->getMaxPlayers()
+        ]));
+    }
+
+    public function onPlace(BlockPlaceEvent $event): void
+    {
         $player = $event->getPlayer();
         if ($this->lobbyManager->isInLobby($player) && !$this->lobbyManager->getSettingByPlayer(LobbyManager::BUILD, $player)){
             $event->cancel();
         }
     }
 
-    public function onBreak(BlockBreakEvent $event): void{
+    public function onBreak(BlockBreakEvent $event): void
+    {
         $player = $event->getPlayer();
         if ($this->lobbyManager->isInLobby($player) && !$this->lobbyManager->getSettingByPlayer(LobbyManager::BREAK, $player)){
             $event->cancel();
         }
     }
 
-    public function onInteract(PlayerInteractEvent $event): void{
+    public function onInteract(PlayerInteractEvent $event): void
+    {
         $player = $event->getPlayer();
         if ($this->lobbyManager->isInLobby($player) && !$this->lobbyManager->getSettingByPlayer(LobbyManager::INTERACT, $player)){
             $event->cancel();
         }
     }
 
-    public function onDrop(PlayerDropItemEvent $event): void{
+    public function onDrop(PlayerDropItemEvent $event): void
+    {
         $player = $event->getPlayer();
         if ($this->lobbyManager->isInLobby($player) && !$this->lobbyManager->getSettingByPlayer(LobbyManager::DROP, $player)){
             $event->cancel();
         }
     }
 
-    public function onPickup(EntityItemPickupEvent $event): void{
+    public function onPickup(EntityItemPickupEvent $event): void
+    {
         $entity = $event->getEntity();
         if ($entity instanceof Player
             && $this->lobbyManager->isInLobby($entity)
@@ -70,14 +93,16 @@ final class LobbyListener implements Listener {
         }
     }
 
-    public function onHunger(PlayerExhaustEvent $event): void{
+    public function onHunger(PlayerExhaustEvent $event): void
+    {
         $player = $event->getPlayer();
         if ($player instanceof Player && $this->lobbyManager->isInLobby($player) && ! $this->lobbyManager->getSettingByPlayer(LobbyManager::HUNGER, $player)){
             $event->cancel();
         }
     }
 
-    public function onDamage(EntityDamageEvent $event): void{
+    public function onDamage(EntityDamageEvent $event): void
+    {
         $victim = $event->getEntity();
         if(! $victim instanceof Player){
             return;
@@ -102,7 +127,8 @@ final class LobbyListener implements Listener {
         }
     }
 
-    public function onMove(PlayerMoveEvent $event): void{
+    public function onMove(PlayerMoveEvent $event): void
+    {
         $player = $event->getPlayer();
         if(! $this->lobbyManager->isInLobby($player)){
             return;

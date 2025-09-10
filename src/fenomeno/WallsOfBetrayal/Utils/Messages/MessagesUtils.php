@@ -95,6 +95,11 @@ final class MessagesUtils {
         }
     }
 
+    public static function broadcastMessage(string $message, array $extraTags = [], ?string $default = null) : void
+    {
+        self::sendTo(Server::getInstance(), $message, $extraTags, $default);
+    }
+
     public static function getMessage(string $id, array $extraTags = [], ?string $default = null) : string {
         $default ??= $id;
 
@@ -161,6 +166,7 @@ final class MessagesUtils {
                 '{PUNISHMENT_PREFIX}'   => (string) ($prefixes['punishment'] ?? ''),
                 '{NPC_PREFIX}'          => (string) ($prefixes['npc'] ?? ''),
                 '{FLOATINGTEXT_PREFIX}' => (string) ($prefixes['floatingText'] ?? ''),
+                '{SEASONS_PREFIX}'      => (string) ($prefixes['seasons']  ?? ''),
             ];
             foreach ($map as $k => $v) {
                 if ($v !== '') self::$themeTags[$k] = $v;
@@ -173,7 +179,7 @@ final class MessagesUtils {
         } catch (Throwable) {}
     }
 
-    public static function defaultReason(?string $default = null, array $extraTags = null): string
+    public static function defaultReason(?string $default = null, array $extraTags = []): string
     {
         return MessagesUtils::getMessage(MessagesIds::DEFAULT_REASON, $extraTags, $default);
     }

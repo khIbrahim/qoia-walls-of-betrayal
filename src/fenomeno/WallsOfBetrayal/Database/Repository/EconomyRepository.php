@@ -209,4 +209,9 @@ class EconomyRepository implements EconomyRepositoryInterface
             }
         );
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/economy.sql';
+    }
 }

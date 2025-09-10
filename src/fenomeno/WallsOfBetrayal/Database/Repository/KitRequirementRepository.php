@@ -118,4 +118,8 @@ class KitRequirementRepository implements KitRequirementRepositoryInterface
         $this->main->getDatabaseManager()->executeRawQuery($sql, $params);
     }
 
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/kit_requirements.sql';
+    }
 }

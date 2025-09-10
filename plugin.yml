@@ -249,3 +249,19 @@ permissions:
     default: op
   wob.bypass.spawn.cooldown:
     default: op
+  wob.bypass.combat.tag:
+    default: op
+  wob.command.season:
+    default: op
+  wob.command.season.start:
+    default: op
+  wob.command.season.end:
+    default: op
+  wob.command.season.resume:
+    default: op
+  wob.command.season.pause:
+    default: op
+  wob.command.season.info:
+    default: op
+  wob.command.season.list:
+    default: op

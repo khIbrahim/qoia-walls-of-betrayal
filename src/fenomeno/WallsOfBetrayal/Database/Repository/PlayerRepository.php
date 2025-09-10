@@ -159,4 +159,9 @@ class PlayerRepository implements PlayerRepositoryInterface
 
         return [$data->uuid, $data->name];
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/players.sql';
+    }
 }

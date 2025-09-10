@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Enum\WallStateEnum;
 use fenomeno\WallsOfBetrayal\Events\PhaseChangeEvent;
 use fenomeno\WallsOfBetrayal\Events\WallFallEvent;
 use fenomeno\WallsOfBetrayal\Main;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
 
@@ -66,8 +67,6 @@ class PhaseManager
         $this->currentDay++;
         $this->save();
 
-//        $this->main->getLogger()->info("Day changed: " . $this->currentDay);
-
         if($this->canChangePhase()){
             $this->changePhase($this->currentPhase->next());
         }
@@ -86,7 +85,8 @@ class PhaseManager
 
         $this->currentPhase = $newPhase;
         $this->save();
-        $this->main->getLogger()->info("Phase changed: " . $newPhase->name);
+
+        MessagesUtils::broadcastMessage($newPhase->getBroadcastMessage());
 
         if ($newPhase === PhaseEnum::BATTLE) {
             $ev = new WallFallEvent();
@@ -130,6 +130,19 @@ class PhaseManager
         $this->config->set("enabled", $this->enabled);
 
         $this->config->save();
+    }
+
+    public function setEnabled(bool $val): void
+    {
+        $this->enabled = $val;
+        $this->save();
+    }
+
+    public function resetDays(): void
+    {
+        $this->currentDay = 0;
+        $this->elapsedSeconds = 0;
+        $this->save();
     }
 
 }

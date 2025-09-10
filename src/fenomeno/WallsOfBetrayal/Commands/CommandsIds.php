@@ -92,21 +92,15 @@ final class CommandsIds
     public const KINGDOM_ALARM = 'kingdom-alarm';
     public const KINGDOM_RALLY = 'kingdom-rally';
     public const KINGDOM_BOUNTY = 'kingdom-bounty';
-//    public const KINGDOM_SPAWN = 'kingdom-spawn';
-//    public const KINGDOM_INFO = 'kingdom-info';
-//    public const KINGDOM_TOP = 'kingdom-top';
-//    public const KINGDOM_MAP = 'kingdom-map';
-//    public const KINGDOM_CONTRIBUTE = 'kingdom-contribute';
-//    public const KINGDOM_ABILITIES = 'kingdom-abilities';
-//    public const KINGDOM_ADDXP = 'kingdom-addxp';
-//    public const KINGDOM_MANAGE = 'kingdom-manage';
-//    public const KINGDOM_KICK = 'kingdom-kick';
-//    public const KINGDOM_BAN = 'kingdom-ban';
-//    public const KINGDOM_VOTE = 'kingdom-vote';
-//    public const KINGDOM_UPGRADE = 'kingdom-upgrade';
-//    public const KINGDOM_SHIELD = 'kingdom-shield';
     public const KINGDOM_SET_RALLY = 'kingdom-set-rally';
     public const KINGDOM_BOUNTIES = 'kingdom-bounties';
     public const KINGDOM_SEE_BORDERS = 'kingdom-see-borders';
+    public const SEASON = 'season';
+    public const SEASON_START = 'season-start';
+    public const SEASON_PAUSE = 'season-pause';
+    public const SEASON_END = 'season-end';
+    public const SEASON_RESUME = 'season-resume';
+    public const SEASON_INFO = 'season-info';
+    public const SEASON_LIST = 'season-list';
 
 }

@@ -11,6 +11,7 @@ theme:
     punishment: "§r§c§lPunishment §8»§r "
     npc: "§r§e§lNpc §8»§r "
     floatingText: "§r§7§lFloatingText §8»§r "
+    seasons: "§r§d§lSeason §8»§r "
 
   colors:
     RED: "§c"
@@ -53,6 +54,8 @@ common:
   back: "{RED}Back"
   invalidArgument: "{GLOBAL_PREFIX}{RED}Invalid argument, Available : {AVAILABLE}"
   inventoriesTransferred: "{GLOBAL_PREFIX}{GREEN}Your inventories have been transferred."
+  playerJoinedServer: "{GLOBAL_PREFIX}§a[+] §6{PLAYER} §ehas joined the server §e!. ({ONLINE}/{MAX})"
+  playerLeftServer: "{GLOBAL_PREFIX}§c[-] §6{PLAYER} §ehas left the server §e!. ({ONLINE}/{MAX})"
 
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
@@ -88,9 +91,13 @@ kingdoms:
     playerEnteredOwn:
       message: "{GREEN}{PLAYER} have entered the {GREEN}base."
       type: "popup"
+    playerEnteredForeign: "{KINGDOMS_PREFIX}{RED}⚠ {WHITE}{PLAYER} {RED}has entered the {RED}base!"
+    cantEnterNotBattlePhase: "{KINGDOMS_PREFIX}{RED}You can only enter kingdom bases during the battle phase."
 
   onQuitBase:
-    cancelled: "{KINGDOMS_PREFIX}{RED}You cannot leave {KINGDOM} {RED}base."
+    cancelled:
+      message: "{KINGDOMS_PREFIX}{RED}You cannot leave {KINGDOM} {RED}base."
+      type: "popup"
     playerQuitOwn:
       message: "{GOLD}{PLAYER} have left the base."
       type: "popup"
@@ -172,6 +179,8 @@ kingdoms:
         §7Duration: §f{DURATION}
 
         §7Do you confirm initiating an §4Exile Vote§7 against this subject?
+
+
 
 
   ban:
@@ -289,6 +298,8 @@ kingdoms:
           §cWarning: This action will permanently ban the player from your kingdom.
           §7Do you confirm this banishment vote?
 
+
+
   upgrade:
     usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom upgrade <perkId>"
     success: "{KINGDOMS_PREFIX}{GREEN}Started vote to upgrade {PERK}."
@@ -356,6 +367,33 @@ kingdoms:
       text: "{GRAY}Available enchantments for {KINGDOM}:\n{GRAY}Select an enchantment to apply."
       button: "{EMOJI} {COLOR}{ENCHANTMENT} {LEVEL}\n{GREEN}{COST} XP"
     success: "{KINGDOMS_PREFIX}{GREEN}Enchantment {WHITE}{ENCHANTMENT} {GREEN}applied successfully to {ITEM}!"
+
+  phase:
+    lobby:
+      broadcast: "§aThe game is starting! Prepare yourselves!"
+    preparation:
+      broadcast: "§eThe preparation phase has begun! Defend your kingdom!"
+    grind:
+      broadcast: "§bThe grind phase is underway! Gather resources and fortify your defenses!"
+    battle:
+      broadcast: "§cThe walls have fallen! The battle phase has begun! Fight for your kingdom!"
+    end:
+      broadcast: "§dThe game has ended! Check the results and claim your rewards!"
+    pause:
+      broadcast: "§9The game is paused. Please wait for further instructions."
+
+  combat:
+    cantHurtFriend:
+      message: "{KINGDOMS_PREFIX}{RED}You cannot harm a member of your own kingdom."
+      type: "popup"
+    startedCombat: "{KINGDOMS_PREFIX}{RED}You are now in combat against {OPPONENT} for {TIME}s."
+    cantUseCommandInCombat: "{KINGDOMS_PREFIX}{RED}You cannot use this command while in combat for {TIME}s."
+    noticeCombat:
+      message: "{KINGDOMS_PREFIX}{RED}⚔ You are in combat with {WHITE}{OPPONENT}{RED}! ({TIME}s)"
+      type: "bar"
+    allOpponentsLeftCombat: "{KINGDOMS_PREFIX}{GREEN}All opponents have left combat. You are safe now, wait for the timer to expire."
+    untagged: "{KINGDOMS_PREFIX}{GREEN}You are no longer in combat."
+    cantHurtEnemyWallIntact: "{KINGDOMS_PREFIX}{RED}You cannot harm an enemy while their kingdom wall is intact."
 
 # ---------------------------------------------------------------------------
 
@@ -698,7 +736,7 @@ punishment:
       notBanned: "{PUNISHMENT_PREFIX}{RED}Player {PLAYER} is not banned."
     broadcast: "{PUNISHMENT_PREFIX}{GRAY}[{GREEN}Unban{GRAY}] {PLAYER} has been unbanned."
     success: "{PUNISHMENT_PREFIX}{GREEN}Player {PLAYER} has been unbanned."
-  defaultReason: "{PUNISHMENT_PREFIX}{RED}WobPunishment."
+  defaultReason: "{PUNISHMENT_PREFIX}{RED}Walls Of Betrayal System."
   banlist:
     empty: "{PUNISHMENT_PREFIX}{RED}No players are currently banned."
     header: "{PUNISHMENT_PREFIX}{GRAY}Banned Players List ({PAGE}/{TOTAL_PAGES}):\n"
@@ -793,17 +831,33 @@ floatingTexts:
     success: "{FLOATINGTEXT_PREFIX}{GREEN}Successfully removed floating text {FLOATING_TEXT}"
 
 # ---------------------------------------------------------------------------
-# Remplacements automatiques (à faire côté code, ou garde ces notes pour dev)
-# - {GLOBAL_PREFIX}     -> theme.prefixes.global
-# - {KINGDOMS_PREFIX}   -> theme.prefixes.kingdoms
-# - {KITS_PREFIX}       -> theme.prefixes.kits
-# - {ABILITIES_PREFIX}  -> theme.prefixes.abilities
-# - {SHOP_PREFIX}       -> theme.prefixes.shop
-# - {MONEY_PREFIX}      -> theme.prefixes.money
-# - {ROLES_PREFIX}      -> theme.prefixes.roles
-# - {PUNISHMENT_PREFIX} -> theme.prefixes.punishment
-# - Couleurs {RED}/{GOLD}/... -> theme.colors
-# - Variables dynamiques: {PLAYER}, {KINGDOM}, {KIT}, {ABILITY}, {NAME}, {TIME}, {USAGE}, {ITEM}, {QTY}, {UNIT_PRICE}, {TOTAL_PRICE}, {BALANCE}, {MODE}, {RARITY_COLOR}
+
+seasons:
+  errors:
+    alreadyActive: "{SEASONS_PREFIX}{RED}A season (#{NUMBER} - {NAME}) is already active."
+    alreadyPaused: "{SEASONS_PREFIX}{RED}The season (#{NUMBER} - {NAME}) is already paused."
+    noActiveSeason: "{SEASONS_PREFIX}{RED}There is no active season to end, pause, or resume."
+    notPaused: "{SEASONS_PREFIX}{RED}The season (#{NUMBER} - {NAME}) is not paused."
+    nameExists: "{SEASONS_PREFIX}{RED}A season with the name '{NAME}' already exists."
+    noSeasons: "{SEASONS_PREFIX}{RED}No seasons found."
+  startedSuccess: "{SEASONS_PREFIX}{GREEN}Successfully started season #{NUMBER} - {NAME} for {DURATION} days with theme: {THEME}."
+  started: "{SEASONS_PREFIX}{GOLD}Season #{NUMBER} - {NAME} has started! {GRAY}Theme: {THEME}, Duration: {DURATION} days."
+  ended:
+    ended: "{SEASONS_PREFIX}{GOLD}Season #{NUMBER} - {NAME} has ended: {REASON}. {GRAY}Calculating final scores..."
+    newSeason: "{SEASONS_PREFIX}{GOLD}Season {OLD_SEASON} has ended! {GRAY}Preparing for Season {NEW_SEASON}..."
+  paused: "{SEASONS_PREFIX}{YELLOW}Season #{NUMBER} - {NAME} is now paused. {GRAY}Reason: {REASON}"
+  resumed: "{SEASONS_PREFIX}{GREEN}Season #{NUMBER} - {NAME} has resumed! {GRAY}Remaining Duration: {DURATION} days."
+  pausedSuccess: "{SEASONS_PREFIX}{GREEN}Successfully paused season #{NUMBER} - {NAME} for {REASON}."
+  endedSuccess: "{SEASONS_PREFIX}{GREEN}Successfully ended season #{NUMBER} - {NAME} for {REASON}."
+  resumedSuccess: "{SEASONS_PREFIX}{GREEN}Successfully resumed season #{NUMBER} - {NAME}."
+  list:
+    header: "{SEASONS_PREFIX}{GRAY}Seasons List:\n"
+    entry: "{TAG} - #{NUMBER}. {NAME} {THEME} ({DURATION} days)\n"
+    activeTag: "{GREEN}[Active]"
+    pausedTag: "{YELLOW}[Paused]"
+    endedTag: "{RED}[Ended]"
+
+# ---------------------------------------------------------------------------
 
 events:
   chat:

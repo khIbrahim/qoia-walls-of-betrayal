@@ -51,4 +51,9 @@ class PlayerInventoriesRepository implements PlayerInventoriesRepositoryInterfac
     {
         yield from $this->main->getDatabaseManager()->asyncInsert(Statements::SAVE_PLAYER_INVENTORIES, $payload->jsonSerialize());
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/player_inventories.sql';
+    }
 }

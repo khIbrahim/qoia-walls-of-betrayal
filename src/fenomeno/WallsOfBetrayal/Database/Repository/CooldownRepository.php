@@ -53,4 +53,9 @@ class CooldownRepository implements CooldownRepositoryInterface
     {
         yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::REMOVE_COOLDOWN, $payload->jsonSerialize());
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/cooldowns.sql';
+    }
 }

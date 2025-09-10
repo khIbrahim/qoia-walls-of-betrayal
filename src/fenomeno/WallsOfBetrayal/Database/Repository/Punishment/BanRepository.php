@@ -73,4 +73,9 @@ class BanRepository implements PunishmentRepositoryInterface
     {
         yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::BAN_REMOVE, $payload->jsonSerialize());
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/ban.sql';
+    }
 }

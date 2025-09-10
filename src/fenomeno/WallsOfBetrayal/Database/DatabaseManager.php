@@ -14,6 +14,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerInventoriesRepo
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\SeasonsRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\VaultRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
@@ -29,6 +30,7 @@ use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRolesRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\BanRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\MuteRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\ReportRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\SeasonsRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\VaultRepository;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\libasynql;
@@ -64,6 +66,7 @@ class DatabaseManager
     private BountyRepositoryInterface $bountyRepository;
     private KingdomVoteRepository $kingdomVoteRepository;
     private PlayerInventoriesRepositoryInterface $playerInventoriesRepository;
+    private SeasonsRepositoryInterface $seasonsRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
     private BigEndianNbtSerializer $nbtSerializer;
@@ -74,7 +77,25 @@ class DatabaseManager
         try {
             $this->database = libasynql::create($this->main, $this->main->getConfig()->get("database"), [
                 "sqlite" => "queries/sqlite.sql",
-                "mysql"  => "queries/mysql.sql"
+                "mysql"  => [
+                    PlayerRepository::getQueriesFile(),
+                    KitRequirementRepository::getQueriesFile(),
+                    CooldownRepository::getQueriesFile(),
+                    EconomyRepository::getQueriesFile(),
+                    PlayerRolesRepository::getQueriesFile(),
+                    VaultRepository::getQueriesFile(),
+                    KingdomRepository::getQueriesFile(),
+                    MuteRepository::getQueriesFile(),
+                    'queries/mysql/punishment_history.sql',
+                    BanRepository::getQueriesFile(),
+                    ReportRepository::getQueriesFile(),
+                    FloatingTextRepository::getQueriesFile(),
+                    NpcRepository::getQueriesFile(),
+                    KingdomBountyRepository::getQueriesFile(),
+                    KingdomVoteRepository::getQueriesFile(), 'queries/mysql/kingdom_vote_votes.sql', 'queries/mysql/kingdom_bans.sql',
+                    PlayerInventoriesRepository::getQueriesFile(),
+                    SeasonsRepository::getQueriesFile(),
+                ]
             ]);
 
             $this->binaryStringParser = new MySQLBinaryStringParser();
@@ -123,6 +144,9 @@ class DatabaseManager
 
             $this->playerInventoriesRepository = new PlayerInventoriesRepository($this->main);
             $this->playerInventoriesRepository->init($this);
+
+            $this->seasonsRepository = new SeasonsRepository($this->main);
+            $this->seasonsRepository->init($this);
 
             $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
@@ -209,6 +233,11 @@ class DatabaseManager
     public function getPlayerInventoriesRepository(): PlayerInventoriesRepositoryInterface
     {
         return $this->playerInventoriesRepository;
+    }
+
+    public function getSeasonsRepository(): SeasonsRepositoryInterface
+    {
+        return $this->seasonsRepository;
     }
 
     public function readItems(?string $data, string $tagInventory) : array{

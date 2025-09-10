@@ -201,4 +201,9 @@ class KingdomRepository implements KingdomRepositoryInterface
             'borders' => json_encode($borders),
         ]);
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/kingdoms.sql';
+    }
 }

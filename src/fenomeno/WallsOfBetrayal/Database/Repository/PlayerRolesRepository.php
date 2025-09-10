@@ -184,4 +184,9 @@ class PlayerRolesRepository implements PlayerRolesRepositoryInterface
             }
         );
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/roles.sql';
+    }
 }

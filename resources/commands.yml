@@ -582,3 +582,40 @@ set-lobby-setting:
   name: "setlobbysetting"
   description: "§7Update lobby setting"
   usage: "§e/setlobbysetting <setting> <boolean>"
+
+season:
+  name: "season"
+  description: "§7Manage game seasons"
+  usage: "§e/season <create|start|end|info|list|pause|resume> §8– §7Manage game seasons"
+  aliases:
+    - "saison"
+
+season-start:
+  name: "start"
+  description: "§7Start a new season"
+  usage: "§e/season start <season_id> §8– §7Start a new season"
+
+season-pause:
+  name: "pause"
+  description: "§7Pause the current season"
+  usage: "§e/season pause <reason> §8– §7Pause the current season"
+
+season-end:
+  name: "end"
+  description: "§7End the current season"
+  usage: "§e/season end <reason> §8– §7End the current season"
+
+season-resume:
+  name: "resume"
+  description: "§7Resume the current season"
+  usage: "§e/season resume §8– §7Resume the current season"
+
+season-info:
+  name: "info"
+  description: "§7View information about the current season"
+  usage: "§e/season info <season=current> §8– §7View information about the current season or older one"
+
+season-list:
+  name: "list"
+  description: "§7List all seasons"
+  usage: "§e/season list §8– §7List all seasons"

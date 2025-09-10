@@ -35,7 +35,7 @@ final class KingdomVote implements Stringable
         $voteType = KingdomVoteType::from((string)$row['vote_type']);
         $target = (string)$row['target'];
         $proposedBy = (string)($row['proposed_by'] ?? 'Unknown');
-        $reason = (string)($row['reason'] ?? MessagesUtils::defaultReason());
+        $reason = (string)($row['reason'] ?? MessagesUtils::defaultReason(''));
         $votesFor = (int)($row['votes_for'] ?? 0);
         $votesAgainst = (int)($row['votes_against'] ?? 0);
         $createdAt = $row['created_at'];

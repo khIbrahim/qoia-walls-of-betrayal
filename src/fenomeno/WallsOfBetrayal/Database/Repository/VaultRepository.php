@@ -10,18 +10,11 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Vault\VaultOpenPayload;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
 use pocketmine\item\Item;
-use pocketmine\nbt\BigEndianNbtSerializer;
-use pocketmine\nbt\NBT;
-use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\nbt\tag\ListTag;
-use pocketmine\nbt\TreeRoot;
 
 class VaultRepository implements VaultRepositoryInterface
 {
 
     private const TAG_INVENTORY = "Inventory";
-
-    private BigEndianNbtSerializer $nbtSerializer;
 
     /**
      * @var array<string, array<int, Item>> cached
@@ -29,9 +22,7 @@ class VaultRepository implements VaultRepositoryInterface
      */
     private array $cached = [];
 
-    public function __construct(private readonly Main $main){
-        $this->nbtSerializer = new BigEndianNbtSerializer();
-    }
+    public function __construct(private readonly Main $main){}
 
     public function init(DatabaseManager $database): void
     {
@@ -78,5 +69,10 @@ class VaultRepository implements VaultRepositoryInterface
         }
 
         yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::CLOSE_VAULT, $payload->jsonSerialize());
+    }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/vaults.sql';
     }
 }

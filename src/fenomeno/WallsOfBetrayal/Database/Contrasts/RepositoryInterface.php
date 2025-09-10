@@ -9,4 +9,6 @@ interface RepositoryInterface
 
     public function init(DatabaseManager $database): void;
 
+    public static function getQueriesFile(): string;
+
 }

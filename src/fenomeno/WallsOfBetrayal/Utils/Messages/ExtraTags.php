@@ -98,4 +98,10 @@ final class ExtraTags
     public const TOTAL_MEMBERS = '{TOTAL_MEMBERS}';
     public const FOR_PERCENT = '{FOR_PERCENT}';
     public const BAR = '{BAR}';
+    public const OPPONENT = '{OPPONENT}';
+    public const COMMAND = '{COMMAND}';
+    public const OLD_SEASON = '{OLD_SEASON}';
+    public const NEW_SEASON = '{NEW_SEASON}';
+    public const THEME = '{THEME}';
+    public const TAG = '{TAG}';
 }

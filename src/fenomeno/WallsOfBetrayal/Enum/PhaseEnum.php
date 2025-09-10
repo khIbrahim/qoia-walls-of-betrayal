@@ -2,6 +2,9 @@
 
 namespace fenomeno\WallsOfBetrayal\Enum;
 
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
+use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+
 enum PhaseEnum: string
 {
     // Phase d'attente initiale avant le début du jeu
@@ -42,10 +45,8 @@ enum PhaseEnum: string
     public function wallState(): WallStateEnum
     {
         return match ($this) {
-            self::LOBBY, self::PREPARATION, self::PAUSE => WallStateEnum::INTACT,
-            self::GRIND => WallStateEnum::CRACKING,
-            self::BATTLE => WallStateEnum::BREACHED,
-            self::END => WallStateEnum::REGENERATING,
+            self::LOBBY, self::PREPARATION, self::PAUSE, self::GRIND => WallStateEnum::INTACT,
+            self::BATTLE, self::END                                  => WallStateEnum::BREACHED,
         };
     }
 
@@ -58,6 +59,18 @@ enum PhaseEnum: string
             self::BATTLE => self::END,
             self::END => self::PAUSE,
             self::PAUSE => self::LOBBY
+        };
+    }
+
+    public function getBroadcastMessage(): string
+    {
+        return match($this) {
+            self::LOBBY       => MessagesUtils::getMessage(MessagesIds::PHASE_LOBBY_BROADCAST),
+            self::PREPARATION => MessagesUtils::getMessage(MessagesIds::PHASE_PREPARATION_BROADCAST),
+            self::GRIND       => MessagesUtils::getMessage(MessagesIds::PHASE_GRIND_BROADCAST),
+            self::BATTLE      => MessagesUtils::getMessage(MessagesIds::PHASE_BATTLE_BROADCAST),
+            self::END         => MessagesUtils::getMessage(MessagesIds::PHASE_END_BROADCAST),
+            self::PAUSE       => MessagesUtils::getMessage(MessagesIds::PHASE_PAUSE_BROADCAST),
         };
     }
 

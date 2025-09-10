@@ -1,0 +1,19 @@
+settings:
+  combat-time: 20
+  kill-on-disconnect: true
+  noticePlayer: true
+  banned-worlds:
+    - "world"
+  banned-commands:
+    - "/kingdom spawn"
+    - "/lobby"
+    - "/warp"
+    - "/tpa"
+    - "/tpaccept"
+    - "/tpdeny"
+    - "/tp"
+#    - /msg
+#    - /tell
+#    - /whisper
+#    - /r
+#    - /reply

@@ -7,6 +7,7 @@ use fenomeno\WallsOfBetrayal\Commands\Admin\FloatingTextCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\GiveKitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\NpcCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\PortalCommand;
+use fenomeno\WallsOfBetrayal\Commands\Admin\SeasonCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SetLobbyCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SetLobbySettingCommand;
 use fenomeno\WallsOfBetrayal\Commands\Admin\SpawnerCommand;
@@ -61,12 +62,14 @@ use fenomeno\WallsOfBetrayal\Game\Abilities\AbilityManager;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
 use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
+use fenomeno\WallsOfBetrayal\Game\Season\SeasonManager;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\fenomeno\libWebhook\thread\DiscordWebhook;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\BlocksListener;
+use fenomeno\WallsOfBetrayal\Listeners\CombatListener;
 use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\FloatingTextListener;
@@ -80,6 +83,7 @@ use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Listeners\StaffListener;
 use fenomeno\WallsOfBetrayal\Manager\BountyManager;
+use fenomeno\WallsOfBetrayal\Manager\CombatManager;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\FloatingTextManager;
 use fenomeno\WallsOfBetrayal\Manager\KingdomVoteManager;
@@ -103,6 +107,7 @@ class Main extends PluginBase
 {
     use SingletonTrait;
 
+    private SeasonManager            $seasonManager;
     private KingdomManager           $kingdomManager;
     private DatabaseManager          $databaseManager;
     private PhaseManager             $phaseManager;
@@ -119,6 +124,7 @@ class Main extends PluginBase
     private BountyManager            $bountyManager;
     private KingdomVoteManager       $kingdomVoteManager;
     private PlayerInventoriesManager $playerInventoriesManager;
+    private CombatManager            $combatManager;
 
     protected function onLoad(): void
     {
@@ -144,6 +150,7 @@ class Main extends PluginBase
             }
 
             $this->databaseManager          = new DatabaseManager($this);
+            $this->seasonManager            = new SeasonManager($this);
             $this->serverManager            = new ServerManager($this);
             $this->abilityManager           = new AbilityManager($this);
             $this->kingdomManager           = new KingdomManager($this);
@@ -159,6 +166,7 @@ class Main extends PluginBase
             $this->bountyManager            = new BountyManager($this);
             $this->kingdomVoteManager       = new KingdomVoteManager($this);
             $this->playerInventoriesManager = new PlayerInventoriesManager($this);
+            $this->combatManager            = new CombatManager($this);
 
             EntityManager::getInstance()->startup($this);
             TileManager::getInstance()->startup();
@@ -215,6 +223,7 @@ class Main extends PluginBase
                 new KingdomCommand($this),
                 new PortalCommand($this),
                 new SetLobbySettingCommand($this),
+                new SeasonCommand($this)
             ]);
 
             $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -232,6 +241,7 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new FloatingTextListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new LobbyListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new InventoryListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new CombatListener($this), $this);
 
             Await::g2c(
                 $this->loadDependencies(),
@@ -333,6 +343,16 @@ class Main extends PluginBase
     public function getPlayerInventoriesManager(): PlayerInventoriesManager
     {
         return $this->playerInventoriesManager;
+    }
+
+    public function getCombatManager(): CombatManager
+    {
+        return $this->combatManager;
+    }
+
+    public function getSeasonManager(): SeasonManager
+    {
+        return $this->seasonManager;
     }
 
     protected function onDisable(): void

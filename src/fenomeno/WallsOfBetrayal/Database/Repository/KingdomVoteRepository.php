@@ -104,6 +104,11 @@ final class KingdomVoteRepository implements RepositoryInterface
     {
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::DELETE_EXPIRED_KINGDOM_VOTES);
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/kingdom_votes.sql';
+    }
 }
 
 

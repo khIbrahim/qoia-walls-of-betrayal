@@ -58,4 +58,9 @@ class KingdomBountyRepository implements BountyRepositoryInterface
     {
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::DEACTIVATE_KINGDOM_BOUNTY, $payload->jsonSerialize());
     }
+
+    public static function getQueriesFile(): string
+    {
+        return 'queries/mysql/kingdom_bounties.sql';
+    }
 }
