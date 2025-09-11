@@ -12,7 +12,9 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerStatsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use fenomeno\WallsOfBetrayal\Exceptions\RecordNotFoundException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
@@ -160,8 +162,19 @@ class PlayerRepository implements PlayerRepositoryInterface
         return [$data->uuid, $data->name];
     }
 
-    public static function getQueriesFile(): string
+    public function updateStats(UpdatePlayerStatsPayload $payload): Generator
     {
-        return 'queries/mysql/players.sql';
+        yield from $this->main->getDatabaseManager()->asyncChange(Statements::UPDATE_PLAYER_STATS, $payload->jsonSerialize());
     }
+
+    public static function getQueriesFiles(): array
+    {
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/players.sql'
+            ],
+            SqlQueriesFileManager::SQLITE => []
+        ];
+    }
+
 }

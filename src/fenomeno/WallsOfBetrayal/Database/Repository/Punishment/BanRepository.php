@@ -9,6 +9,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryI
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
@@ -74,8 +75,13 @@ class BanRepository implements PunishmentRepositoryInterface
         yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::BAN_REMOVE, $payload->jsonSerialize());
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/ban.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/ban.sql'
+            ]
+        ];
     }
+
 }

@@ -13,6 +13,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Roles\InsertRolePlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Roles\UpdatePermissionsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Roles\UpdatePlayerRoleRolePayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Roles\UpdateSubRolesPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\DTO\RolePlayerDTO;
 use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
 use fenomeno\WallsOfBetrayal\Exceptions\MissingDataException;
@@ -184,9 +185,12 @@ class PlayerRolesRepository implements PlayerRolesRepositoryInterface
             }
         );
     }
-
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/roles.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/roles.sql'
+            ]
+        ];
     }
 }

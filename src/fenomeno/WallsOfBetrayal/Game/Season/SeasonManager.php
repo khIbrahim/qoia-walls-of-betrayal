@@ -17,7 +17,6 @@ use fenomeno\WallsOfBetrayal\Exceptions\Season\NoActiveSeasonException;
 use fenomeno\WallsOfBetrayal\Exceptions\Season\NoSeasonException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
-use fenomeno\WallsOfBetrayal\Utils\DurationParser;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
@@ -143,13 +142,6 @@ class SeasonManager
         $event = new SeasonStartEvent($savedSeason);
         $event->call();
 
-        $this->announceToAllPlayers(MessagesIds::SEASON_STARTED, [
-            ExtraTags::NUMBER   => $seasonNumber,
-            ExtraTags::NAME     => $name,
-            ExtraTags::THEME    => $theme,
-            ExtraTags::DURATION => $durationDays
-        ]);
-
         return $savedSeason;
     }
 
@@ -228,12 +220,6 @@ class SeasonManager
         $event = new SeasonPauseEvent($updatedSeason, $reason);
         $event->call();
 
-        $this->announceToAllPlayers(MessagesIds::SEASON_PAUSED, [
-            ExtraTags::NUMBER => $updatedSeason->seasonNumber,
-            ExtraTags::NAME   => $updatedSeason->name,
-            ExtraTags::REASON => $reason
-        ]);
-
         return $updatedSeason;
     }
 
@@ -266,17 +252,6 @@ class SeasonManager
 
         $event = new SeasonResumeEvent($updatedSeason, $pauseDuration);
         $event->call();
-
-        $this->announceToAllPlayers(MessagesIds::SEASON_RESUMED, [
-            ExtraTags::NUMBER   => $updatedSeason->seasonNumber,
-            ExtraTags::NAME     => $updatedSeason->name,
-            ExtraTags::DURATION => DurationParser::getReadableDuration($pauseDuration)
-        ]);
-        var_dump(DurationParser::getReadableDuration($pauseDuration));
-        var_dump(DurationParser::getReadableDuration($pauseDuration));
-        var_dump(DurationParser::getReadableDuration($pauseDuration));
-        var_dump(DurationParser::getReadableDuration($pauseDuration));
-        var_dump(DurationParser::getReadableDuration($pauseDuration));
 
         return $updatedSeason;
     }

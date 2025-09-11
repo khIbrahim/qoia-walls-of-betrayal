@@ -7,10 +7,9 @@ use fenomeno\WallsOfBetrayal\Class\Punishment\Report;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
-use fenomeno\WallsOfBetrayal\Database\Payload\HistoryPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
-use fenomeno\WallsOfBetrayal\DTO\PunishmentHistoryEntry;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
@@ -95,8 +94,12 @@ class ReportRepository implements PunishmentRepositoryInterface
         return yield from $this->main->getDatabaseManager()->asyncChange(Statements::REPORT_ARCHIVE, ['id' => $report->getId()]);
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/report.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/report.sql'
+            ]
+        ];
     }
 }

@@ -67,4 +67,13 @@
         WHERE kingdom = :id;
     -- # }
 
+    -- # { updateStats
+    -- # :uuid string
+    -- # :kills int
+    -- # :deaths int
+        UPDATE players
+        SET kills = :kills, deaths = :deaths
+        WHERE uuid = :uuid;
+    -- # }
+
 -- # }

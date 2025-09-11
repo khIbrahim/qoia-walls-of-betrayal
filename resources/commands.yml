@@ -593,7 +593,7 @@ season:
 season-start:
   name: "start"
   description: "§7Start a new season"
-  usage: "§e/season start <season_id> §8– §7Start a new season"
+  usage: "§e/season start <name> <theme> <days> <description> §8– §7Start a new season"
 
 season-pause:
   name: "pause"

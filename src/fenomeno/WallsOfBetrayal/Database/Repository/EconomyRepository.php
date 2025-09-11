@@ -13,6 +13,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Economy\SetEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\SubtractEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TopEconomyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Economy\TransferEconomyPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\Exceptions\DatabaseException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyBalanceIsSameException;
 use fenomeno\WallsOfBetrayal\Exceptions\Economy\EconomyRecordMissingDatException;
@@ -210,8 +211,12 @@ class EconomyRepository implements EconomyRepositoryInterface
         );
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/economy.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/economy.sql'
+            ]
+        ];
     }
 }

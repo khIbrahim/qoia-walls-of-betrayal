@@ -9,7 +9,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInte
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\FloatingTextRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KingdomRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
-use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface\NpcRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerInventoriesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
@@ -49,7 +49,10 @@ use Throwable;
 class DatabaseManager
 {
 
+    private const DEFAULT_DATABASE_TYPE = "mysql";
+
     private DataConnector $database;
+    private SqlQueriesFileManager $queriesFileManager;
 
     private PlayerRepositoryInterface $playerRepository;
     private KitRequirementRepositoryInterface $kitRequirementRepository;
@@ -75,28 +78,32 @@ class DatabaseManager
         private readonly Main $main
     ){
         try {
-            $this->database = libasynql::create($this->main, $this->main->getConfig()->get("database"), [
-                "sqlite" => "queries/sqlite.sql",
-                "mysql"  => [
-                    PlayerRepository::getQueriesFile(),
-                    KitRequirementRepository::getQueriesFile(),
-                    CooldownRepository::getQueriesFile(),
-                    EconomyRepository::getQueriesFile(),
-                    PlayerRolesRepository::getQueriesFile(),
-                    VaultRepository::getQueriesFile(),
-                    KingdomRepository::getQueriesFile(),
-                    MuteRepository::getQueriesFile(),
-                    'queries/mysql/punishment_history.sql',
-                    BanRepository::getQueriesFile(),
-                    ReportRepository::getQueriesFile(),
-                    FloatingTextRepository::getQueriesFile(),
-                    NpcRepository::getQueriesFile(),
-                    KingdomBountyRepository::getQueriesFile(),
-                    KingdomVoteRepository::getQueriesFile(), 'queries/mysql/kingdom_vote_votes.sql', 'queries/mysql/kingdom_bans.sql',
-                    PlayerInventoriesRepository::getQueriesFile(),
-                    SeasonsRepository::getQueriesFile(),
-                ]
-            ]);
+            $config = $this->main->getConfig()->get("database", []);
+            $type   = $config["type"] ?? self::DEFAULT_DATABASE_TYPE;
+
+            $repositories = [
+                PlayerRepository::class,
+                KitRequirementRepository::class,
+                CooldownRepository::class,
+                EconomyRepository::class,
+                PlayerRolesRepository::class,
+                VaultRepository::class,
+                KingdomRepository::class,
+                MuteRepository::class,
+                BanRepository::class,
+                ReportRepository::class,
+                FloatingTextRepository::class,
+                NpcRepository::class,
+                KingdomBountyRepository::class,
+                KingdomVoteRepository::class,
+                PlayerInventoriesRepository::class,
+                SeasonsRepository::class,
+            ];
+
+            $this->queriesFileManager = new SqlQueriesFileManager($type, $repositories);
+            $this->queriesFileManager->addSharedFile(SqlQueriesFileManager::MYSQL, 'queries/mysql/punishment_history.sql');
+
+            $this->database = libasynql::create($this->main, $config, $this->queriesFileManager->getAllQueryFiles());
 
             $this->binaryStringParser = new MySQLBinaryStringParser();
 

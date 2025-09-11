@@ -833,6 +833,7 @@ floatingTexts:
 # ---------------------------------------------------------------------------
 
 seasons:
+  cancelledDueToSeasonOff: "{SEASONS_PREFIX}{RED}Action cancelled because season is OFF."
   errors:
     alreadyActive: "{SEASONS_PREFIX}{RED}A season (#{NUMBER} - {NAME}) is already active."
     alreadyPaused: "{SEASONS_PREFIX}{RED}The season (#{NUMBER} - {NAME}) is already paused."

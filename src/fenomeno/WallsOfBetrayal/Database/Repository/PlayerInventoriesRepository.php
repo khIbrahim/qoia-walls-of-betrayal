@@ -7,6 +7,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\PlayerInventory\LoadPlayerInventoriesPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\PlayerInventory\SavePlayerInventoriesPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\DTO\SavedPlayerInventories;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
@@ -52,8 +53,12 @@ class PlayerInventoriesRepository implements PlayerInventoriesRepositoryInterfac
         yield from $this->main->getDatabaseManager()->asyncInsert(Statements::SAVE_PLAYER_INVENTORIES, $payload->jsonSerialize());
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/player_inventories.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/player_inventories.sql'
+            ]
+        ];
     }
 }

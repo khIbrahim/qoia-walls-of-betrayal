@@ -2,12 +2,13 @@
 
 namespace fenomeno\WallsOfBetrayal\Database\Repository;
 
-use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface\NpcRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Npc\NpcCreatePayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Npc\NpcUpdatePayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\Entities\Types\NpcEntity;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
@@ -99,8 +100,12 @@ class NpcRepository implements NpcRepositoryInterface
         });
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/npc.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/npc.sql'
+            ],
+        ];
     }
 }

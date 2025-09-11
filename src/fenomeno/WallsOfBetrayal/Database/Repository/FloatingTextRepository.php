@@ -10,6 +10,7 @@ use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\FloatingText\CreateFloatingTextPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\FloatingText\UpdateFloatingTextPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\PositionParser;
 use Generator;
@@ -78,8 +79,12 @@ class FloatingTextRepository implements FloatingTextRepositoryInterface
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::UPDATE_FLOATING_TEXT, $payload->jsonSerialize());
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/floating_text.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/floating_text.sql'
+            ]
+        ];
     }
 }

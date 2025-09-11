@@ -13,6 +13,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\Vote\CreateKingdomVotePayl
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\Vote\GetKingdomVoterChoicePayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\Vote\UpdateKingdomVoteStatusPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\Vote\UpdateKingdomVoteVotes;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
 use Throwable;
@@ -105,10 +106,13 @@ final class KingdomVoteRepository implements RepositoryInterface
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::DELETE_EXPIRED_KINGDOM_VOTES);
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/kingdom_votes.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/kingdom_votes.sql',
+                'queries/mysql/kingdom_vote_votes.sql',
+            ]
+        ];
     }
 }
-
-

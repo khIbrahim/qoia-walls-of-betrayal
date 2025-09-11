@@ -7,6 +7,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\Vault\CloseVaultPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Vault\VaultOpenPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
 use pocketmine\item\Item;
@@ -71,8 +72,12 @@ class VaultRepository implements VaultRepositoryInterface
         yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::CLOSE_VAULT, $payload->jsonSerialize());
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/vaults.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/vaults.sql'
+            ]
+        ];
     }
 }

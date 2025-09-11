@@ -9,6 +9,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\CreateKingdomBountyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\DeactivateBountyPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
 use Throwable;
@@ -59,8 +60,12 @@ class KingdomBountyRepository implements BountyRepositoryInterface
         yield from $this->main->getDatabaseManager()->asyncChange(Statements::DEACTIVATE_KINGDOM_BOUNTY, $payload->jsonSerialize());
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/kingdom_bounties.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/kingdom_bounties.sql'
+            ],
+        ];
     }
 }

@@ -70,6 +70,7 @@ final class PermissionIds
     public const KINGDOM_SPAWN_OTHER   = 'wob.command.kingdom.spawn.other';
     public const BYPASS_SPAWN_COOLDOWN = 'wob.bypass.spawn.cooldown';
     public const BYPASS_COMBAT_TAG     = 'wob.bypass.combat.tag';
+    public const BYPASS_SEASON         = 'wob.bypass.season';
 
     public static function getVaultPerm(int $number): string
     {

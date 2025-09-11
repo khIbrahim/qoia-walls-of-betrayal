@@ -80,11 +80,16 @@ class KingdomListener implements Listener
 
     public function onKill(PlayerDeathEvent $event): void
     {
+        if(! $this->main->getSeasonManager()->isSeasonActive()){
+            return;
+        }
+
         $victim        = $event->getPlayer();
         $victimSession = Session::get($victim);
         if(! $victimSession->isLoaded()){
             return;
         }
+
         $victimSession->addDeath();
 
         $victimKingdom = $victimSession->getKingdom();

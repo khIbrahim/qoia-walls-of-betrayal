@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryI
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
@@ -75,8 +76,12 @@ class MuteRepository implements PunishmentRepositoryInterface
         return yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::MUTE_DELETE, $payload->jsonSerialize());
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/mute.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/mute.sql'
+            ]
+        ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface;
+namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\RepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;

@@ -16,6 +16,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\KingdomRallyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\LoadKingdomPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\Sanction\CreateKingdomSanctionPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Kingdom\UpdateKingdomSpawnPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\PositionParser;
 use fenomeno\WallsOfBetrayal\Utils\Utils;
@@ -202,8 +203,13 @@ class KingdomRepository implements KingdomRepositoryInterface
         ]);
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/kingdoms.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/kingdoms.sql',
+                'queries/mysql/kingdom_bans.sql'
+            ],
+        ];
     }
 }

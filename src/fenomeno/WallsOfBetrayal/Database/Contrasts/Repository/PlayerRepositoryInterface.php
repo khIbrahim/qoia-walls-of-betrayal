@@ -9,9 +9,11 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Player\InsertPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\SetPlayerKingdomPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
+use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerStatsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use fenomeno\WallsOfBetrayal\Exceptions\RecordNotFoundException;
+use Generator;
 use pocketmine\promise\Promise;
 
 interface PlayerRepositoryInterface extends RepositoryInterface
@@ -26,23 +28,25 @@ interface PlayerRepositoryInterface extends RepositoryInterface
      *
      * @phpstan-return Promise<TPromiseValue> Renvoie un PlayerData si les données existent, sinon null
      */
-    public function load(LoadPlayerPayload $payload): Promise;
+    public function load(LoadPlayerPayload $payload): Promise; //todo generator
 
     public function insert(InsertPlayerPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
 
-    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload): \Generator;
+    public function updatePlayerKingdom(SetPlayerKingdomPayload $payload): Generator;
 
     public function updatePlayerAbilities(UpdatePlayerAbilities $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
 
-    public function addKill(IncrementKillsPayload $payload): \Generator;
+    public function addKill(IncrementKillsPayload $payload): Generator;
 
-    public function addDeath(IncrementDeathPayload $payload): \Generator;
+    public function addDeath(IncrementDeathPayload $payload): Generator;
 
     /**
      * @throws RecordNotFoundException
      */
-    public function asyncLoad(UsernamePayload $payload): \Generator;
+    public function asyncLoad(UsernamePayload $payload): Generator;
 
-    public function getUuidAndUsernameByName(string $targetName): \Generator;
+    public function getUuidAndUsernameByName(string $targetName): Generator;
+
+    public function updateStats(UpdatePlayerStatsPayload $payload): Generator;
 
 }

@@ -58,7 +58,7 @@ class SeasonDTO
 
     public function getRemainingDays(): int
     {
-        if (!$this->isActive) {
+        if (! $this->isActive) {
             return 0;
         }
 

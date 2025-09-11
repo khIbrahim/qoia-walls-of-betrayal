@@ -10,7 +10,8 @@ interface Statements
     public const LOAD_PLAYER_BY_NAME            = 'players.loadByName';
     public const INSERT_PLAYER                  = 'players.insert';
     public const SET_KINGDOM_PLAYER             = 'players.setKingdom';
-    public const GET_KINGDOMS_PLAYERS_COUNT = 'players.getKingdomPlayersCount';
+    public const GET_KINGDOMS_PLAYERS_COUNT     = 'players.getKingdomPlayersCount';
+    public const UPDATE_PLAYER_STATS            = 'players.updateStats';
 
     public const LOAD_KIT_REQUIREMENT           = 'kit_requirements.getByKingdomAndKit';
     public const INSERT_KIT_REQUIREMENT         = 'kit_requirements.insert';
@@ -147,5 +148,16 @@ interface Statements
     public const LOAD_SEASONS_HISTORY = 'seasons.loadHistory';
     public const INSERT_SEASON        = 'seasons.insert';
     public const UPDATE_SEASON        = 'seasons.update';
+
+    public const INIT_SEASON_PLAYERS         = 'season_players.init';
+    public const UPDATE_SEASON_PLAYER_STATS  = 'season_players.updateStats';
+    public const LOAD_SEASON_PLAYER          = 'season_players.load';
+    public const INSERT_SEASON_PLAYER        = 'season_players.insert';
+
+    public const INIT_SEASON_KINGDOMS        = 'season_kingdoms.init';
+    public const LOAD_SEASON_KINGDOM         = 'season_kingdoms.load';
+    public const INSERT_SEASON_KINGDOM       = 'season_kingdoms.insert';
+    public const UPDATE_SEASON_KINGDOM_STATS = 'season_kingdoms.updateStats';
+    public const GET_SEASON_KINGDOM_RANKINGS = 'season_kingdoms.getRankings';
 
 }

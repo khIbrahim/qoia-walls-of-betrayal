@@ -265,3 +265,5 @@ permissions:
     default: op
   wob.command.season.list:
     default: op
+  wob.bypass.season:
+    default: op

@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\GetActiveCooldownsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\RemoveCooldownPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Cooldown\UpsertCooldownPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\DTO\CooldownEntry;
 use fenomeno\WallsOfBetrayal\Main;
 
@@ -54,8 +55,12 @@ class CooldownRepository implements CooldownRepositoryInterface
         yield from $this->main->getDatabaseManager()->asyncGeneric(Statements::REMOVE_COOLDOWN, $payload->jsonSerialize());
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/cooldowns.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/cooldowns.sql'
+            ]
+        ];
     }
 }

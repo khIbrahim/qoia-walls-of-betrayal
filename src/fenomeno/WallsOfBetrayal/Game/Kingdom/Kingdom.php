@@ -1,6 +1,7 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Game\Kingdom;
 
+use fenomeno\WallsOfBetrayal\Class\Season\SeasonKingdom;
 use fenomeno\WallsOfBetrayal\Class\Kingdom\KingdomBase;
 use fenomeno\WallsOfBetrayal\Class\KingdomData;
 use fenomeno\WallsOfBetrayal\Commands\Arguments\BorderArgument;
@@ -29,7 +30,6 @@ use pocketmine\color\Color;
 use pocketmine\entity\Location;
 use pocketmine\item\enchantment\AvailableEnchantmentRegistry;
 use pocketmine\item\Item;
-use pocketmine\math\AxisAlignedBB;
 use pocketmine\math\Vector3;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -44,6 +44,8 @@ class Kingdom
 
     private KingdomData $kingdomData;
     private KingdomBase $base;
+    private ?SeasonKingdom $seasonKingdom = null;
+    private bool $seasonDataLoaded = false;
 
     public function __construct(
         public string $id,
@@ -228,14 +230,77 @@ class Kingdom
         return $this->kingdomData->balance;
     }
 
-    public function isExcluded(string $uuid): bool
+    public function loadSeasonData(): void
     {
-        return Main::getInstance()->getKingdomManager()->isPlayerSanctioned($this->id, $uuid);
+        if ($this->seasonDataLoaded) {
+            return;
+        }
+
+        $main = Main::getInstance();
+        $currentSeason = $main->getSeasonManager()->getCurrentSeason();
+
+        if ($currentSeason === null) {
+            $this->seasonDataLoaded = true;
+            return;
+        }
+
+        Await::f2c(function() use ($currentSeason, $main) {
+            try {
+                $this->seasonKingdom = yield from $main->getDatabaseManager()
+                    ->getSeasonsRepository()
+                    ->loadKingdom($this->id, $currentSeason->id);
+
+                $this->seasonDataLoaded = true;
+
+                $main->getLogger()->debug("Season data loaded for kingdom: $this->id");
+            } catch (Throwable $e) {
+                $main->getLogger()->error("Failed to load season data for kingdom $this->id: " . $e->getMessage());
+                $this->seasonDataLoaded = true;
+            }
+        });
+    }
+
+    public function getSeasonKingdom(): ?SeasonKingdom
+    {
+        return $this->seasonKingdom;
+    }
+
+    public function isSeasonDataLoaded(): bool
+    {
+        return $this->seasonDataLoaded;
+    }
+
+    public function addSeasonWin(): void
+    {
+        $this->seasonKingdom?->addWin();
+    }
+
+    public function addSeasonLoss(): void
+    {
+        $this->seasonKingdom?->addLoss();
+    }
+
+    public function addSeasonPoints(int $points): void
+    {
+        $this->seasonKingdom?->addPoints($points);
+    }
+
+    public function updateSeasonRanking(int $ranking): void
+    {
+        $this->seasonKingdom?->updateRanking($ranking);
+    }
+
+    public function flushSeasonStats(): Generator
+    {
+        if ($this->seasonKingdom !== null) {
+            return yield from $this->seasonKingdom->flushStats();
+        }
+        return false;
     }
 
     public function getBase(): KingdomBase
     {
-        return $this->base ??= new KingdomBase(AxisAlignedBB::one(), Main::getInstance()->getServerManager()->getKingdomsWorld());
+        return $this->base;
     }
 
     public function setBase(KingdomBase $base): void

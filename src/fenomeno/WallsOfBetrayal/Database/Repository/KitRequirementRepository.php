@@ -8,6 +8,7 @@ use fenomeno\WallsOfBetrayal\Database\DatabaseManager;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\IncrementKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\InsertKitRequirementPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\KitRequirement\LoadKitRequirementPayload;
+use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\SqlError;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
@@ -118,8 +119,12 @@ class KitRequirementRepository implements KitRequirementRepositoryInterface
         $this->main->getDatabaseManager()->executeRawQuery($sql, $params);
     }
 
-    public static function getQueriesFile(): string
+    public static function getQueriesFiles(): array
     {
-        return 'queries/mysql/kit_requirements.sql';
+        return [
+            SqlQueriesFileManager::MYSQL => [
+                'queries/mysql/kit_requirements.sql'
+            ]
+        ];
     }
 }

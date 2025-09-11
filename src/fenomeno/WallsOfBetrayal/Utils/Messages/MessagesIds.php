@@ -441,24 +441,25 @@ final class MessagesIds
     public const PHASE_PAUSE_BROADCAST       = 'kingdoms.phase.pause.broadcast';
 
     // Seasons
-    public const SEASON_ENDED_NEW_SEASON = 'seasons.ended.newSeason';
-    public const SEASON_STARTED          = 'seasons.started';
-    public const SEASON_ENDED            = 'seasons.ended';
-    public const SEASON_PAUSED           = 'seasons.paused';
-    public const SEASON_RESUMED          = 'seasons.resumed';
-    public const SEASON_ALREADY_ACTIVE   = 'seasons.errors.alreadyActive';
-    public const SEASON_STARTED_SUCCESS  = 'seasons.startedSuccess';
-    public const SEASON_ALREADY_PAUSED   = 'seasons.errors.alreadyPaused';
-    public const NO_ACTIVE_SEASON        = 'seasons.errors.noActiveSeason';
-    public const SEASON_PAUSED_SUCCESS   = 'seasons.pausedSuccess';
-    public const SEASON_ENDED_SUCCESS    = 'seasons.endedSuccess';
-    public const SEASON_NOT_PAUSED       = 'seasons.errors.notPaused';
-    public const SEASON_RESUMED_SUCCESS  = 'seasons.resumedSuccess';
-    public const SEASON_NAME_EXISTS      = 'seasons.errors.nameExists';
-    public const SEASON_NO_SEASONS       = 'seasons.errors.noSeasons';
-    public const SEASON_LIST_HEADER      = 'seasons.list.header';
-    public const SEASON_LIST_ACTIVE_TAG  = 'seasons.list.activeTag';
-    public const SEASON_LIST_ENDED_TAG   = 'seasons.list.endedTag';
-    public const SEASON_LIST_PAUSED_TAG  = 'seasons.list.pausedTag';
-    public const SEASON_LIST_ENTRY       = 'seasons.list.entry';
+    public const SEASON_ENDED_NEW_SEASON     = 'seasons.ended.newSeason';
+    public const SEASON_STARTED              = 'seasons.started';
+    public const SEASON_ENDED                = 'seasons.ended';
+    public const SEASON_PAUSED               = 'seasons.paused';
+    public const SEASON_RESUMED              = 'seasons.resumed';
+    public const SEASON_ALREADY_ACTIVE       = 'seasons.errors.alreadyActive';
+    public const SEASON_STARTED_SUCCESS      = 'seasons.startedSuccess';
+    public const SEASON_ALREADY_PAUSED       = 'seasons.errors.alreadyPaused';
+    public const NO_ACTIVE_SEASON            = 'seasons.errors.noActiveSeason';
+    public const SEASON_PAUSED_SUCCESS       = 'seasons.pausedSuccess';
+    public const SEASON_ENDED_SUCCESS        = 'seasons.endedSuccess';
+    public const SEASON_NOT_PAUSED           = 'seasons.errors.notPaused';
+    public const SEASON_RESUMED_SUCCESS      = 'seasons.resumedSuccess';
+    public const SEASON_NAME_EXISTS          = 'seasons.errors.nameExists';
+    public const SEASON_NO_SEASONS           = 'seasons.errors.noSeasons';
+    public const SEASON_LIST_HEADER          = 'seasons.list.header';
+    public const SEASON_LIST_ACTIVE_TAG      = 'seasons.list.activeTag';
+    public const SEASON_LIST_ENDED_TAG       = 'seasons.list.endedTag';
+    public const SEASON_LIST_PAUSED_TAG      = 'seasons.list.pausedTag';
+    public const SEASON_LIST_ENTRY           = 'seasons.list.entry';
+    public const CANCELLED_DUE_TO_SEASON_OFF = 'seasons.cancelledDueToSeasonOff';
 }

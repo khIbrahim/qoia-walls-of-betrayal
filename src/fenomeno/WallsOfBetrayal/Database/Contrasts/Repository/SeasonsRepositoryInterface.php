@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Contrasts\Repository;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\RepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Payload\IdPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Seasons\Player\UpdateSeasonPlayerStats;
 use fenomeno\WallsOfBetrayal\Database\Payload\Seasons\SaveSeasonPayload;
 use fenomeno\WallsOfBetrayal\DTO\SeasonDTO;
 use Generator;
@@ -41,6 +42,9 @@ interface SeasonsRepositoryInterface extends RepositoryInterface
      * @return Generator<array{0: SeasonDTO}|null>
      */
     public function updateSeason(SaveSeasonPayload $payload): Generator;
+
+    public function updatePlayerStats(UpdateSeasonPlayerStats $payload): Generator;
+
 //
 //    /**
 //     * Charge les statistiques d'un joueur pour une saison spécifique
