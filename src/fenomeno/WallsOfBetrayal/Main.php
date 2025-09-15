@@ -93,6 +93,7 @@ use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
 use fenomeno\WallsOfBetrayal\Manager\RolesManager;
 use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
+use fenomeno\WallsOfBetrayal\Manager\StoreMemberManager;
 use fenomeno\WallsOfBetrayal\Services\NickService;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
 use fenomeno\WallsOfBetrayal\Tiles\TileManager;
@@ -125,6 +126,7 @@ class Main extends PluginBase
     private KingdomVoteManager       $kingdomVoteManager;
     private PlayerInventoriesManager $playerInventoriesManager;
     private CombatManager            $combatManager;
+    private StoreMemberManager       $storeMemberManager;
 
     protected function onLoad(): void
     {
@@ -167,6 +169,7 @@ class Main extends PluginBase
             $this->kingdomVoteManager       = new KingdomVoteManager($this);
             $this->playerInventoriesManager = new PlayerInventoriesManager($this);
             $this->combatManager            = new CombatManager($this);
+            $this->storeMemberManager       = new StoreMemberManager($this);
 
             EntityManager::getInstance()->startup($this);
             TileManager::getInstance()->startup();
@@ -348,6 +351,11 @@ class Main extends PluginBase
     public function getCombatManager(): CombatManager
     {
         return $this->combatManager;
+    }
+
+    public function getStoreMemberManager(): StoreMemberManager
+    {
+        return $this->storeMemberManager;
     }
 
     public function getSeasonManager(): SeasonManager
