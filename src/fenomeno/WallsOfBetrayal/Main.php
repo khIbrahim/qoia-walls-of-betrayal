@@ -27,6 +27,7 @@ use fenomeno\WallsOfBetrayal\Commands\Player\LobbyCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\NickCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\SellCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
+use fenomeno\WallsOfBetrayal\Commands\StoreMemberCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\StatsCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\VaultCommand;
 use fenomeno\WallsOfBetrayal\Commands\Punishment\Ban\BanCommand;
@@ -93,6 +94,7 @@ use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
 use fenomeno\WallsOfBetrayal\Manager\RolesManager;
 use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
+use fenomeno\WallsOfBetrayal\Manager\StoreMemberManager;
 use fenomeno\WallsOfBetrayal\Services\NickService;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
 use fenomeno\WallsOfBetrayal\Tiles\TileManager;
@@ -114,6 +116,7 @@ class Main extends PluginBase
     private KitsManager              $kitsManager;
     private AbilityManager           $abilityManager;
     private ShopManager              $shopManager;
+    private StoreMemberManager       $storeMemberManager;
     private CooldownManager          $cooldownManager;
     private EconomyManager           $economyManager;
     private RolesManager             $rolesManager;
@@ -157,6 +160,7 @@ class Main extends PluginBase
             $this->phaseManager             = new PhaseManager($this);
             $this->kitsManager              = new KitsManager($this);
             $this->shopManager              = new ShopManager($this);
+            $this->storeMemberManager       = new StoreMemberManager($this);
             $this->cooldownManager          = new CooldownManager($this);
             $this->economyManager           = new EconomyManager($this);
             $this->rolesManager             = new RolesManager($this);
@@ -177,6 +181,7 @@ class Main extends PluginBase
                 new KitCommand($this),
                 new AbilitiesCommand($this),
                 new ShopCommand($this),
+                new StoreMemberCommand($this),
                 new BalanceCommand($this),
                 new PayCommand($this),
                 new RichCommand($this),
@@ -293,6 +298,11 @@ class Main extends PluginBase
     public function getShopManager(): ShopManager
     {
         return $this->shopManager;
+    }
+
+    public function getStoreMemberManager(): StoreMemberManager
+    {
+        return $this->storeMemberManager;
     }
 
     public function getCooldownManager(): CooldownManager
