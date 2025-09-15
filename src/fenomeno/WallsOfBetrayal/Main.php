@@ -83,6 +83,7 @@ use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Listeners\StaffListener;
+use fenomeno\WallsOfBetrayal\Listeners\StoreMemberListener;
 use fenomeno\WallsOfBetrayal\Manager\BountyManager;
 use fenomeno\WallsOfBetrayal\Manager\CombatManager;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
@@ -242,6 +243,7 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new BlocksListener(), $this);
             $this->getServer()->getPluginManager()->registerEvents(new PunishmentListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new StaffListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new StoreMemberListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new NpcListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new FloatingTextListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new LobbyListener($this), $this);
