@@ -15,6 +15,7 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInter
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\SeasonsRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\StoreMemberRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\VaultRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
@@ -31,6 +32,7 @@ use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\BanRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\MuteRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\ReportRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\SeasonsRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\StoreMemberRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\VaultRepository;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\libasynql;
@@ -70,6 +72,7 @@ class DatabaseManager
     private KingdomVoteRepository $kingdomVoteRepository;
     private PlayerInventoriesRepositoryInterface $playerInventoriesRepository;
     private SeasonsRepositoryInterface $seasonsRepository;
+    private StoreMemberRepositoryInterface $storeMemberRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
     private BigEndianNbtSerializer $nbtSerializer;
@@ -98,6 +101,7 @@ class DatabaseManager
                 KingdomVoteRepository::class,
                 PlayerInventoriesRepository::class,
                 SeasonsRepository::class,
+                StoreMemberRepository::class,
             ];
 
             $this->queriesFileManager = new SqlQueriesFileManager($type, $repositories);
@@ -154,6 +158,9 @@ class DatabaseManager
 
             $this->seasonsRepository = new SeasonsRepository($this->main);
             $this->seasonsRepository->init($this);
+
+            $this->storeMemberRepository = new StoreMemberRepository($this->main);
+            $this->storeMemberRepository->init($this);
 
             $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
@@ -245,6 +252,11 @@ class DatabaseManager
     public function getSeasonsRepository(): SeasonsRepositoryInterface
     {
         return $this->seasonsRepository;
+    }
+
+    public function getStoreMemberRepository(): StoreMemberRepositoryInterface
+    {
+        return $this->storeMemberRepository;
     }
 
     public function readItems(?string $data, string $tagInventory) : array{

@@ -619,3 +619,73 @@ season-list:
   name: "list"
   description: "§7List all seasons"
   usage: "§e/season list §8– §7List all seasons"
+
+# Store Members Management Commands
+store-member:
+  name: "storemember"
+  description: "§7§oManage store members"
+  usage: "§e/storemember <subcommand> §8– §7Manage store members"
+  aliases:
+    - "sm"
+    - "member"
+    - "employee"
+
+store-member-add:
+  name: "add"
+  description: "§7Add a new store member"
+  usage: "§e/storemember add <player> <role> [store] §8– §7Add a new store member"
+
+store-member-remove:
+  name: "remove"
+  description: "§7Remove a store member"
+  usage: "§e/storemember remove <player> §8– §7Remove a store member"
+
+store-member-list:
+  name: "list"
+  description: "§7List all store members"
+  usage: "§e/storemember list [role] [status] §8– §7List store members by role/status"
+
+store-member-info:
+  name: "info"
+  description: "§7View store member information"
+  usage: "§e/storemember info [player] §8– §7View member info"
+
+store-member-promote:
+  name: "promote"
+  description: "§7Promote a store member"
+  usage: "§e/storemember promote <player> <role> §8– §7Promote a member to a higher role"
+
+store-member-demote:
+  name: "demote"
+  description: "§7Demote a store member"
+  usage: "§e/storemember demote <player> <role> §8– §7Demote a member to a lower role"
+
+store-member-status:
+  name: "status"
+  description: "§7Change store member status"
+  usage: "§e/storemember status <player> <status> §8– §7Change member status"
+
+store-member-permissions:
+  name: "permissions"
+  description: "§7Manage store member permissions"
+  usage: "§e/storemember permissions <player> <add|remove> <permission> §8– §7Manage permissions"
+
+store-member-clockin:
+  name: "clockin"
+  description: "§7Clock in to start work"
+  usage: "§e/storemember clockin §8– §7Start your work session"
+
+store-member-clockout:
+  name: "clockout"
+  description: "§7Clock out to end work"
+  usage: "§e/storemember clockout §8– §7End your work session"
+
+store-member-stats:
+  name: "stats"
+  description: "§7View store member statistics"
+  usage: "§e/storemember stats [player] §8– §7View member statistics"
+
+store-member-sessions:
+  name: "sessions"
+  description: "§7View work session history"
+  usage: "§e/storemember sessions [player] §8– §7View session history"

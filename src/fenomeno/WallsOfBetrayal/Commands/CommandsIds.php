@@ -103,4 +103,19 @@ final class CommandsIds
     public const SEASON_INFO = 'season-info';
     public const SEASON_LIST = 'season-list';
 
+    // Store Members
+    public const STORE_MEMBER = 'store-member';
+    public const STORE_MEMBER_ADD = 'store-member-add';
+    public const STORE_MEMBER_REMOVE = 'store-member-remove';
+    public const STORE_MEMBER_LIST = 'store-member-list';
+    public const STORE_MEMBER_INFO = 'store-member-info';
+    public const STORE_MEMBER_PROMOTE = 'store-member-promote';
+    public const STORE_MEMBER_DEMOTE = 'store-member-demote';
+    public const STORE_MEMBER_STATUS = 'store-member-status';
+    public const STORE_MEMBER_PERMISSIONS = 'store-member-permissions';
+    public const STORE_MEMBER_CLOCKIN = 'store-member-clockin';
+    public const STORE_MEMBER_CLOCKOUT = 'store-member-clockout';
+    public const STORE_MEMBER_STATS = 'store-member-stats';
+    public const STORE_MEMBER_SESSIONS = 'store-member-sessions';
+
 }
