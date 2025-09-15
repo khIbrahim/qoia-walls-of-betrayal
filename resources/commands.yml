@@ -619,3 +619,12 @@ season-list:
   name: "list"
   description: "§7List all seasons"
   usage: "§e/season list §8– §7List all seasons"
+
+store-member:
+  name: "storemember"
+  description: "§7§oManage store members for restaurant POS system"
+  usage: "§e/storemember <hire|fire|list|info|role|shift|sales|stats> §8– §7Manage store members"
+  aliases:
+    - "sm"
+    - "member"
+    - "employee"

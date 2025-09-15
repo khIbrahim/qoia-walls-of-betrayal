@@ -102,5 +102,6 @@ final class CommandsIds
     public const SEASON_RESUME = 'season-resume';
     public const SEASON_INFO = 'season-info';
     public const SEASON_LIST = 'season-list';
+    public const STORE_MEMBER = 'store-member';
 
 }
