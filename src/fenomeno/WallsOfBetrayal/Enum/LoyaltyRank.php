@@ -11,62 +11,60 @@ enum LoyaltyRank: string
 
     public function getMinScore(): int
     {
-        return match($this) {
-            self::TRAITOR => 0,
-            self::SUSPECT => 20,
-            self::NEUTRAL => 40,
-            self::LOYAL => 70,
-        };
+        switch($this) {
+            case self::TRAITOR: return 0;
+            case self::SUSPECT: return 20;
+            case self::NEUTRAL: return 40;
+            case self::LOYAL: return 70;
+        }
     }
 
     public function getMaxScore(): int
     {
-        return match($this) {
-            self::TRAITOR => 19,
-            self::SUSPECT => 39,
-            self::NEUTRAL => 69,
-            self::LOYAL => 100,
-        };
+        switch($this) {
+            case self::TRAITOR: return 19;
+            case self::SUSPECT: return 39;
+            case self::NEUTRAL: return 69;
+            case self::LOYAL: return 100;
+        }
     }
 
     public function getDisplayName(): string
     {
-        return match($this) {
-            self::TRAITOR => "§4§lTRAITOR",
-            self::SUSPECT => "§c§lSUSPECT",
-            self::NEUTRAL => "§7§lNEUTRAL",
-            self::LOYAL => "§a§lLOYAL",
-        };
+        switch($this) {
+            case self::TRAITOR: return "§4§lTRAITOR";
+            case self::SUSPECT: return "§c§lSUSPECT";
+            case self::NEUTRAL: return "§7§lNEUTRAL";
+            case self::LOYAL: return "§a§lLOYAL";
+        }
     }
 
     public function getTag(): string
     {
-        return match($this) {
-            self::TRAITOR => "§4[TRAITOR]",
-            self::SUSPECT => "§c[SUSPECT]",
-            self::NEUTRAL => "§7[NEUTRAL]",
-            self::LOYAL => "§a[LOYAL]",
-        };
+        switch($this) {
+            case self::TRAITOR: return "§4[TRAITOR]";
+            case self::SUSPECT: return "§c[SUSPECT]";
+            case self::NEUTRAL: return "§7[NEUTRAL]";
+            case self::LOYAL: return "§a[LOYAL]";
+        }
     }
 
     public function getColor(): string
     {
-        return match($this) {
-            self::TRAITOR => "§4",
-            self::SUSPECT => "§c",
-            self::NEUTRAL => "§7",
-            self::LOYAL => "§a",
-        };
+        switch($this) {
+            case self::TRAITOR: return "§4";
+            case self::SUSPECT: return "§c";
+            case self::NEUTRAL: return "§7";
+            case self::LOYAL: return "§a";
+        }
     }
 
     public static function fromScore(int $score): self
     {
-        return match(true) {
-            $score < 20 => self::TRAITOR,
-            $score < 40 => self::SUSPECT,
-            $score < 70 => self::NEUTRAL,
-            default => self::LOYAL,
-        };
+        if ($score < 20) return self::TRAITOR;
+        if ($score < 40) return self::SUSPECT;
+        if ($score < 70) return self::NEUTRAL;
+        return self::LOYAL;
     }
 
     public function canBetray(): bool

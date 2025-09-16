@@ -169,20 +169,21 @@ final class LoyaltyManager
      */
     private function playRankChangeEffects(Player $player, LoyaltyRank $newRank): void
     {
-        match($newRank) {
-            LoyaltyRank::TRAITOR => {
+        switch($newRank) {
+            case LoyaltyRank::TRAITOR:
                 $player->sendTitle("§4§lTRAITOR MODE ACTIVATED", "§cYou can now betray your allies", 10, 60, 20);
                 $player->getWorld()->addSound($player->getLocation(), new NoteSound(NoteInstrument::BASS(), 1));
-            },
-            LoyaltyRank::LOYAL => {
+                break;
+            case LoyaltyRank::LOYAL:
                 $player->sendTitle("§a§lLOYAL", "§7Special abilities unlocked", 10, 40, 10);
                 $player->getWorld()->addSound($player->getLocation(), new NoteSound(NoteInstrument::HARP(), 20));
-            },
-            LoyaltyRank::SUSPECT => {
+                break;
+            case LoyaltyRank::SUSPECT:
                 $player->getWorld()->addSound($player->getLocation(), new ClickSound());
-            },
-            default => null
-        };
+                break;
+            default:
+                break;
+        }
     }
 
     /**
@@ -305,14 +306,12 @@ final class LoyaltyManager
     public function calculateContributionBonus(int $contributionAmount): int
     {
         // Progressive bonus: more contribution = more loyalty
-        return match(true) {
-            $contributionAmount >= 10000 => 10,
-            $contributionAmount >= 5000 => 7,
-            $contributionAmount >= 1000 => 5,
-            $contributionAmount >= 500 => 3,
-            $contributionAmount >= 100 => 2,
-            default => self::CONTRIBUTION_BASE
-        };
+        if ($contributionAmount >= 10000) return 10;
+        if ($contributionAmount >= 5000) return 7;
+        if ($contributionAmount >= 1000) return 5;
+        if ($contributionAmount >= 500) return 3;
+        if ($contributionAmount >= 100) return 2;
+        return self::CONTRIBUTION_BASE;
     }
 
     /**
