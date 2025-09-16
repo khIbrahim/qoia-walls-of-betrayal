@@ -225,6 +225,8 @@ permissions:
     default: true
   wob.command.kingdom.betray:
     default: true
+  wob.command.kingdom.loyalty:
+    default: true
   wob.kingdom.rally:
     default: true
   wob.kingdom.alarm:

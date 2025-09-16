@@ -11,6 +11,7 @@ use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomBountySubComman
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomContributeSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomInfoSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomKickSubCommand;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomLoyaltySubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomManageSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomMapSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomPeaceSubCommand;
@@ -48,6 +49,7 @@ class KingdomCommand extends WCommand
 //        $this->registerSubCommand(new KingdomManageSubCommand($this->main));
         $this->registerSubCommand(new KingdomKickSubCommand($this->main));
         $this->registerSubCommand(new KingdomBanSubCommand($this->main));
+        $this->registerSubCommand(new KingdomLoyaltySubCommand($this->main));
         $this->registerSubCommand(new KingdomVoteSubCommand($this->main));
 //        $this->registerSubCommand(new KingdomTruceSubCommand($this->main));
 //        $this->registerSubCommand(new KingdomWarSubCommand($this->main));

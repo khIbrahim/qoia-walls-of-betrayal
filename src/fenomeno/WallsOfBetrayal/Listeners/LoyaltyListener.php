@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
 use fenomeno\WallsOfBetrayal\Events\LoyaltyChangeEvent;
+use fenomeno\WallsOfBetrayal\Game\Abilities\Types\DefenseAbilityInterface;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\LoyaltyManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
@@ -95,6 +96,16 @@ class LoyaltyListener implements Listener
             // Enemy kill - award loyalty
             if ($victim->getHealth() - $event->getFinalDamage() <= 0) {
                 $this->main->getLoyaltyManager()->addLoyalty($damager, LoyaltyManager::ENEMY_KILL, 'Enemy kill');
+            }
+
+            // Trigger defense abilities for the victim (defending)
+            $this->main->getAbilityManager()->triggerAbilityType($victim, DefenseAbilityInterface::class, $victim, $damager);
+            
+            // Check if this counts as a successful defense (victim survives and is in their territory)
+            if ($victim->getHealth() - $event->getFinalDamage() > 0) {
+                // TODO: Add territory checking logic here
+                // For now, award defense loyalty if the victim survives
+                $this->main->getLoyaltyManager()->addLoyalty($victim, LoyaltyManager::SUCCESSFUL_DEFENSE, 'Successful defense');
             }
         }
     }

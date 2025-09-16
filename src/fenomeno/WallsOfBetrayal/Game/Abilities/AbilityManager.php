@@ -3,8 +3,10 @@
 namespace fenomeno\WallsOfBetrayal\Game\Abilities;
 
 use fenomeno\WallsOfBetrayal\Game\Abilities\Ability\BloodRageAbility;
+use fenomeno\WallsOfBetrayal\Game\Abilities\Ability\GuardiansWillAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Ability\LavabornAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Ability\NightVeilAbility;
+use fenomeno\WallsOfBetrayal\Game\Abilities\Ability\RoyalBlessingAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Ability\ShadowStepAbility;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\ActiveAbilityInterface;
 use fenomeno\WallsOfBetrayal\Game\Abilities\Types\ConditionalAbilityInterface;
@@ -26,6 +28,8 @@ class AbilityManager
         $this->registerAbility(new ShadowStepAbility());
         $this->registerAbility(new NightVeilAbility());
         $this->registerAbility(new LavabornAbility());
+        $this->registerAbility(new GuardiansWillAbility());
+        $this->registerAbility(new RoyalBlessingAbility());
 
         $this->main->getScheduler()->scheduleRepeatingTask(new ClosureTask(function (){
             foreach ($this->abilities as $ability) {

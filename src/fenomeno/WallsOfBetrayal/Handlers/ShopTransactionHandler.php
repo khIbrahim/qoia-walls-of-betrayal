@@ -20,6 +20,15 @@ class ShopTransactionHandler
     /** @throws */
     public static function buy(Player $player, ShopItem $shopItem, int $count): Generator
     {
+        // Check loyalty restrictions
+        $loyaltyManager = Main::getInstance()->getLoyaltyManager();
+        $loyaltyRank = $loyaltyManager->getLoyaltyRank($player);
+        
+        if ($loyaltyRank && $loyaltyRank->hasShopRestrictions()) {
+            MessagesUtils::sendTo($player, 'kingdoms.loyalty.shopRestricted');
+            return null;
+        }
+
         $unit = $shopItem->getBuyPrice();
         $total = $unit * $count;
 

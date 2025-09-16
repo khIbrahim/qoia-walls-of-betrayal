@@ -99,6 +99,10 @@ class KingdomContributeSubCommand extends WSubCommand
 
                 $player->getXpManager()->subtractXpLevels($amount);
 
+                // Award contribution-based loyalty
+                $loyaltyBonus = $this->main->getLoyaltyManager()->calculateContributionBonus($amount);
+                $this->main->getLoyaltyManager()->addLoyalty($player, $loyaltyBonus, "XP contribution: {$amount}");
+
                 $kingdom->broadcastMessage(MessagesIds::KINGDOMS_CONTRIBUTE_SUCCESS, [
                     ExtraTags::PLAYER => $player->getName(),
                     ExtraTags::AMOUNT => $amount,
@@ -141,8 +145,10 @@ class KingdomContributeSubCommand extends WSubCommand
                     $kingdom->contribute($amount, KingdomDataFilterArgument::BALANCE),
                     Session::get($player)->addLoyaltyScore()
                 ]);
-                yield from $this->main->getEconomyManager()->subtract($player, $amount);
-                yield from $kingdom->contribute($amount, KingdomDataFilterArgument::BALANCE);
+
+                // Award contribution-based loyalty for money
+                $loyaltyBonus = $this->main->getLoyaltyManager()->calculateContributionBonus($amount);
+                $this->main->getLoyaltyManager()->addLoyalty($player, $loyaltyBonus, "Money contribution: {$amount}");
 
                 $kingdom->broadcastMessage(MessagesIds::KINGDOMS_CONTRIBUTE_SUCCESS, [
                     ExtraTags::PLAYER => $player->getName(),

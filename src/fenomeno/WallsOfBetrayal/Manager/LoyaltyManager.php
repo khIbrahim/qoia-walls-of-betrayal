@@ -94,6 +94,9 @@ final class LoyaltyManager
 
         // Handle rank changes
         $this->handleRankChange($player, $oldRank, $newRank, $amount, $reason);
+        
+        // Update player nametag
+        $this->updatePlayerNameTag($player);
     }
 
     /**
@@ -310,6 +313,31 @@ final class LoyaltyManager
             $contributionAmount >= 100 => 2,
             default => self::CONTRIBUTION_BASE
         };
+    }
+
+    /**
+     * Update player nametag with loyalty rank
+     */
+    public function updatePlayerNameTag(Player $player): void
+    {
+        $loyaltyRank = $this->getLoyaltyRank($player);
+        $session = Session::get($player);
+        
+        if (!$loyaltyRank || !$session->isLoaded()) {
+            return;
+        }
+
+        $baseDisplayName = $player->getName();
+        $kingdomName = $session->getKingdom()?->displayName ?? "";
+        
+        // Format: [LOYAL] PlayerName [KingdomTag]
+        $displayName = $loyaltyRank->getTag() . " §f" . $baseDisplayName;
+        if ($kingdomName) {
+            $displayName .= " §7[§r" . $kingdomName . "§7]";
+        }
+        
+        $player->setDisplayName($displayName);
+        $player->setNameTag($displayName);
     }
 
     /**
