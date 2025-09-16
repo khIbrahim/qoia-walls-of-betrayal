@@ -1,0 +1,97 @@
+loyalty:
+  # Loyalty System Configuration
+  enabled: true
+  
+  # Default loyalty score for new players
+  default_score: 50
+  
+  # Loyalty gain amounts
+  gains:
+    successful_defense: 5
+    enemy_kill: 2
+    active_playtime: 1
+    contribution_base: 1
+    quest_completion: 3
+    resource_gathering: 1
+    alliance_help: 2
+  
+  # Loyalty loss amounts
+  losses:
+    player_death: -2
+    combat_tag_logout: -5
+    team_kill: -15
+    afk_penalty: -1
+    desertion: -10
+    resource_theft: -5
+    insubordination: -3
+  
+  # Time intervals (in seconds)
+  intervals:
+    active_playtime_check: 1800  # 30 minutes
+    afk_check: 600               # 10 minutes
+  
+  # Rank thresholds
+  ranks:
+    traitor:
+      min_score: 0
+      max_score: 19
+      tag: "§4[TRAITOR]"
+      color: "§4"
+      display_name: "§4§lTRAITOR"
+      can_betray: true
+      shop_restricted: true
+      ability_access: false
+    
+    suspect:
+      min_score: 20
+      max_score: 39
+      tag: "§c[SUSPECT]"
+      color: "§c"
+      display_name: "§c§lSUSPECT"
+      can_betray: false
+      shop_restricted: true
+      ability_access: false
+    
+    neutral:
+      min_score: 40
+      max_score: 69
+      tag: "§7[NEUTRAL]"
+      color: "§7"
+      display_name: "§7§lNEUTRAL"
+      can_betray: false
+      shop_restricted: false
+      ability_access: false
+    
+    loyal:
+      min_score: 70
+      max_score: 100
+      tag: "§a[LOYAL]"
+      color: "§a"
+      display_name: "§a§lLOYAL"
+      can_betray: false
+      shop_restricted: false
+      ability_access: true
+  
+  # Contribution bonus calculation
+  contribution_bonuses:
+    - amount: 10000
+      bonus: 10
+    - amount: 5000
+      bonus: 7
+    - amount: 1000
+      bonus: 5
+    - amount: 500
+      bonus: 3
+    - amount: 100
+      bonus: 2
+  
+  # Messages and effects
+  messages:
+    betrayal_mode_activated: "§4§lBETRAYAL MODE: §cYou can now attack your allies and receive special rewards!"
+    betrayal_mode_deactivated: "§a§lLOYALTY RESTORED: §7You can no longer betray your allies."
+    convictions_weakening: "§cVos convictions envers votre royaume faiblissent…"
+  
+  # Special abilities for loyal players
+  loyal_abilities:
+    - "guardians_will"
+    - "royal_blessing"

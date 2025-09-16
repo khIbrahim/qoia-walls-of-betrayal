@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Handlers;
 
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinWobEvent;
+use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\player\Player;
@@ -32,6 +33,9 @@ class PlayerJoinHandler
             ]);
             $kingdom->broadcastSound(new PopSound());
         }
+
+        // Update loyalty nametag
+        Main::getInstance()->getLoyaltyManager()->updatePlayerNameTag($player);
     }
 
 }

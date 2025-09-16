@@ -78,6 +78,7 @@ use fenomeno\WallsOfBetrayal\Listeners\InventoryListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\LobbyListener;
+use fenomeno\WallsOfBetrayal\Listeners\LoyaltyListener;
 use fenomeno\WallsOfBetrayal\Listeners\NpcListener;
 use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
@@ -90,6 +91,7 @@ use fenomeno\WallsOfBetrayal\Manager\CombatManager;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\FloatingTextManager;
 use fenomeno\WallsOfBetrayal\Manager\KingdomVoteManager;
+use fenomeno\WallsOfBetrayal\Manager\LoyaltyManager;
 use fenomeno\WallsOfBetrayal\Manager\NpcManager;
 use fenomeno\WallsOfBetrayal\Manager\PlayerInventoriesManager;
 use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
@@ -98,6 +100,7 @@ use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Manager\ShopManager;
 use fenomeno\WallsOfBetrayal\Services\NickService;
 use fenomeno\WallsOfBetrayal\Sessions\SessionListener;
+use fenomeno\WallsOfBetrayal\Task\LoyaltyTask;
 use fenomeno\WallsOfBetrayal\Tiles\TileManager;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use Generator;
@@ -128,6 +131,7 @@ class Main extends PluginBase
     private ServerManager            $serverManager;
     private BountyManager            $bountyManager;
     private KingdomVoteManager       $kingdomVoteManager;
+    private LoyaltyManager           $loyaltyManager;
     private PlayerInventoriesManager $playerInventoriesManager;
     private CombatManager            $combatManager;
 
@@ -173,6 +177,7 @@ class Main extends PluginBase
             $this->floatingTextManager      = new FloatingTextManager($this);
             $this->bountyManager            = new BountyManager($this);
             $this->kingdomVoteManager       = new KingdomVoteManager($this);
+            $this->loyaltyManager           = new LoyaltyManager($this);
             $this->playerInventoriesManager = new PlayerInventoriesManager($this);
             $this->combatManager            = new CombatManager($this);
 
@@ -248,8 +253,12 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new NpcListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new FloatingTextListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new LobbyListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new LoyaltyListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new InventoryListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new CombatListener($this), $this);
+
+            // Schedule loyalty task for AFK checking and playtime tracking
+            $this->getScheduler()->scheduleRepeatingTask(new LoyaltyTask($this), 20);
 
             Await::g2c(
                 $this->loadDependencies(),
@@ -346,6 +355,11 @@ class Main extends PluginBase
     public function getKingdomVoteManager(): KingdomVoteManager
     {
         return $this->kingdomVoteManager;
+    }
+
+    public function getLoyaltyManager(): LoyaltyManager
+    {
+        return $this->loyaltyManager;
     }
 
     public function getPlayerInventoriesManager(): PlayerInventoriesManager

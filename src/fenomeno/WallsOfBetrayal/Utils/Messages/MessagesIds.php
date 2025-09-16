@@ -473,4 +473,15 @@ final class MessagesIds
     public const SEASON_BOSS_BAR_TIME_INFO_MANY_DAYS = 'seasons.bossBar.timeInfo.manyDays';
     public const SEASON_BOSS_BAR_NO_SEASON = 'seasons.bossBar.noSeason';
     public const KINGDOM_LOYALTY_SCORE_INCREASED = 'kingdoms.loyalty.scoreIncreased';
+    
+    // Additional Loyalty Messages
+    public const LOYALTY_RANK_CHANGED = 'kingdoms.loyalty.rankChanged';
+    public const LOYALTY_BETRAYAL_MODE_ACTIVATED = 'kingdoms.loyalty.betrayalModeActivated';
+    public const LOYALTY_BETRAYAL_MODE_DEACTIVATED = 'kingdoms.loyalty.betrayalModeDeactivated';
+    public const LOYALTY_AFK_WARNING = 'kingdoms.loyalty.afkWarning';
+    public const LOYALTY_AFK_PENALTY = 'kingdoms.loyalty.afkPenalty';
+    public const LOYALTY_ACTIVE_AGAIN = 'kingdoms.loyalty.activeAgain';
+    public const LOYALTY_INSPECT_SELF = 'kingdoms.loyalty.inspect.self';
+    public const LOYALTY_INSPECT_OTHER = 'kingdoms.loyalty.inspect.other';
+    public const LOYALTY_SHOP_RESTRICTED = 'kingdoms.loyalty.shopRestricted';
 }
