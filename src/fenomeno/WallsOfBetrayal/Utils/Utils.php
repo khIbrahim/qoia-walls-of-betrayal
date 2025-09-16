@@ -17,8 +17,10 @@ use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\item\VanillaItems;
 use pocketmine\math\AxisAlignedBB;
+use pocketmine\network\mcpe\protocol\types\BossBarColor;
 use pocketmine\player\Player;
 use pocketmine\Server;
+use pocketmine\utils\TextFormat;
 
 class Utils
 {
@@ -332,6 +334,19 @@ class Utils
         return ($alignedBB->maxX - $alignedBB->minX <= 1) &&
                ($alignedBB->maxY - $alignedBB->minY <= 1) &&
                ($alignedBB->maxZ - $alignedBB->minZ <= 1);
+    }
+
+    public static function bossBarColorFromTextFormat(string $color): int
+    {
+        return match($color){
+            TextFormat::RED          => BossBarColor::RED,
+            TextFormat::GREEN        => BossBarColor::GREEN,
+            TextFormat::BLUE         => BossBarColor::BLUE,
+            TextFormat::YELLOW       => BossBarColor::YELLOW,
+            TextFormat::LIGHT_PURPLE => BossBarColor::PINK,
+            TextFormat::WHITE        => BossBarColor::WHITE,
+            default                  => BossBarColor::PURPLE,
+        };
     }
 
 }

@@ -42,7 +42,6 @@ class SessionTask extends Task
                     $this->session->getSeasonPlayer()?->flushStats()
                 ];
 
-                // Ajouter le flush des stats du royaume si disponible
                 $kingdom = $this->session->getKingdom();
                 if ($kingdom !== null && $kingdom->isSeasonDataLoaded()) {
                     $flushTasks[] = $kingdom->flushSeasonStats();
@@ -50,11 +49,10 @@ class SessionTask extends Task
 
                 $results = yield from Await::all($flushTasks);
 
-                // Log seulement si au moins une flush a réussi
                 $anySuccess = array_filter($results, fn($result) => $result === true);
-                if (!empty($anySuccess)) {
-                    var_dump($this->session->getPlayer()->getDisplayName() . " flush");
-                }
+//                if (!empty($anySuccess)) {
+//                    var_dump($this->session->getPlayer()->getDisplayName() . " flush");
+//                }
             } catch (Throwable $e){
                 Utils::onFailure($e, $this->session->getPlayer(), "Failed to flush player and season stats");
             }

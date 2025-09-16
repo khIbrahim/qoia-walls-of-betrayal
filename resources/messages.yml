@@ -179,10 +179,6 @@ kingdoms:
         §7Duration: §f{DURATION}
 
         §7Do you confirm initiating an §4Exile Vote§7 against this subject?
-
-
-
-
   ban:
     usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom ban <player> [reason]"
     success: "{KINGDOMS_PREFIX}{GREEN}Started vote to ban {PLAYER} from {KINGDOM}."
@@ -298,8 +294,6 @@ kingdoms:
           §cWarning: This action will permanently ban the player from your kingdom.
           §7Do you confirm this banishment vote?
 
-
-
   upgrade:
     usage: "{KINGDOMS_PREFIX}{RED}Usage: /kingdom upgrade <perkId>"
     success: "{KINGDOMS_PREFIX}{GREEN}Started vote to upgrade {PERK}."
@@ -350,6 +344,8 @@ kingdoms:
 
   # Loyalty System
   loyalty:
+    scoreIncreased:
+      message: "{KINGDOMS_PREFIX}{GREEN}Your loyalty to {KINGDOM} has increased to {SCORE}!"
     high: "{KINGDOMS_PREFIX}{GREEN}Your loyalty to {KINGDOM} is unwavering!"
     medium: "{KINGDOMS_PREFIX}{YELLOW}Your loyalty to {KINGDOM} is tested..."
     low: "{KINGDOMS_PREFIX}{RED}Your loyalty to {KINGDOM} is questionable!"
@@ -857,6 +853,17 @@ seasons:
     activeTag: "{GREEN}[Active]"
     pausedTag: "{YELLOW}[Paused]"
     endedTag: "{RED}[Ended]"
+  bossBar:
+    title: "§r§l§6Walls§eOf§6Betrayal §8| §r{COLOR}Season {NUMBER} §8- §f{NAME}"
+    subtitle: "§8[§7Theme: §f{THEME}§8] {TIME_INFO} {ADDITIONAL_INFO}"
+    noSeason: "§r§l§6Walls§eOf§6Betrayal §8| §7No Active Season"
+    timeInfo:
+      paused: "§8[§e⏸ Paused§8]"
+      lessThanADay: "§8[§c⚠ {HOURS}h left§8]"
+      fewDays: "§8[§a⏱ {DAYS}d left§8]"
+      manyDays: "§8[§6⚠ {DAYS}d left§8]"
+    additionalInfo:
+      theme: "§8[§7Theme: §f{THEME}§8]"
 
 # ---------------------------------------------------------------------------
 

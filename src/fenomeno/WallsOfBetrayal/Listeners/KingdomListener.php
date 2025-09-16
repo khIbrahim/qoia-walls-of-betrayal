@@ -5,6 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Listeners;
 use fenomeno\WallsOfBetrayal\Enum\WallStateEnum;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomWorldEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerLeaveKingdomWorldEvent;
+use fenomeno\WallsOfBetrayal\Logs\Domain\KillLogEvent;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Manager\ServerManager;
 use fenomeno\WallsOfBetrayal\Sessions\Session;
@@ -104,7 +105,30 @@ class KingdomListener implements Listener
                     $killerSession->addKill();
 
                     $killerKingdom = $killerSession->getKingdom();
-                    $killerKingdom?->addKill();
+                    if ($killerKingdom !== null){
+                        $killerKingdom->addKill();
+                        $score = $killerKingdom->getBase()->isPlayerInBase($victim) ? 10 : 5;
+                        Await::g2c(
+                            $this->main->getDatabaseManager()->getPlayerLoyaltyRepository()->updateLoyaltyScore($killer->getUniqueId()->toString(), $score),
+                            function () use ($killer) {
+                                MessagesUtils::sendTo($killer, MessagesIds::KINGDOM_LOYALTY_SCORE_INCREASED, [
+                                    ExtraTags::KINGDOM => $killer->getDisplayName(),
+                                    ExtraTags::SCORE   => 5
+                                ]);
+                            }
+                        );
+                    }
+
+                    $this->main->getLoggingManager()->recordEvent(new KillLogEvent(
+                        $killer->getName(),
+                        $victim->getName(),
+                        $killer->getInventory()->getItemInHand()->getName(),
+                        $this->main->getCombatManager()->getAllOpponents($killer),
+                        (int)$killer->getHealth(),
+                        count($this->main->getCombatManager()->getAllOpponents($killer)) > 0,
+                        $killerSession->getKingdom()?->getBase()->isPlayerInBase($killer) ?? false,
+                        time()
+                    ));
 
                     $event->setDeathMessage("");
                     MessagesUtils::sendTo($killer->getServer(), MessagesIds::PLAYER_KILL, [

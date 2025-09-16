@@ -4,7 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Database\Payload\Abstract;
 
 use fenomeno\WallsOfBetrayal\Database\Contrasts\PayloadInterface;
 
-abstract readonly class UuidPayload implements PayloadInterface
+readonly class UuidPayload implements PayloadInterface
 {
 
     public function __construct(

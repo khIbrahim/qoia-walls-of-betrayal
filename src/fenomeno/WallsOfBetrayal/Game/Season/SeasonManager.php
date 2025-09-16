@@ -15,6 +15,7 @@ use fenomeno\WallsOfBetrayal\Exceptions\Season\FailedToEndSeasonException;
 use fenomeno\WallsOfBetrayal\Exceptions\Season\FailedToUpdateSeasonException;
 use fenomeno\WallsOfBetrayal\Exceptions\Season\NoActiveSeasonException;
 use fenomeno\WallsOfBetrayal\Exceptions\Season\NoSeasonException;
+use fenomeno\WallsOfBetrayal\Game\BossBar\SeasonBossBar;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
@@ -37,11 +38,15 @@ class SeasonManager
 
     private int $lastSeasonNumber = 0;
 
+    private SeasonBossBar $bossBar;
+
     public function __construct(private readonly Main $main)
     {
         $this->loadCurrentSeason();
-
         $this->loadSeasonHistory();
+
+        $this->bossBar = new SeasonBossBar($this->main);
+        $this->main->getServer()->getPluginManager()->registerEvents(new SeasonEvents($this->main), $this->main);
     }
 
     private function loadCurrentSeason(): void
@@ -371,6 +376,11 @@ class SeasonManager
             $seasons[] = $this->currentSeason;
         }
         return $seasons;
+    }
+
+    public function getBossBar(): SeasonBossBar
+    {
+        return $this->bossBar;
     }
 
 }

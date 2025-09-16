@@ -19,18 +19,18 @@ use pocketmine\promise\Promise;
 interface PlayerRepositoryInterface extends RepositoryInterface
 {
 
-    /**
-     * Charge les données d’un joueur depuis la base
-     *
-     * @param LoadPlayerPayload $payload
-     *
-     * @phpstan-template TPromiseValue of null|PlayerData
-     *
-     * @phpstan-return Promise<TPromiseValue> Renvoie un PlayerData si les données existent, sinon null
-     */
-    public function load(LoadPlayerPayload $payload): Promise; //todo generator
+//    /**
+//     * Charge les données d’un joueur depuis la base
+//     *
+//     * @param LoadPlayerPayload $payload
+//     *
+//     * @phpstan-template TPromiseValue of null|PlayerData
+//     *
+//     * @phpstan-return Promise<TPromiseValue> Renvoie un PlayerData si les données existent, sinon null
+//     */
+    public function load(LoadPlayerPayload $payload): Generator; //todo generator
 
-    public function insert(InsertPlayerPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): void;
+    public function insert(InsertPlayerPayload $payload, ?\Closure $onSuccess = null, ?\Closure $onFailure = null): Generator;
 
     public function updatePlayerKingdom(SetPlayerKingdomPayload $payload): Generator;
 

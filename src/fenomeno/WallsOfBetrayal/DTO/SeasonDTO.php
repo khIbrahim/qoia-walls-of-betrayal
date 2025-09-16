@@ -132,4 +132,20 @@ class SeasonDTO
     {
         return $this->isActive;
     }
+
+    public function getRemainingHours(): int
+    {
+        if (! $this->isActive) {
+            return 0;
+        }
+
+        $endTime = $this->actualEndTime ?? $this->plannedEndTime;
+        $remainingSeconds = $endTime - time();
+
+        if ($remainingSeconds <= 0) {
+            return 0;
+        }
+
+        return (int) ceil($remainingSeconds / 3600);
+    }
 }

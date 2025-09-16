@@ -16,13 +16,12 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerStatsPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\UsernamePayload;
 use fenomeno\WallsOfBetrayal\Database\SqlQueriesFileManager;
 use fenomeno\WallsOfBetrayal\DTO\PlayerData;
+use fenomeno\WallsOfBetrayal\Exceptions\Player\FailedToLoadPlayer;
 use fenomeno\WallsOfBetrayal\Exceptions\RecordNotFoundException;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use Generator;
 use pocketmine\player\Player;
-use pocketmine\promise\Promise;
-use pocketmine\promise\PromiseResolver;
 use Throwable;
 
 class PlayerRepository implements PlayerRepositoryInterface
@@ -37,56 +36,95 @@ class PlayerRepository implements PlayerRepositoryInterface
         });
     }
 
-    public function load(LoadPlayerPayload $payload): Promise
+    /**
+     * @throws FailedToLoadPlayer
+     */
+    public function load(LoadPlayerPayload $payload): Generator
     {
-        $resolver = new PromiseResolver();
+        $data = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::LOAD_PLAYER, $payload->jsonSerialize());
+        if (empty($data)){
+            return yield from $this->insert(
+                new InsertPlayerPayload($payload->uuid, strtolower($payload->name)),
+                fn() => $this->main->getLogger()->info("§a$payload->name successfully inserted."),
+                fn(Throwable $e) => $this->main->getLogger()->info("§aFailed to insert: $payload->name: " . $e->getMessage()),
+            );
+        }
 
-        Await::f2c(function() use ($resolver, $payload) {
-            try {
-                $data = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::LOAD_PLAYER, $payload->jsonSerialize());
-                if (empty($data)){
-                    $this->insert(
-                        new InsertPlayerPayload($payload->uuid, strtolower($payload->name)),
-                        fn() => $this->main->getLogger()->info("§a$payload->name successfully inserted."),
-                        fn(Throwable $e) => $this->main->getLogger()->info("§aFailed to insert: $payload->name: " . $e->getMessage()),
-                    );
-                    $resolver->resolve(null);
-                    return;
-                }
+        $data = $data[0];
+        if(! is_array($data)){
+            throw new FailedToLoadPlayer("Failed to load player with UUID: $payload->uuid: data is not an array");
+        }
 
-                $data = $data[0];
-                if(! isset($data['kingdom'], $data['abilities'])){
-                    $resolver->resolve(null);
-                    return;
-                }
+        $kingdom   = (string) $data['kingdom'];
+        $abilities = isset($data['abilities']) ? json_decode(((string) $data['abilities']), true) : [];
+        $kills     = (int) ($data['kills'] ?? 0);
+        $deaths    = (int) ($data['deaths'] ?? 0);
+        return new PlayerData(
+            uuid: $payload->uuid,
+            name: $payload->name,
+            kingdom: $kingdom,
+            abilities: $abilities,
+            kills: $kills,
+            deaths: $deaths
+        );
 
-                $kingdom   = (string) $data['kingdom'];
-                $abilities = json_decode(((string) $data['abilities']), true);
-                $kills     = (int) ($data['kills'] ?? 0);
-                $deaths    = (int) ($data['deaths'] ?? 0);
-
-                $resolver->resolve(new PlayerData(
-                    uuid: $payload->uuid,
-                    name: $payload->name,
-                    kingdom: $kingdom,
-                    abilities: $abilities,
-                    kills: $kills,
-                    deaths: $deaths
-                ));
-            } catch (Throwable $e){
-                $this->main->getLogger()->error("§cFailed to load player data : " . $e->getMessage());
-                $this->main->getLogger()->logException($e);
-
-                $resolver->reject();
-            }
-        });
-
-        return $resolver->getPromise();
+//        $resolver = new PromiseResolver();
+//
+//        Await::f2c(function() use ($resolver, $payload) {
+//            try {
+//                $data = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::LOAD_PLAYER, $payload->jsonSerialize());
+//                if (empty($data)){
+//                    $this->insert(
+//                        new InsertPlayerPayload($payload->uuid, strtolower($payload->name)),
+//                        fn() => $this->main->getLogger()->info("§a$payload->name successfully inserted."),
+//                        fn(Throwable $e) => $this->main->getLogger()->info("§aFailed to insert: $payload->name: " . $e->getMessage()),
+//                    );
+//                    $resolver->resolve(null);
+//                    return;
+//                }
+//
+//                $data = $data[0];
+//                if(! isset($data['kingdom'], $data['abilities'])){
+//                    $resolver->resolve(null);
+//                    return;
+//                }
+//
+//                $kingdom   = (string) $data['kingdom'];
+//                $abilities = json_decode(((string) $data['abilities']), true);
+//                $kills     = (int) ($data['kills'] ?? 0);
+//                $deaths    = (int) ($data['deaths'] ?? 0);
+//
+//                $resolver->resolve(new PlayerData(
+//                    uuid: $payload->uuid,
+//                    name: $payload->name,
+//                    kingdom: $kingdom,
+//                    abilities: $abilities,
+//                    kills: $kills,
+//                    deaths: $deaths
+//                ));
+//            } catch (Throwable $e){
+//                $this->main->getLogger()->error("§cFailed to load player data : " . $e->getMessage());
+//                $this->main->getLogger()->logException($e);
+//
+//                $resolver->reject();
+//            }
+//        });
+//
+//        return $resolver->getPromise();
     }
 
-    public function insert(InsertPlayerPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): void
+    /**
+     * @throws FailedToLoadPlayer
+     */
+    public function insert(InsertPlayerPayload $payload, ?Closure $onSuccess = null, ?Closure $onFailure = null): Generator
     {
-        $this->main->getDatabaseManager()->executeInsert(Statements::INSERT_PLAYER, $payload->jsonSerialize(), $onSuccess, $onFailure);
+        [, $affectedRows] = yield from $this->main->getDatabaseManager()->asyncInsert(Statements::INSERT_PLAYER, $payload->jsonSerialize());
+
+        if($affectedRows === 0){
+            throw new FailedToLoadPlayer("Failed to insert player with UUID: $payload->uuid: no rows affected");
+        }
+
+        return new PlayerData($payload->uuid, $payload->name);
     }
 
 
@@ -171,7 +209,7 @@ class PlayerRepository implements PlayerRepositoryInterface
     {
         return [
             SqlQueriesFileManager::MYSQL => [
-                'queries/mysql/players.sql'
+                'queries/mysql/players.sql',
             ],
             SqlQueriesFileManager::SQLITE => []
         ];

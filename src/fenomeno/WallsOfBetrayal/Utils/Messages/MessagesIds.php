@@ -462,4 +462,15 @@ final class MessagesIds
     public const SEASON_LIST_PAUSED_TAG      = 'seasons.list.pausedTag';
     public const SEASON_LIST_ENTRY           = 'seasons.list.entry';
     public const CANCELLED_DUE_TO_SEASON_OFF = 'seasons.cancelledDueToSeasonOff';
+    public const SEASON_BOSS_BAR_TITLE       = 'seasons.bossBar.title';
+    public const SEASON_BOSS_BAR_COLOR       = 'seasons.bossBar.color';
+    public const SEASON_BOSS_BAR_PERCENTAGE  = 'seasons.bossBar.percentage';
+    public const SEASON_BOSS_BAR_SUBTITLE    = 'seasons.bossBar.subtitle';
+    public const SEASON_BOSS_BAR_ADDITIONAL_INFO_THEME = 'seasons.bossBar.additionalInfo.theme';
+    public const SEASON_BOSS_BAR_TIME_INFO_PAUSED = 'seasons.bossBar.timeInfo.paused';
+    public const SEASON_BOSS_BAR_TIME_INFO_LESS_THAN_A_DAY = 'seasons.bossBar.timeInfo.lessThanADay';
+    public const SEASON_BOSS_BAR_TIME_INFO_FEW_DAYS = 'seasons.bossBar.timeInfo.fewDays';
+    public const SEASON_BOSS_BAR_TIME_INFO_MANY_DAYS = 'seasons.bossBar.timeInfo.manyDays';
+    public const SEASON_BOSS_BAR_NO_SEASON = 'seasons.bossBar.noSeason';
+    public const KINGDOM_LOYALTY_SCORE_INCREASED = 'kingdoms.loyalty.scoreIncreased';
 }

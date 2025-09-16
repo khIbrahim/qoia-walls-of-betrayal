@@ -104,4 +104,7 @@ final class ExtraTags
     public const NEW_SEASON = '{NEW_SEASON}';
     public const THEME = '{THEME}';
     public const TAG = '{TAG}';
+    public const HOURS = '{HOURS}';
+    public const DAYS = '{DAYS}';
+    public const SCORE = '{SCORE}';
 }

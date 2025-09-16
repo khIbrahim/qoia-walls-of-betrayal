@@ -92,7 +92,10 @@ class KingdomContributeSubCommand extends WSubCommand
 
         Await::f2c(function () use ($kingdom, $amount, $player) {
             try {
-                yield from $kingdom->contribute($amount, KingdomDataFilterArgument::XP);
+                yield from Await::all([
+                    $kingdom->contribute($amount, KingdomDataFilterArgument::XP),
+                    Session::get($player)->addLoyaltyScore()
+                ]);
 
                 $player->getXpManager()->subtractXpLevels($amount);
 
@@ -133,6 +136,11 @@ class KingdomContributeSubCommand extends WSubCommand
                     return;
                 }
 
+                yield from Await::all([
+                    $this->main->getEconomyManager()->subtract($player, $amount),
+                    $kingdom->contribute($amount, KingdomDataFilterArgument::BALANCE),
+                    Session::get($player)->addLoyaltyScore()
+                ]);
                 yield from $this->main->getEconomyManager()->subtract($player, $amount);
                 yield from $kingdom->contribute($amount, KingdomDataFilterArgument::BALANCE);
 

@@ -7,10 +7,12 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\BountyRepositoryInter
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\CooldownRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\EconomyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\FloatingTextRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KillsRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KingdomRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\KitRequirementRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\NpcRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerInventoriesRepositoryInterface;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerLoyaltyRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PlayerRolesRepositoryInterface;
 use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\PunishmentRepositoryInterface;
@@ -19,12 +21,14 @@ use fenomeno\WallsOfBetrayal\Database\Contrasts\Repository\VaultRepositoryInterf
 use fenomeno\WallsOfBetrayal\Database\Repository\CooldownRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\EconomyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\FloatingTextRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\KillsRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KingdomBountyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KingdomRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KingdomVoteRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\KitRequirementRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\NpcRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerInventoriesRepository;
+use fenomeno\WallsOfBetrayal\Database\Repository\PlayerLoyaltyRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\PlayerRolesRepository;
 use fenomeno\WallsOfBetrayal\Database\Repository\Punishment\BanRepository;
@@ -70,6 +74,8 @@ class DatabaseManager
     private KingdomVoteRepository $kingdomVoteRepository;
     private PlayerInventoriesRepositoryInterface $playerInventoriesRepository;
     private SeasonsRepositoryInterface $seasonsRepository;
+    private PlayerLoyaltyRepositoryInterface $playerLoyaltyRepository;
+    private KillsRepositoryInterface $killsRepository;
 
     private BinaryStringParserInterface $binaryStringParser;
     private BigEndianNbtSerializer $nbtSerializer;
@@ -98,6 +104,8 @@ class DatabaseManager
                 KingdomVoteRepository::class,
                 PlayerInventoriesRepository::class,
                 SeasonsRepository::class,
+                PlayerLoyaltyRepository::class,
+                KillsRepository::class
             ];
 
             $this->queriesFileManager = new SqlQueriesFileManager($type, $repositories);
@@ -154,6 +162,12 @@ class DatabaseManager
 
             $this->seasonsRepository = new SeasonsRepository($this->main);
             $this->seasonsRepository->init($this);
+
+            $this->playerLoyaltyRepository = new PlayerLoyaltyRepository($this->main);
+            $this->playerLoyaltyRepository->init($this);
+
+            $this->killsRepository = new KillsRepository($this->main);
+            $this->killsRepository->init($this);
 
             $this->nbtSerializer = new BigEndianNbtSerializer();
         } catch (Throwable $e){
@@ -245,6 +259,16 @@ class DatabaseManager
     public function getSeasonsRepository(): SeasonsRepositoryInterface
     {
         return $this->seasonsRepository;
+    }
+
+    public function getPlayerLoyaltyRepository(): PlayerLoyaltyRepositoryInterface
+    {
+        return $this->playerLoyaltyRepository;
+    }
+
+    public function getKillsRepository(): KillsRepositoryInterface
+    {
+        return $this->killsRepository;
     }
 
     public function readItems(?string $data, string $tagInventory) : array{

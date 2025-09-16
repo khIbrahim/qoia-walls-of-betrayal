@@ -1,18 +1,19 @@
 <?php
 namespace fenomeno\WallsOfBetrayal\Sessions;
 
+use fenomeno\WallsOfBetrayal\Class\Player\PlayerLoyalty;
 use fenomeno\WallsOfBetrayal\Class\Season\SeasonPlayer;
+use fenomeno\WallsOfBetrayal\Database\Payload\Abstract\UuidPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerStatsPayload;
-use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Handlers\PlayerJoinHandler;
 use fenomeno\WallsOfBetrayal\Inventory\ChooseKingdomInventory;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Task\SessionTask;
-use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
+use fenomeno\WallsOfBetrayal\Utils\Utils;
 use Generator;
 use pocketmine\player\Player;
 use pocketmine\utils\TextFormat;
@@ -39,10 +40,6 @@ class Session
 
     private bool $dirty = false;
 
-    private bool $playerDataLoaded = false;
-
-    private bool $seasonDataLoaded = false;
-
     private ?Kingdom $kingdom = null;
 
     private bool $choosingKingdom = false;
@@ -52,6 +49,7 @@ class Session
     private int $deaths = 0;
 
     private ?SeasonPlayer $seasonPlayer = null;
+    private ?PlayerLoyalty $loyalty = null;
 
     private bool $frozen = false;
 
@@ -67,94 +65,41 @@ class Session
         $playerUuid = $this->player->getUniqueId()->toString();
         $playerName = strtolower($this->player->getName());
 
-        $loadingTasks   = 2;
-        $completedTasks = 0;
-
-        $main = Main::getInstance();
-
-        $playerPayload = new LoadPlayerPayload($playerUuid, $playerName);
-        $main->getDatabaseManager()->getPlayerRepository()->load($playerPayload)
-            ->onCompletion(
-                function (?PlayerData $data) use (&$completedTasks, $loadingTasks, $main) {
-                    if ($data !== null) {
-                        $this->kingdom = $main->getKingdomManager()->getKingdomById($data->kingdom);
-                        $this->abilities = array_filter(
-                            $data->abilities,
-                            fn(string $abilityId) => $main->getAbilityManager()->getAbilityById($abilityId) !== null
-                        );
-                        $this->kills = $data->kills;
-                        $this->deaths = $data->deaths;
-                    }
-
-                    $this->playerDataLoaded = true;
-                    $completedTasks++;
-
-                    $this->checkLoadingCompletion($completedTasks, $loadingTasks);
-                },
-                function (Throwable $e) use ($main) {
-                    $main->getLogger()->error("Erreur lors du chargement des données joueur: " . $e->getMessage());
-                    $this->player->kick(MessagesUtils::getMessage('common.unstable'));
-                }
-            );
-
-        $this->loadSeasonData($playerUuid, $main, $completedTasks, $loadingTasks);
-    }
-
-    private function loadSeasonData(string $playerUuid, Main $main, int &$completedTasks, int $loadingTasks): void
-    {
+        $main          = Main::getInstance();
         $currentSeason = $main->getSeasonManager()->getCurrentSeason();
 
-        if ($currentSeason === null) {
-            $this->seasonDataLoaded = true;
-            $completedTasks++;
-            $this->checkLoadingCompletion($completedTasks, $loadingTasks);
-            return;
-        }
-
-        Await::f2c(function() use ($playerUuid, $currentSeason, $main, &$completedTasks, $loadingTasks) {
+        Await::f2c(function () use ($currentSeason, $main, $playerUuid, $playerName) {
             try {
-                $this->seasonPlayer = yield from $main->getDatabaseManager()
-                    ->getSeasonsRepository()
-                    ->loadPlayer($playerUuid, $currentSeason->id);
+                [$playerData, $seasonData, $playerLoyalty] = yield from Await::all([
+                    $main->getDatabaseManager()->getPlayerRepository()->load(new LoadPlayerPayload($playerUuid, $playerName)),
+                    $main->getDatabaseManager()->getSeasonsRepository()->loadPlayer($playerUuid, $currentSeason->id),
+                    $main->getDatabaseManager()->getPlayerLoyaltyRepository()->getLoyalty(new UuidPayload($playerUuid))
+                ]);
 
-                $this->seasonDataLoaded = true;
-                $completedTasks++;
-                $this->checkLoadingCompletion($completedTasks, $loadingTasks);
+                $this->kingdom      = $main->getKingdomManager()->getKingdomById($playerData->kingdom);
+                $this->abilities    = array_filter($playerData->abilities, fn(string $abilityId) => $main->getAbilityManager()->getAbilityById($abilityId) !== null);
+                $this->kills        = $playerData->kills;
+                $this->deaths       = $playerData->deaths;
+                $this->seasonPlayer = $seasonData;
+                $this->loyalty      = $playerLoyalty;
+
+                $this->player->setNoClientPredictions(false);
+                $this->loaded = true;
+                $main->getLogger()->debug(TextFormat::GREEN . "{$this->player->getName()} data's has been loaded successfully.");
+
+                PlayerJoinHandler::handle($this->player);
+
+                $main->getScheduler()->scheduleRepeatingTask(new SessionTask($this), 20);
+
+                if ($this->kingdom === null) {
+                    $this->promptKingdomChoice();
+                }
             } catch (Throwable $e) {
-                $main->getLogger()->error("Erreur lors du chargement des données de saison: " . $e->getMessage());
-
-                $this->seasonDataLoaded = true;
-                $completedTasks++;
-                $this->checkLoadingCompletion($completedTasks, $loadingTasks);
+                Utils::onFailure($e, $this->player, "Failed to load data for player " . $this->player->getName());
+                $this->player->kick("§cAn error occurred while loading your data. Please try again later.");
+                return;
             }
         });
-    }
-
-    private function checkLoadingCompletion(int $completed, int $total): void
-    {
-        if ($completed < $total) {
-            return;
-        }
-
-        if (! $this->playerDataLoaded || ! $this->seasonDataLoaded) {
-            return;
-        }
-
-        $main = Main::getInstance();
-
-        $this->player->setNoClientPredictions(false);
-
-        $this->loaded = true;
-
-        $main->getLogger()->debug(TextFormat::GREEN . "{$this->player->getName()} data's has been loaded successfully.");
-
-        if ($this->kingdom === null) {
-            $this->promptKingdomChoice();
-        }
-
-        PlayerJoinHandler::handle($this->player);
-
-        $main->getScheduler()->scheduleRepeatingTask(new SessionTask($this), 20);
     }
 
     private function promptKingdomChoice(): void {
@@ -273,9 +218,24 @@ class Session
         return $this->seasonPlayer;
     }
 
+    public function getLoyalty(): ?PlayerLoyalty
+    {
+        return $this->loyalty;
+    }
+
     public function getPlayer(): Player
     {
         return $this->player;
+    }
+
+    public function addLoyaltyScore(int $score = 1): Generator
+    {
+        if (! $this->loaded || $this->loyalty === null) {
+            return;
+        }
+
+        $this->loyalty->addScore($score);
+        yield from Main::getInstance()->getDatabaseManager()->getPlayerLoyaltyRepository()->updateLoyaltyScore($this->player->getUniqueId()->toString(), $score);
     }
 
 }

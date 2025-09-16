@@ -121,7 +121,7 @@ class KingdomRepository implements KingdomRepositoryInterface
     public function contribute(ContributeKingdomPayload $payload): Generator
     {
         $queryName = match ($payload->type) {
-            KingdomDataFilterArgument::XP => Statements::ADD_KINGDOM_XP,
+            KingdomDataFilterArgument::XP      => Statements::ADD_KINGDOM_XP,
             KingdomDataFilterArgument::BALANCE => Statements::ADD_KINGDOM_BALANCE,
         };
 

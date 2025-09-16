@@ -160,4 +160,14 @@ interface Statements
     public const UPDATE_SEASON_KINGDOM_STATS = 'season_kingdoms.updateStats';
     public const GET_SEASON_KINGDOM_RANKINGS = 'season_kingdoms.getRankings';
 
+    public const INIT_PLAYERS_LOYALTY            = 'player_loyalty.init';
+    public const GET_PLAYER_LOYALTY              = 'player_loyalty.get';
+    public const INSERT_PLAYER_LOYALTY           = 'player_loyalty.insert';
+    public const UPDATE_PLAYER_LOYALTY           = 'player_loyalty.update';
+    public const ADD_PLAYER_LOYALTY_CONTRIBUTION = 'player_loyalty.addContribution';
+    public const UPDATE_PLAYER_LOYALTY_SCORE     = 'player_loyalty.updateScore';
+
+    public const INIT_KILLS = 'kills.init';
+    public const LOG_KILL   = 'kills.log';
+
 }

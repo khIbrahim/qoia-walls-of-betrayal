@@ -67,6 +67,7 @@ use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\fenomeno\libWebhook\thread\DiscordWebhook;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
 use fenomeno\WallsOfBetrayal\libs\SOFe\AwaitGenerator\Await;
+use fenomeno\WallsOfBetrayal\libs\xenialdan\apibossbar\API as BossBarAPI;
 use fenomeno\WallsOfBetrayal\Listeners\AbilitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\BlocksListener;
 use fenomeno\WallsOfBetrayal\Listeners\CombatListener;
@@ -82,6 +83,8 @@ use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
 use fenomeno\WallsOfBetrayal\Listeners\ScoreboardUpdateListener;
 use fenomeno\WallsOfBetrayal\Listeners\StaffListener;
+use fenomeno\WallsOfBetrayal\Logs\Writer\BufferedWriter;
+use fenomeno\WallsOfBetrayal\Logs\Writer\JsonLineFileWriter;
 use fenomeno\WallsOfBetrayal\Manager\BountyManager;
 use fenomeno\WallsOfBetrayal\Manager\CombatManager;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
@@ -102,11 +105,13 @@ use pocketmine\plugin\PluginBase;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
 use Throwable;
+use fenomeno\WallsOfBetrayal\Logs\LoggingManager;
 
 class Main extends PluginBase
 {
     use SingletonTrait;
 
+    private LoggingManager           $loggingManager;
     private SeasonManager            $seasonManager;
     private KingdomManager           $kingdomManager;
     private DatabaseManager          $databaseManager;
@@ -149,6 +154,9 @@ class Main extends PluginBase
                 DiscordWebhook::init($this);
             }
 
+            BossBarAPI::load($this);
+
+            $this->loggingManager           = new LoggingManager($this, new BufferedWriter(new JsonLineFileWriter($this->getDataFolder()), 10));
             $this->databaseManager          = new DatabaseManager($this);
             $this->seasonManager            = new SeasonManager($this);
             $this->serverManager            = new ServerManager($this);
@@ -355,11 +363,16 @@ class Main extends PluginBase
         return $this->seasonManager;
     }
 
+    public function getLoggingManager(): LoggingManager
+    {
+        return $this->loggingManager;
+    }
+
     protected function onDisable(): void
     {
         $this->phaseManager->save();
         $this->economyManager->clearCache();
-
+        $this->loggingManager->flush();
         $this->databaseManager->waitAll();
         $this->databaseManager->close();
 
