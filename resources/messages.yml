@@ -345,11 +345,21 @@ kingdoms:
   # Loyalty System
   loyalty:
     scoreIncreased:
-      message: "{KINGDOMS_PREFIX}{GREEN}Your loyalty to {KINGDOM} has increased to {SCORE}!"
+      message: "{KINGDOMS_PREFIX}{GREEN}Loyalty {CHANGE}: §f{SCORE}%{REASON}"
     high: "{KINGDOMS_PREFIX}{GREEN}Your loyalty to {KINGDOM} is unwavering!"
     medium: "{KINGDOMS_PREFIX}{YELLOW}Your loyalty to {KINGDOM} is tested..."
     low: "{KINGDOMS_PREFIX}{RED}Your loyalty to {KINGDOM} is questionable!"
     bonus: "{KINGDOMS_PREFIX}{GREEN}Loyalty bonus: +{BONUS}% XP and money"
+    rankChanged: "{KINGDOMS_PREFIX}{YELLOW}Your loyalty rank changed: {OLD_RANK} §7→ {NEW_RANK}"
+    betrayalModeActivated: "{KINGDOMS_PREFIX}{DARK_RED}§l⚔ BETRAYAL MODE ACTIVATED ⚔{RESET}\n{RED}You can now attack your allies and receive special rewards!"
+    betrayalModeDeactivated: "{KINGDOMS_PREFIX}{GREEN}§l✓ LOYALTY RESTORED ✓{RESET}\n{GRAY}You can no longer betray your allies."
+    afkWarning: "{KINGDOMS_PREFIX}{YELLOW}You are now marked as AFK. Move to become active again."
+    afkPenalty: "{KINGDOMS_PREFIX}{RED}AFK Penalty: -{PENALTY} loyalty"
+    activeAgain: "{KINGDOMS_PREFIX}{GREEN}You are no longer AFK."
+    inspect:
+      self: "{KINGDOMS_PREFIX}{WHITE}Your Loyalty: {RANK_COLOR}{RANK} §7({SCORE}%)\n{GRAY}Rank: {RANK_COLOR}{RANK_NAME}"
+      other: "{KINGDOMS_PREFIX}{WHITE}{PLAYER}'s Loyalty: {RANK_COLOR}{RANK} §7({SCORE}%)\n{GRAY}Rank: {RANK_COLOR}{RANK_NAME}"
+    shopRestricted: "{KINGDOMS_PREFIX}{RED}Your loyalty is too low to access this shop. Required: §7Neutral §7or higher."
 
   enchantingTable:
     errors:
