@@ -29,6 +29,8 @@ class FloatingText
 
     private int $runtimeId;
 
+    private array $viewers = [];
+
     public function __construct(
         private readonly string   $id,
         private readonly Position $position,
@@ -65,6 +67,11 @@ class FloatingText
 
     public function sendTo(Player $player): void
     {
+        if (isset($this->viewers[$player->getName()])) {
+            $this->updateFor($player);
+            return;
+        }
+
         $pos = $this->getPosition()->add(
             self::TEXT_OFFSET_X,
             self::TEXT_OFFSET_Y,
@@ -114,6 +121,11 @@ class FloatingText
 
     public function updateFor(Player $player): void
     {
+        if(! isset($this->viewers[$player->getName()])){
+            $this->sendTo($player);
+            return;
+        }
+
         $text = $this->replacePlaceholders($this->getText(), $player);
 
         $player->getNetworkSession()->sendDataPacket(SetActorDataPacket::create(

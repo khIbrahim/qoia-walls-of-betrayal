@@ -20,9 +20,9 @@ final class ShopItemsInventory extends WInventory implements PageableInventory
     use InventoryPaginatorTrait;
 
     public function __construct(
-        private ShopCategory $category,
-        int                  $page = 0,
-        ?int                 $batch = null
+        private readonly ShopCategory $category,
+        int                           $page = 0,
+        ?int                          $batch = null
     ){
         $this->setPage($page);
         if ($batch !== null) $this->setBatch($batch);
@@ -47,7 +47,9 @@ final class ShopItemsInventory extends WInventory implements PageableInventory
 
         foreach ($dto->targetIndexes as $i => $slot){
             $shopItem = $pageItems[$i] ?? null;
-            if (!$shopItem) continue;
+            if (! $shopItem) {
+                continue;
+            }
 
             $it = $shopItem->getDisplayItem();
             $it->getNamedTag()->setString(ShopConfig::SHOP_ITEM_TAG, $shopItem->getId());

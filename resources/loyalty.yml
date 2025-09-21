@@ -1,0 +1,157 @@
+parameters:
+  # Intervalles existants (conservés)
+  playtime_interval: 36000  # 30 min en ticks
+  afk_interval: 12000       # 10 min en ticks
+
+  # Nouveaux paramètres de loyauté
+  loyalty:
+    ranks:
+      traitor: { min: -500 }
+      suspect: { min: 0 }
+      neutral: { min: 300 }
+      loyal:   { min: 3000 }
+
+  # Décroissance passive: demi-vie ~72h (le score tend lentement vers 0 sans activité)
+  decay:
+    half_life_hours: 72
+
+  # Caps et rendements décroissants
+  caps:
+    diminish:
+      k: 0.4 # Intensité des rendements décroissants par répétition journalière
+    daily:
+      donation_delta: 150  # Delta max/jour venant des donations
+      by_cause:
+        enemy_kill: 50
+        playtime: 20
+        heal_ally: 60
+        repair: 80
+        vote: 20
+        resource_support: 80
+
+  # UI: contrôle de la courbe pour le pourcentage affiché
+  ui:
+    scale: 3000
+
+  bonus:
+    max: 2.0
+    donation:
+      _default:
+        base: 1.0
+        unit: 100
+        scale: 0.75
+        max: 20
+        tiers:
+          100: 1.25
+          500: 1.5
+          1000: 2.0
+          5000: 4.0
+          10000: 7.0
+      balance:
+        unit: 1000
+        scale: 1.0
+        tiers:
+          1000: 1.4
+          5000: 2.2
+          10000: 3.5
+          50000: 7.0
+          100000: 10.0
+      xp:
+        unit: 50
+        scale: 0.6
+        tiers:
+          100: 1.2
+          500: 1.6
+          1000: 2.2
+          5000: 4.5
+      resource:
+        unit: 10
+        scale: 0.8
+        tiers:
+          64: 1.3
+          256: 2.0
+          1024: 4.0
+          4096: 7.0
+
+# Causes (inchangées de ton exemple, sauf donation.delta qu'on laisse à 0 si tu veux forcer le calcul via grantDonationLoyalty)
+loyalty_causes:
+  defense:
+    name: "Defense Success"
+    delta: 5
+    description: "Reward for successfully defending"
+    displayItem: "shield"
+  enemy_kill:
+    name: "Enemy Kill"
+    delta: 2
+    description: "Reward for killing an enemy"
+    displayItem: "sword"
+  playtime:
+    name: "Active Playtime"
+    delta: 1
+    description: "Reward for active gameplay time"
+    displayItem: "clock"
+  donation:
+    name: "Donation"
+    delta: 0
+    description: "Reward for donating to the kingdom"
+    displayItem: "gold_ingot"
+  heal_ally:
+    name: "Heal Ally"
+    delta: 3
+    description: "Reward for healing an ally"
+    displayItem: "potion"
+  repair:
+    name: "Structure Repair"
+    delta: 4
+    description: "Reward for repairing a structure"
+    displayItem: "anvil"
+  vote:
+    name: "Kingdom Vote"
+    delta: 3
+    description: "Reward for participating in kingdom voting"
+    displayItem: "emerald"
+  resource_support:
+    name: "Resource Support"
+    delta: 2
+    description: "Reward for providing resources"
+    displayItem: "chest"
+  death:
+    name: "Death"
+    delta: -2
+    description: "Penalty for dying"
+    displayItem: "skull"
+  combat_log:
+    name: "Combat Log"
+    delta: -5
+    description: "Penalty for disconnecting during combat"
+    displayItem: "redstone"
+  team_attack:
+    name: "Team Attack"
+    delta: -15
+    description: "Penalty for attacking an ally"
+    displayItem: "crossed_swords"
+  afk:
+    name: "AFK"
+    delta: -1
+    description: "Penalty for being inactive"
+    displayItem: "bed"
+  theft:
+    name: "Theft"
+    delta: -3
+    description: "Penalty for stealing resources"
+    displayItem: "chest"
+  alert_ignored:
+    name: "Alert Ignored"
+    delta: -4
+    description: "Penalty for ignoring an alert"
+    displayItem: "bell"
+  relic_loss:
+    name: "Relic Loss"
+    delta: -7
+    description: "Penalty for losing a relic"
+    displayItem: "diamond"
+  enemy_aid:
+    name: "Enemy Aid"
+    delta: -10
+    description: "Penalty for aiding the enemy"
+    displayItem: "banner"

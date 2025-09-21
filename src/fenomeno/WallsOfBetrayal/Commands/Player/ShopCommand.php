@@ -2,6 +2,7 @@
 
 namespace fenomeno\WallsOfBetrayal\Commands\Player;
 
+use fenomeno\WallsOfBetrayal\Commands\Arguments\Shop\ShopOrCategoryArgument;
 use fenomeno\WallsOfBetrayal\Commands\CommandsIds;
 use fenomeno\WallsOfBetrayal\Commands\WCommand;
 use fenomeno\WallsOfBetrayal\Config\CommandsConfig;
@@ -37,6 +38,7 @@ class ShopCommand extends WCommand
     {
         $this->addConstraint(new InGameRequiredConstraint($this));
 
+        $this->registerArgument(0, new ShopOrCategoryArgument(self::SHOP_ARGUMENT, false));
         $this->registerArgument(0, new RawStringArgument(self::SHOP_ARGUMENT, true));
         $this->registerArgument(1, new RawStringArgument(self::MODE_ARGUMENT, true));
         $this->registerArgument(2, new RawStringArgument(self::COUNT_ARGUMENT, true));

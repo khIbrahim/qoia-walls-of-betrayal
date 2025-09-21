@@ -15,7 +15,7 @@ final readonly class ContributeKingdomPayload extends IdPayload
         public int    $amount
     )
     {
-        if (!in_array(strtolower($type), array_map('strtolower', KingdomDataFilterArgument::$VALUES))) {
+        if (! in_array(strtolower($type), array_map('strtolower', KingdomDataFilterArgument::$VALUES))) {
             throw new InvalidArgumentException("Kingdom data must be : " . implode(', ', KingdomDataFilterArgument::$VALUES));
         }
         parent::__construct($id);

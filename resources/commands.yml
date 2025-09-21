@@ -619,3 +619,28 @@ season-list:
   name: "list"
   description: "§7List all seasons"
   usage: "§e/season list §8– §7List all seasons"
+
+loyalty:
+  name: "loyalty"
+  description: "§7View and manage your loyalty points"
+  usage: "§e/loyalty <causes|redeem|score|top> §8– §7View and manage your loyalty score"
+
+kingdom-loyalty:
+  name: "loyalty"
+  description: "§7View and manage your loyalty points"
+  usage: "§e/kingdom loyalty <causes|redeem|score|top> §8– §7View and manage your loyalty score"
+
+kingdom-heals:
+  name: "heals"
+  description: "§7Open the heals menu"
+  usage: "§e/kingdom heals §8– §7Open the heals menu"
+
+loyalty-score:
+  name: "score"
+  description: "§7View your current loyalty score"
+  usage: "§e/loyalty score §8– §7View your current or a player loyalty score"
+
+loyalty-causes:
+  name: "causes"
+  description: "§7View the causes to earn/loose loyalty points"
+  usage: "§e/loyalty causes §8– §7View the causes to earn/loose loyalty points"

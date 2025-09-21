@@ -102,5 +102,10 @@ final class CommandsIds
     public const SEASON_RESUME = 'season-resume';
     public const SEASON_INFO = 'season-info';
     public const SEASON_LIST = 'season-list';
+    public const LOYALTY = 'loyalty';
+    public const LOYALTY_CAUSES = 'loyalty-causes';
+    public const KINGDOM_LOYALTY = 'kingdom-loyalty';
+    public const LOYALTY_SCORE = 'loyalty-score';
+    public const KINGDOM_HEALS = 'kingdom-heals';
 
 }

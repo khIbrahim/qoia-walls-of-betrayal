@@ -24,6 +24,7 @@ namespace fenomeno\WallsOfBetrayal\libs\poggit\libasynql\base;
 
 use Error;
 use Exception;
+use fenomeno\WallsOfBetrayal\Database\Contrasts\Statements;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\DataConnector;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\generic\GenericStatementFileParser;
 use fenomeno\WallsOfBetrayal\libs\poggit\libasynql\GenericStatement;
@@ -340,5 +341,37 @@ class DataConnectorImpl implements DataConnector{
         $this->logger?->debug("Raw query: " . str_replace(["\r\n", "\n"], "\\n ", $query) . " | Args: " . json_encode($args));
 
         $this->thread->addQuery($queryId, [$mode], [$query], [$args]);
+    }
+
+    public function executeSelectSync(string $query, array $args = [], bool $throwErrors = false): array
+    {
+        $result = null;
+        $error = null;
+        $completed = false;
+
+        $this->executeSelect($query, $args,
+            function($queryResult) use (&$result, &$completed) {
+                $result = $queryResult;
+                $completed = true;
+            },
+            function($queryError) use (&$error, &$completed) {
+                $error = $queryError;
+                $completed = true;
+            }
+        );
+
+        while (! $completed) {
+            $this->thread->readResults($this->handlers, 1);
+        }
+
+        if ($error !== null) {
+            if ($throwErrors) {
+                throw $error;
+            }
+            $this->plugin->getLogger()->error($error->getMessage());
+            return [];
+        }
+
+        return $result;
     }
 }

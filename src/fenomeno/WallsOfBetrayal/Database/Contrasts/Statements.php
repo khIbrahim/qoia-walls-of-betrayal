@@ -166,6 +166,7 @@ interface Statements
     public const UPDATE_PLAYER_LOYALTY           = 'player_loyalty.update';
     public const ADD_PLAYER_LOYALTY_CONTRIBUTION = 'player_loyalty.addContribution';
     public const UPDATE_PLAYER_LOYALTY_SCORE     = 'player_loyalty.updateScore';
+    public const GET_PLAYER_LOYALTY_BY_NAME      = 'player_loyalty.getByName';
 
     public const INIT_KILLS = 'kills.init';
     public const LOG_KILL   = 'kills.log';

@@ -2,6 +2,8 @@
 
 namespace fenomeno\WallsOfBetrayal\Class\Player;
 
+use fenomeno\WallsOfBetrayal\Enum\Loyalty\LoyaltyRank;
+
 class PlayerLoyalty
 {
 
@@ -9,7 +11,7 @@ class PlayerLoyalty
         public string $uuid,
         public string $username,
         public string $kingdomId,
-        public int    $loyaltyScore = 0,
+        public int    $score = 0,
         public ?int   $lastContribution = null,
         public int    $contributionCount = 0,
         public int    $betrayalCount = 0,
@@ -22,7 +24,7 @@ class PlayerLoyalty
             uuid: $data['uuid'],
             username: $data['username'],
             kingdomId: $data['kingdom_id'],
-            loyaltyScore: (int) ($data['loyalty_score'] ?? 0),
+            score: (int) ($data['loyalty_score'] ?? 0),
             lastContribution: isset($data['last_contribution']) ? (int)$data['last_contribution'] : null,
             contributionCount: (int) ($data['contribution_count'] ?? 0),
             betrayalCount: (int) ($data['betrayal_count'] ?? 0),
@@ -32,10 +34,15 @@ class PlayerLoyalty
 
     public function addScore(int $score = 1): void
     {
-        $this->loyaltyScore += $score;
-        if ($this->loyaltyScore < 0) {
-            $this->loyaltyScore = 0;
+        $this->score += $score;
+        if ($this->score < 0) {
+            $this->score = 0;
         }
+    }
+
+    public function getLoyaltyRank(): LoyaltyRank
+    {
+        return LoyaltyRank::fromScore($this->score);
     }
 
 }

@@ -47,34 +47,27 @@ class SeasonManager
 
         $this->bossBar = new SeasonBossBar($this->main);
         $this->main->getServer()->getPluginManager()->registerEvents(new SeasonEvents($this->main), $this->main);
+
     }
 
     private function loadCurrentSeason(): void
     {
-        Await::f2c(function() {
-            try {
-                /** @var null|SeasonDTO $seasonData */
-                $seasonData = yield from $this->main->getDatabaseManager()->getSeasonsRepository()->loadCurrentSeason();
+        $seasonData = $this->main->getDatabaseManager()->getSeasonsRepository()->syncLoadCurrentSeason();
+        if ($seasonData !== null) {
+            $this->currentSeason    = $seasonData;
+            $this->seasonActive     = $seasonData->isActive;
+            $this->lastSeasonNumber = $seasonData->seasonNumber;
 
-                if ($seasonData !== null) {
-                    $this->currentSeason    = $seasonData;
-                    $this->seasonActive     = $seasonData->isActive;
-                    $this->lastSeasonNumber = $seasonData->seasonNumber;
+            SeasonArgument::$VALUES[strtolower($seasonData->name)] = $seasonData;
 
-                    SeasonArgument::$VALUES[strtolower($seasonData->name)] = $seasonData;
-
-                    if ($this->seasonActive) {
-                        $this->main->getPhaseManager()->setEnabled(true);
-                    }
-
-                    $this->main->getLogger()->info("Current season loaded: #" . $seasonData->seasonNumber . " - " . $seasonData->name);
-                } else {
-                    $this->main->getLogger()->info("No active season found.");
-                }
-            } catch (Throwable $e) {
-                Utils::onFailure($e, null, "Failed to load current season: " . $e->getMessage());
+            if ($this->seasonActive) {
+                $this->main->getPhaseManager()->setEnabled(true);
             }
-        });
+
+            $this->main->getLogger()->info("Current season loaded: #" . $seasonData->seasonNumber . " - " . $seasonData->name);
+        } else {
+            $this->main->getLogger()->info("No active season found.");
+        }
     }
 
     private function loadSeasonHistory(): void

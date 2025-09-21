@@ -64,7 +64,7 @@ class KingdomBountySubCommand extends WSubCommand
 
         $targetPlayer = $this->main->getServer()->getPlayerExact($args[self::PLAYER_ARGUMENT]);
         if ($targetPlayer === null) {
-            MessagesUtils::sendTo($sender, MessagesIds::PLAYER_NOT_FOUND, [ExtraTags::PLAYER => $args[0]]);
+            MessagesUtils::sendTo($sender, MessagesIds::PLAYER_NOT_FOUND, [ExtraTags::PLAYER => $args[self::PLAYER_ARGUMENT]]);
             return;
         }
 

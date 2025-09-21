@@ -3,6 +3,8 @@ main: fenomeno\WallsOfBetrayal\Main
 api: 5.0.0
 version: 1.0.0
 author: fenomeno
+depend:
+  - SymplyPlugin
 
 permissions:
   wob.command.choose:
@@ -245,6 +247,8 @@ permissions:
     default: true
   wob.command.kingdom.setspawn:
     default: op
+  wob.command.kingdom.loyalty:
+    true: op
   wob.command.kingdom.spawn.other:
     default: op
   wob.bypass.spawn.cooldown:
@@ -267,3 +271,11 @@ permissions:
     default: op
   wob.bypass.season:
     default: op
+  wob.command.loyalty:
+    default: true
+  wob.command.loyalty.causes:
+    default: true
+  wob.command.loyalty.score:
+    default: true
+  wob.command.kingdom.heals:
+    default: true

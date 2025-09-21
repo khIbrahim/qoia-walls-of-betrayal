@@ -5,6 +5,7 @@ namespace fenomeno\WallsOfBetrayal\Inventory\Actions;
 use fenomeno\WallsOfBetrayal\Inventory\Actions\Types\CloseInventoryAction;
 use fenomeno\WallsOfBetrayal\Inventory\Actions\Types\Page\NextPageAction;
 use fenomeno\WallsOfBetrayal\Inventory\Actions\Types\Page\PreviousPageAction;
+use fenomeno\WallsOfBetrayal\Inventory\Loyalty\LoyaltyCausesInventory;
 use fenomeno\WallsOfBetrayal\Inventory\Shop\ShopCategoryInventory;
 use fenomeno\WallsOfBetrayal\Inventory\WInventory;
 use fenomeno\WallsOfBetrayal\Main;
@@ -19,15 +20,46 @@ class InventoryActions
     /** @var InventoryActionInterface[] */
     private static array $handlers = [];
 
+    private const LOYALTY_FILTER_ALL = 'loyalty_filter_all';
+    private const LOYALTY_FILTER_POSITIVE = 'loyalty_filter_positive';
+    private const LOYALTY_FILTER_NEGATIVE = 'loyalty_filter_negative';
+    private const LOYALTY_SORT_TOGGLE = 'loyalty_sort_toggle';
+    private const OPEN_SHOP_CATEGORIES = 'open_shop_categories';
+
     public static function init(): void
     {
         self::registerHandler(new CloseInventoryAction());
         self::registerHandler(new NextPageAction());
         self::registerHandler(new PreviousPageAction());
 
-        self::registerHandler(self::makeSimpleHandler('open_shop_categories', static function(Player $player, Item $item, int $slot, WInventory $inventory, ...$args): bool {
+        // Shop
+        self::registerHandler(self::makeSimpleHandler(self::OPEN_SHOP_CATEGORIES, static function(Player $player, Item $item, int $slot, WInventory $inventory, ...$args): bool {
             $player->removeCurrentWindow();
             (new ShopCategoryInventory($player))->send($player);
+            return true;
+        }));
+
+        // Loyalty filters & sort
+        self::registerHandler(self::makeSimpleHandler(self::LOYALTY_FILTER_ALL, static function(Player $player, Item $item, int $slot, WInventory $inventory): bool {
+            $player->removeCurrentWindow();
+            (new LoyaltyCausesInventory(LoyaltyCausesInventory::FILTER_ALL, $inventory instanceof LoyaltyCausesInventory ? $inventory->getSortMode() : LoyaltyCausesInventory::FILTER_SORT_DESC))->send($player);
+            return true;
+        }));
+        self::registerHandler(self::makeSimpleHandler(self::LOYALTY_FILTER_POSITIVE, static function(Player $player, Item $item, int $slot, WInventory $inventory): bool {
+            $player->removeCurrentWindow();
+            (new LoyaltyCausesInventory(LoyaltyCausesInventory::FILTER_POSITIVE, $inventory instanceof LoyaltyCausesInventory ? $inventory->getSortMode() : LoyaltyCausesInventory::FILTER_SORT_DESC))->send($player);
+            return true;
+        }));
+        self::registerHandler(self::makeSimpleHandler(self::LOYALTY_FILTER_NEGATIVE, static function(Player $player, Item $item, int $slot, WInventory $inventory): bool {
+            $player->removeCurrentWindow();
+            (new LoyaltyCausesInventory(LoyaltyCausesInventory::FILTER_NEGATIVE, $inventory instanceof LoyaltyCausesInventory ? $inventory->getSortMode() : LoyaltyCausesInventory::FILTER_SORT_DESC))->send($player);
+            return true;
+        }));
+        self::registerHandler(self::makeSimpleHandler(self::LOYALTY_SORT_TOGGLE, static function(Player $player, Item $item, int $slot, WInventory $inventory): bool {
+            $player->removeCurrentWindow();
+            $filter = $inventory instanceof LoyaltyCausesInventory ? $inventory->getFilter() : LoyaltyCausesInventory::FILTER_ALL;
+            $sort   = $inventory instanceof LoyaltyCausesInventory && $inventory->getSortMode() === LoyaltyCausesInventory::FILTER_SORT_ASC ? LoyaltyCausesInventory::FILTER_SORT_DESC : LoyaltyCausesInventory::FILTER_SORT_ASC;
+            (new LoyaltyCausesInventory($filter, $sort))->send($player);
             return true;
         }));
     }

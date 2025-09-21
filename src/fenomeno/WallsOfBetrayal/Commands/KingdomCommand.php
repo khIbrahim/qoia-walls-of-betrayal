@@ -9,8 +9,10 @@ use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomBanSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomBountiesSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomBountySubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomContributeSubCommand;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomHealsSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomInfoSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomKickSubCommand;
+use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomLoyaltySubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomManageSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomMapSubCommand;
 use fenomeno\WallsOfBetrayal\Commands\SubCommands\Kingdom\KingdomPeaceSubCommand;
@@ -59,6 +61,8 @@ class KingdomCommand extends WCommand
         $this->registerSubCommand(new KingdomBountySubCommand($this->main));
         $this->registerSubCommand(new KingdomBountiesSubCommand($this->main));
         $this->registerSubCommand(new KingdomSetRallySubCommand($this->main));
+        $this->registerSubCommand(new KingdomLoyaltySubCommand($this->main));
+        $this->registerSubCommand(new KingdomHealsSubCommand($this->main));
     }
 
     public function onRun(CommandSender $sender, string $aliasUsed, array $args): void

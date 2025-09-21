@@ -258,4 +258,6 @@ interface DataConnector{
      * @param callable|null $onError    An optional callback when the query has failed: <code>function({@link SqlError} $error) : void{}</code>
      */
     public function executeRawQuery(string $query, array $args = [], int $mode = SqlThread::MODE_GENERIC, ?callable $onSuccess = null, ?callable $onError = null): void;
+
+    public function executeSelectSync(string $query, array $args = []): array;
 }

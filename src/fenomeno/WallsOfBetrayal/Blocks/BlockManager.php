@@ -3,18 +3,25 @@
 namespace fenomeno\WallsOfBetrayal\Blocks;
 
 use fenomeno\WallsOfBetrayal\Blocks\Types\MobSpawnerBlock;
+use fenomeno\WallsOfBetrayal\Blocks\Types\TotemHealBlock;
 use fenomeno\WallsOfBetrayal\Entities\EntityManager;
 use pocketmine\inventory\CreativeInventory;
 use pocketmine\item\Item;
 use pocketmine\item\StringToItemParser;
 use pocketmine\utils\SingletonTrait;
 use pocketmine\utils\TextFormat;
+use SenseiTarzan\SymplyPlugin\Behavior\SymplyBlockFactory;
 
 class BlockManager
 {
     use SingletonTrait;
 
     public const ENTITY_TAG = 'Entity';
+
+    public function onLoad(): void
+    {
+        SymplyBlockFactory::getInstance()->register(static fn() => new TotemHealBlock());
+    }
 
     public function startup() : void
     {

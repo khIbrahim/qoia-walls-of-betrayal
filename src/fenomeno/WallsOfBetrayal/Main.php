@@ -24,6 +24,7 @@ use fenomeno\WallsOfBetrayal\Commands\Player\CraftCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\FeedCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\KitCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\LobbyCommand;
+use fenomeno\WallsOfBetrayal\Commands\Player\LoyaltyCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\NickCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\SellCommand;
 use fenomeno\WallsOfBetrayal\Commands\Player\ShopCommand;
@@ -63,6 +64,7 @@ use fenomeno\WallsOfBetrayal\Game\Kingdom\KingdomManager;
 use fenomeno\WallsOfBetrayal\Game\Kit\KitsManager;
 use fenomeno\WallsOfBetrayal\Game\Phase\PhaseManager;
 use fenomeno\WallsOfBetrayal\Game\Season\SeasonManager;
+use fenomeno\WallsOfBetrayal\Items\ItemManager;
 use fenomeno\WallsOfBetrayal\libs\CortexPE\Commando\PacketHooker;
 use fenomeno\WallsOfBetrayal\libs\fenomeno\libWebhook\thread\DiscordWebhook;
 use fenomeno\WallsOfBetrayal\libs\muqsit\invmenu\InvMenuHandler;
@@ -75,9 +77,11 @@ use fenomeno\WallsOfBetrayal\Listeners\EconomyListener;
 use fenomeno\WallsOfBetrayal\Listeners\EntitiesListener;
 use fenomeno\WallsOfBetrayal\Listeners\FloatingTextListener;
 use fenomeno\WallsOfBetrayal\Listeners\InventoryListener;
+use fenomeno\WallsOfBetrayal\Listeners\ItemsListener;
 use fenomeno\WallsOfBetrayal\Listeners\KingdomListener;
 use fenomeno\WallsOfBetrayal\Listeners\KitsListener;
 use fenomeno\WallsOfBetrayal\Listeners\LobbyListener;
+use fenomeno\WallsOfBetrayal\Listeners\LoyaltyListener;
 use fenomeno\WallsOfBetrayal\Listeners\NpcListener;
 use fenomeno\WallsOfBetrayal\Listeners\PunishmentListener;
 use fenomeno\WallsOfBetrayal\Listeners\RolesListener;
@@ -90,6 +94,7 @@ use fenomeno\WallsOfBetrayal\Manager\CombatManager;
 use fenomeno\WallsOfBetrayal\Manager\CooldownManager;
 use fenomeno\WallsOfBetrayal\Manager\FloatingTextManager;
 use fenomeno\WallsOfBetrayal\Manager\KingdomVoteManager;
+use fenomeno\WallsOfBetrayal\Manager\LoyaltyManager;
 use fenomeno\WallsOfBetrayal\Manager\NpcManager;
 use fenomeno\WallsOfBetrayal\Manager\PlayerInventoriesManager;
 use fenomeno\WallsOfBetrayal\Manager\PunishmentManager;
@@ -130,6 +135,8 @@ class Main extends PluginBase
     private KingdomVoteManager       $kingdomVoteManager;
     private PlayerInventoriesManager $playerInventoriesManager;
     private CombatManager            $combatManager;
+    private LoyaltyManager           $loyaltyManager;
+    private ItemManager              $itemManager;
 
     protected function onLoad(): void
     {
@@ -137,6 +144,7 @@ class Main extends PluginBase
         $this->saveDefaultConfig();
         WobConfig::init($this);
         MessagesUtils::init($this);
+        BlockManager::getInstance()->onLoad();
     }
 
     protected function onEnable(): void
@@ -156,13 +164,18 @@ class Main extends PluginBase
 
             BossBarAPI::load($this);
 
+            EntityManager::getInstance()->startup($this);
+            TileManager::getInstance()->startup();
+            BlockManager::getInstance()->startup();
+
             $this->loggingManager           = new LoggingManager($this, new BufferedWriter(new JsonLineFileWriter($this->getDataFolder()), 10));
             $this->databaseManager          = new DatabaseManager($this);
+            $this->itemManager              = new ItemManager();
+            $this->phaseManager             = new PhaseManager($this);
             $this->seasonManager            = new SeasonManager($this);
             $this->serverManager            = new ServerManager($this);
             $this->abilityManager           = new AbilityManager($this);
             $this->kingdomManager           = new KingdomManager($this);
-            $this->phaseManager             = new PhaseManager($this);
             $this->kitsManager              = new KitsManager($this);
             $this->shopManager              = new ShopManager($this);
             $this->cooldownManager          = new CooldownManager($this);
@@ -175,10 +188,7 @@ class Main extends PluginBase
             $this->kingdomVoteManager       = new KingdomVoteManager($this);
             $this->playerInventoriesManager = new PlayerInventoriesManager($this);
             $this->combatManager            = new CombatManager($this);
-
-            EntityManager::getInstance()->startup($this);
-            TileManager::getInstance()->startup();
-            BlockManager::getInstance()->startup();
+            $this->loyaltyManager           = new LoyaltyManager($this);
 
             $this->getServer()->getCommandMap()->registerAll('wob', [
                 new ChooseCommand($this),
@@ -231,7 +241,8 @@ class Main extends PluginBase
                 new KingdomCommand($this),
                 new PortalCommand($this),
                 new SetLobbySettingCommand($this),
-                new SeasonCommand($this)
+                new SeasonCommand($this),
+                new LoyaltyCommand($this)
             ]);
 
             $this->getServer()->getPluginManager()->registerEvents(new SessionListener(), $this);
@@ -250,6 +261,8 @@ class Main extends PluginBase
             $this->getServer()->getPluginManager()->registerEvents(new LobbyListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new InventoryListener($this), $this);
             $this->getServer()->getPluginManager()->registerEvents(new CombatListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new LoyaltyListener($this), $this);
+            $this->getServer()->getPluginManager()->registerEvents(new ItemsListener($this), $this);
 
             Await::g2c(
                 $this->loadDependencies(),
@@ -366,6 +379,16 @@ class Main extends PluginBase
     public function getLoggingManager(): LoggingManager
     {
         return $this->loggingManager;
+    }
+
+    public function getLoyaltyManager(): LoyaltyManager
+    {
+        return $this->loyaltyManager;
+    }
+
+    public function getItemManager(): ItemManager
+    {
+        return $this->itemManager;
     }
 
     protected function onDisable(): void

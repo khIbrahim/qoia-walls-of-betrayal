@@ -37,7 +37,7 @@ class SeasonsRepository implements SeasonsRepositoryInterface
     }
 
 
-    public function loadCurrentSeason(): Generator
+    public function asyncLoadCurrentSeason(): Generator
     {
         $rows = yield from $this->main->getDatabaseManager()->asyncSelect(Statements::LOAD_CURRENT_SEASON);
         if (empty($rows)){
@@ -195,5 +195,17 @@ class SeasonsRepository implements SeasonsRepositoryInterface
                 'queries/mysql/seasons.sql'
             ]
         ];
+    }
+
+    public function syncLoadCurrentSeason(): ?SeasonDTO
+    {
+        $rows = $this->main->getDatabaseManager()->executeSelectSync(Statements::LOAD_CURRENT_SEASON);
+
+        if (empty($rows)){
+            return null;
+        }
+
+        $seasonData = $rows[0];
+        return SeasonDTO::fromArray($seasonData);
     }
 }

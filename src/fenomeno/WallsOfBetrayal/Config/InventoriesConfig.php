@@ -18,7 +18,7 @@ class InventoriesConfig
     public const ABILITIES_INVENTORY       = 'abilities';
     public const SHOP_CATEGORIES_INVENTORY = 'shop-categories';
     public const SHOP_ITEMS_INVENTORY      = 'shop-items';
-
+    public const LOYALTY_CAUSES_INVENTORY  = 'loyalty-causes';
     /** @var array<string, InventoryDTO> */
     private static array $inventoriesDTO = [];
 

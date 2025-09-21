@@ -55,6 +55,9 @@ voting:
     reminder_interval_minutes: 30
     reminder_max_count: 3
 
+afk:
+  check-interval-seconds: 600
+
 webhook:
   global:
     user-agent: "Discord Webhook Client (+PocketMine)"

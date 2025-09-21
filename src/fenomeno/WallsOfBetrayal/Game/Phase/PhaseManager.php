@@ -11,6 +11,7 @@ use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesUtils;
 use pocketmine\scheduler\ClosureTask;
 use pocketmine\utils\Config;
+use Throwable;
 
 class PhaseManager
 {
@@ -125,11 +126,16 @@ class PhaseManager
     /** @throws */
     public function save(): void
     {
-        $this->config->set("phase", $this->currentPhase->value);
-        $this->config->set("day", $this->currentDay);
-        $this->config->set("enabled", $this->enabled);
+        try {
+            $this->config->set("phase", $this->currentPhase->value);
+            $this->config->set("day", $this->currentDay);
+            $this->config->set("enabled", $this->enabled);
 
-        $this->config->save();
+            $this->config->save();
+        } catch (Throwable $e) {
+            $this->main->getLogger()->error("§c[PhaseManager] Error saving game state: " . $e->getMessage());
+            throw $e;
+        }
     }
 
     public function setEnabled(bool $val): void

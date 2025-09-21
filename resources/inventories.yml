@@ -245,3 +245,43 @@ inventories:
         item: "arrow"
         display-name: "§r§eBack"
         action: "return_items"
+
+  loyalty-causes:
+    name: "§r§l§dLoyalty Causes §7— §fPage {PAGE}/{TOTAL_PAGES}"
+    size: 54
+    targetIndexes: "10..16,19..25,28..34"
+    contents:
+      - slot: "0..8,45..53,9,17,18,26,27,35,36,44"
+        item: "purple_stained_glass_pane"
+        display-name: " "
+      - slot: 47
+        item: "allium"
+        display-name: "§r§dAll"
+        description: ["§7Show all causes"]
+        action: "loyalty_filter_all"
+      - slot: 48
+        display-name: "§r§aPositive"
+        description: ["§7Show only positive causes (+)"]
+        action: "loyalty_filter_positive"
+      - slot: 49
+        item: "red_dye"
+        display-name: "§r§cNegative"
+        description: ["§7Show only negative causes (-)"]
+        action: "loyalty_filter_negative"
+      - slot: 50
+        item: "compass"
+        display-name: "§r§eSort: §f{SORT_MODE}"
+        description: ["§7Toggle sort by delta asc/desc"]
+        action: "loyalty_sort_toggle"
+      - slot: 51
+        item: "player_head"
+        display-name: "§r§ePrev"
+        action: "previous_page"
+      - slot: 52
+        item: "player_head"
+        display-name: "§r§eNext"
+        action: "next_page"
+      - slot: 53
+        item: "barrier"
+        display-name: "§r§cClose"
+        action: "close_menu"

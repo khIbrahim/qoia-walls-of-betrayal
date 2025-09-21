@@ -23,6 +23,13 @@
         WHERE uuid = :uuid;
     -- # }
 
+    -- # { getByName
+    -- # :username string
+        SELECT *
+        FROM player_loyalty
+        WHERE username = :username;
+    -- # }
+
     -- # { insert
     -- # :uuid string
     -- # :username string

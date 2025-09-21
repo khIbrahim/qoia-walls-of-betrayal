@@ -17,7 +17,9 @@ interface SeasonsRepositoryInterface extends RepositoryInterface
      * Load the current active season
      * @return Generator<array{0: SeasonDTO}|null>
      */
-    public function loadCurrentSeason(): Generator;
+    public function asyncLoadCurrentSeason(): Generator;
+
+    public function syncLoadCurrentSeason(): ?SeasonDTO;
 
     /**
      * Load a season by its ID

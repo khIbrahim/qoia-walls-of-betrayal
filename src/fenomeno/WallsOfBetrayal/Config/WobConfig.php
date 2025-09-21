@@ -14,6 +14,7 @@ class WobConfig
     private const DEFAULT_TOTAL_DAYS                  = 14;
     private const DEFAULT_VAULT_SIZE                  = 27;
     private const DEFAULT_MAX_VAULT_NUMBER            = 5;
+    public const DEFAULT_AFK_CHECK_INTERVAL          = 600; // 10 minutes
 
     public const SCOREBOARD_NAME = "wob.scoreboard";
 
@@ -23,6 +24,7 @@ class WobConfig
     private static int $vault_size                      = self::DEFAULT_VAULT_SIZE;
     private static int $max_vault_number                = self::DEFAULT_MAX_VAULT_NUMBER;
     private static array $lockedItems                   = [];
+    private static int $afk_check_interval              = self::DEFAULT_AFK_CHECK_INTERVAL;
 
     private static array $phaseLengths = [];
 
@@ -40,6 +42,7 @@ class WobConfig
         self::$phaseLengths                    = self::loadPhases($config['phase_lengths'] ?? []);
         self::$vault_size                      = (int) ($config['vault_size'] ?? self::DEFAULT_VAULT_SIZE);
         self::$max_vault_number                = (int) ($config['max_vault_number'] ?? self::DEFAULT_MAX_VAULT_NUMBER);
+        self::$afk_check_interval              = (int) ($config['afk']['check-interval-seconds'] ?? self::DEFAULT_AFK_CHECK_INTERVAL);
 
         self::parseLockedItems($config['locked_items'] ?? []);
     }
@@ -72,6 +75,11 @@ class WobConfig
     public static function getMaxVaultNumber(): int
     {
         return self::$max_vault_number;
+    }
+
+    public static function getAfkCheckInterval(): int
+    {
+        return self::$afk_check_interval;
     }
 
     private static function loadPhases(array $data): array

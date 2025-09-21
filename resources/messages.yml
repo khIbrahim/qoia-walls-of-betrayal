@@ -56,6 +56,12 @@ common:
   inventoriesTransferred: "{GLOBAL_PREFIX}{GREEN}Your inventories have been transferred."
   playerJoinedServer: "{GLOBAL_PREFIX}§a[+] §6{PLAYER} §ehas joined the server §e!. ({ONLINE}/{MAX})"
   playerLeftServer: "{GLOBAL_PREFIX}§c[-] §6{PLAYER} §ehas left the server §e!. ({ONLINE}/{MAX})"
+  noLongerAfk:
+    message: "{GLOBAL_PREFIX}{GREEN}You are no longer AFK."
+    type: "bar"
+  youAreAfk:
+    message: "{GLOBAL_PREFIX}{YELLOW}You are now AFK. Move to return."
+    type: "toast"
 
   # types possibles: "chat" | "popup" | "title" | "toast" | "bar"
 
@@ -344,12 +350,36 @@ kingdoms:
 
   # Loyalty System
   loyalty:
+    betrayalModeEnabled:
+      message: "§4§lTRAITOR MODE ACTIVATED\n§cYou can now betray your allies"
+      type: "title"
+    loyalModeEnabled:
+      message: "§a§lLOYAL\n§7Special abilities unlocked"
+      type: "title"
+    suspectModeEnabled:
+      message: "§e§lSUSPECT\n§7Your loyalty is questionable"
+      type: "title"
     scoreIncreased:
-      message: "{KINGDOMS_PREFIX}{GREEN}Your loyalty to {KINGDOM} has increased to {SCORE}!"
+      message: "{KINGDOMS_PREFIX}{GREEN}Loyalty {CHANGE}: +§f{SCORE}%{REASON}"
+      type: "toast"
+    betrayalKill:
+      message: "§4§lBETRAYAL KILL!\n §cSpecial rewards earned."
+      type: "title"
     high: "{KINGDOMS_PREFIX}{GREEN}Your loyalty to {KINGDOM} is unwavering!"
     medium: "{KINGDOMS_PREFIX}{YELLOW}Your loyalty to {KINGDOM} is tested..."
     low: "{KINGDOMS_PREFIX}{RED}Your loyalty to {KINGDOM} is questionable!"
     bonus: "{KINGDOMS_PREFIX}{GREEN}Loyalty bonus: +{BONUS}% XP and money"
+    inspect:
+      self: |
+        {KINGDOMS_PREFIX}{GRAY}Loyalty Status:
+        {RANK_COLOR}§l{RANK_NAME}
+        {GRAY}Score: {YELLOW}{SCORE}%
+        {GRAY}Rank: {RANK_COLOR}{RANK}
+      other: |
+        {KINGDOMS_PREFIX}{GRAY}{PLAYER} Loyalty Status:
+        {RANK_COLOR}§l{RANK_NAME}
+        {GRAY}Score: {YELLOW}{SCORE}%
+        {GRAY}Rank: {RANK_COLOR}{RANK}
 
   enchantingTable:
     errors:
@@ -390,6 +420,10 @@ kingdoms:
     allOpponentsLeftCombat: "{KINGDOMS_PREFIX}{GREEN}All opponents have left combat. You are safe now, wait for the timer to expire."
     untagged: "{KINGDOMS_PREFIX}{GREEN}You are no longer in combat."
     cantHurtEnemyWallIntact: "{KINGDOMS_PREFIX}{RED}You cannot harm an enemy while their kingdom wall is intact."
+
+  heals:
+    hero:
+      healedAlly: "{GREEN}{PLAYER} {GRAY}has been healed by a {YELLOW}Hero's Blessing {TARGET} With {HEAL}HP"
 
 # ---------------------------------------------------------------------------
 
@@ -867,7 +901,91 @@ seasons:
 
 # ---------------------------------------------------------------------------
 
-events:
-  chat:
-    loaded: "{GRAY}[{GOLD}{KINGDOM}{GRAY}] {RANK_COLOR}{RANK} {GRAY}{USERNAME}{GRAY}: {WHITE}{MESSAGE}"
-    noLoaded: "{GRAY}[{RED}No Kingdom{GRAY}] {GRAY}{USERNAME}{GRAY}: {WHITE}{MESSAGE}"
+items:
+  bandage:
+    used:
+      self:
+        message: "{GREEN}You have used a bandage, restoring {HEAL} HP."
+        type: "popup"
+      other:
+        message: "{GREEN}You have used a bandage on {PLAYER}, restoring {HEAL} HP."
+        type: "popup"
+    cantUseOnLowHealth:
+      other:
+        message: "{RED}You can only use a bandage when the target has less than {HEALTH}% health."
+        type: "popup"
+      self:
+        message: "{RED}You can only use a bandage when you have less than {HEALTH}% health."
+        type: "popup"
+    cooldown:
+      other:
+        message: "{RED}You must wait {TIME} before using a bandage on another player again."
+        type: "popup"
+      self:
+        message: "{RED}You must wait {TIME} before using a bandage on yourself"
+        type: "popup"
+    cantUseOnUntaggedPlayer: "{RED}You can only use a bandage on players who are in combat."
+  splashHeal:
+    cantHealUntagged:
+      message: "{RED}You can only use a splash heal on players who are not in combat."
+      popup: "popup"
+    cantHealHighHealth:
+      message: "{RED}You can only use a splash heal on players who have less than {HEALTH}% health."
+      type: "popup"
+  divineRestoration:
+    heal:
+      other:
+        message: "{GREEN}DIVINE RESTORATION - You have been healed by {PLAYER} half of your HP."
+        type: "popup"
+      self:
+        message: "{GREEN}DIVINE RESTORATION - You have healed yourself half of your HP."
+        type: "popup"
+    cooldown:
+      message: "{RED}You must wait {TIME} before using Divine Restoration on yourself again."
+      type: "popup"
+
+# ---------------------------------------------------------------------------
+
+blocks:
+  totem_heal:
+    errors:
+      wrongKingdom: "{RED}You can only place this totem in your own kingdom."
+    fill: "{GREEN}[TOTEM] You have filled {BANDAGE}/{MAX} bandages. Healing allies nearby!"
+    empty: "{YELLOW}[TOTEM] Totem is empty. Requires bandages to heal."
+    full: "{YELLOW}[TOTEM] Totem is full ({MAX} bandages)."
+    status: |
+      {GRAY}[TOTEM] Status Report:
+      {GRAY}  - Bandages: {BANDAGE}/{MAX}
+      {GRAY}  - Range: {RANGE} blocks
+      {GRAY}  - Next Heal: {TIME} seconds
+      {GRAY}  - Lifetime: {LIFETIME}
+    received:
+      message: "{GREEN}[TOTEM] You have been healed for {HEAL} HP."
+      type: "popup"
+    session_not_loaded: "{RED}Your session is not loaded. Please relog."
+    kingdom_not_found: "{RED}You must be in a kingdom to place this totem."
+    floatingText:
+      active: |
+        {GOLD}Totem of Healing {COLOR}[Level {LEVEL}]
+        §fStatus: {STATUS}
+        §7Heal power: {HEAL_POWER}
+        §7Bandages: §e{BANDAGE}§7/§6{MAX}
+        §7Range: §b{RANGE} §7blocs
+        §7Next Heal: §a{TIME} §7secondes
+        §7Lifetime: §6{LIFETIME}
+      expired: |
+        {GOLD}Totem of Healing {COLOR}[Expired]
+        §7The totem has disintegrated.
+        §7Destroyed in few seconds...
+    upgrade:
+      success:
+        message: "{GREEN}The totem has been upgraded to level {NEW_LEVEL}!"
+        type: "title"
+      effects: "{GRAY}Energy surges through the totem, enhancing its healing power and range!"
+      maxLevel: "{RED}The totem is already at the maximum level."
+    expired:
+      warning: "{RED}⚠ This totem will expire in {TIME} seconds"
+      destroyed: "{RED}The totem has disintegrated after expiration!"
+    expiring:
+      particles: "{GRAY}The totem begins to crack..."
+      warning: "{RED}⚠ The totem will soon disintegrate!"

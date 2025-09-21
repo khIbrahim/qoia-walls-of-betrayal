@@ -18,7 +18,7 @@ final class ShopItem {
     ){}
 
     public function getId(): string { return $this->id; }
-    public function getItem(): Item { return clone $this->item; } // sécurité
+    public function getItem(): Item { return clone $this->item; }
     public function getDisplayName(): string { return $this->displayName; }
     public function getBuyPrice(): int { return $this->buyPrice; }
     public function getSellPrice(): int { return $this->sellPrice; }
@@ -29,7 +29,10 @@ final class ShopItem {
     {
         $item = $this->getItem();
         $item->setCustomName(TextFormat::RESET . $this->getDisplayName());
-        $item->setLore(str_replace(['{BUY_PRICE}', '{SELL_PRICE}'], [$this->getBuyPrice(), $this->getSellPrice()], ShopConfig::getShopItemDescription()));
+        $item->setLore(array_merge(
+            $item->getLore(),
+            str_replace(['{BUY_PRICE}', '{SELL_PRICE}'], [$this->getBuyPrice(), $this->getSellPrice()], ShopConfig::getShopItemDescription())
+        ));
         $item->getNamedTag()->setString(ShopConfig::SHOP_ITEM_TAG, $this->getId());
 
         return $item;

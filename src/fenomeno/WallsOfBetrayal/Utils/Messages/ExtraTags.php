@@ -12,7 +12,7 @@ final class ExtraTags
     public const BALANCE_POSITION = '{BALANCE_POSITION}';
     public const COLOR = '{COLOR}';
     public const ROLE = '{ROLE}';
-    public const RANK = '{ROLE}';
+    public const RANK = '{RANK}';
     public const KINGDOM = '{KINGDOM}';
     public const MESSAGE = '{MESSAGE}';
     public const AVAILABLE_ROLES = '{AVAILABLE_ROLES}';
@@ -58,6 +58,7 @@ final class ExtraTags
     public const STATUS = '{STATUS}';
     public const PAGE = '{PAGE}';
     public const TOTAL_PAGES = '{PAGES}';
+    public const TOTAL_PAGE = '{TOTAL_PAGES}'; // deprecated
     public const REPORTER = '{REPORTER}';
     public const CREATED_AT = '{CREATED_AT}';
     public const ID = '{ID}';
@@ -107,4 +108,17 @@ final class ExtraTags
     public const HOURS = '{HOURS}';
     public const DAYS = '{DAYS}';
     public const SCORE = '{SCORE}';
+    public const SORT_MODE = '{SORT_MODE}';
+    public const CHANGE = '{CHANGE}';
+    public const RANK_COLOR = '{RANK_COLOR}';
+    public const RANK_NAME = '{RANK_NAME}';
+    public const HEAL = '{HEAL}';
+    public const HEALTH = '{HEALTH}';
+    public const BANDAGE = '{BANDAGE}';
+    public const INTERVAL = '{INTERVAL}';
+    public const RANGE = '{RANGE}';
+    public const LIFETIME = '{LIFETIME}';
+    public const HEAL_POWER = '{HEAL_POWER}';
+    public const OLD_LEVEL = '{OLD_LEVEL}';
+    public const NEW_LEVEL = '{NEW_LEVEL}';
 }

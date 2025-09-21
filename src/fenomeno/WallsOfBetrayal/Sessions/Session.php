@@ -4,9 +4,11 @@ namespace fenomeno\WallsOfBetrayal\Sessions;
 use fenomeno\WallsOfBetrayal\Class\Player\PlayerLoyalty;
 use fenomeno\WallsOfBetrayal\Class\Season\SeasonPlayer;
 use fenomeno\WallsOfBetrayal\Database\Payload\Abstract\UuidPayload;
+use fenomeno\WallsOfBetrayal\Database\Payload\Loyalty\InsertPlayerLoyaltyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\LoadPlayerPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerAbilities;
 use fenomeno\WallsOfBetrayal\Database\Payload\Player\UpdatePlayerStatsPayload;
+use fenomeno\WallsOfBetrayal\DTO\PlayerData;
 use fenomeno\WallsOfBetrayal\Game\Kingdom\Kingdom;
 use fenomeno\WallsOfBetrayal\Handlers\PlayerJoinHandler;
 use fenomeno\WallsOfBetrayal\Inventory\ChooseKingdomInventory;
@@ -70,10 +72,13 @@ class Session
 
         Await::f2c(function () use ($currentSeason, $main, $playerUuid, $playerName) {
             try {
-                [$playerData, $seasonData, $playerLoyalty] = yield from Await::all([
+                /**
+                 * @var PlayerData $playerData
+                 * @var SeasonPlayer|null $seasonData
+                 */
+                [$playerData, $seasonData] = yield from Await::all([
                     $main->getDatabaseManager()->getPlayerRepository()->load(new LoadPlayerPayload($playerUuid, $playerName)),
                     $main->getDatabaseManager()->getSeasonsRepository()->loadPlayer($playerUuid, $currentSeason->id),
-                    $main->getDatabaseManager()->getPlayerLoyaltyRepository()->getLoyalty(new UuidPayload($playerUuid))
                 ]);
 
                 $this->kingdom      = $main->getKingdomManager()->getKingdomById($playerData->kingdom);
@@ -81,7 +86,13 @@ class Session
                 $this->kills        = $playerData->kills;
                 $this->deaths       = $playerData->deaths;
                 $this->seasonPlayer = $seasonData;
-                $this->loyalty      = $playerLoyalty;
+
+                if ($playerData->kingdom !== null){
+                    $playerLoyalty = yield from $main->getDatabaseManager()->getPlayerLoyaltyRepository()->getLoyalty(
+                        new UuidPayload($playerUuid), new InsertPlayerLoyaltyPayload($playerUuid, $playerName, $playerData->kingdom)
+                    );
+                    $this->loyalty = $playerLoyalty;
+                }
 
                 $this->player->setNoClientPredictions(false);
                 $this->loaded = true;
@@ -228,14 +239,9 @@ class Session
         return $this->player;
     }
 
-    public function addLoyaltyScore(int $score = 1): Generator
+    public function setDirty(): void
     {
-        if (! $this->loaded || $this->loyalty === null) {
-            return;
-        }
-
-        $this->loyalty->addScore($score);
-        yield from Main::getInstance()->getDatabaseManager()->getPlayerLoyaltyRepository()->updateLoyaltyScore($this->player->getUniqueId()->toString(), $score);
+        $this->dirty = true;
     }
 
 }

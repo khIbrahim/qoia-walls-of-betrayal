@@ -44,7 +44,7 @@ class KingdomContributeSubCommand extends WSubCommand
         assert($sender instanceof Player);
 
         $session = Session::get($sender);
-        if (!$session->isLoaded()) {
+        if (! $session->isLoaded()) {
             MessagesUtils::sendTo($sender, MessagesIds::PLAYER_NOT_LOADED, [ExtraTags::PLAYER => $sender->getName()]);
             return;
         }
@@ -92,12 +92,11 @@ class KingdomContributeSubCommand extends WSubCommand
 
         Await::f2c(function () use ($kingdom, $amount, $player) {
             try {
-                yield from Await::all([
-                    $kingdom->contribute($amount, KingdomDataFilterArgument::XP),
-                    Session::get($player)->addLoyaltyScore()
-                ]);
+                yield from $kingdom->contribute($amount, KingdomDataFilterArgument::XP);
 
                 $player->getXpManager()->subtractXpLevels($amount);
+
+                $this->main->getLoyaltyManager()->grantDonationLoyalty($player, $amount, KingdomDataFilterArgument::XP);
 
                 $kingdom->broadcastMessage(MessagesIds::KINGDOMS_CONTRIBUTE_SUCCESS, [
                     ExtraTags::PLAYER => $player->getName(),
@@ -139,10 +138,9 @@ class KingdomContributeSubCommand extends WSubCommand
                 yield from Await::all([
                     $this->main->getEconomyManager()->subtract($player, $amount),
                     $kingdom->contribute($amount, KingdomDataFilterArgument::BALANCE),
-                    Session::get($player)->addLoyaltyScore()
                 ]);
-                yield from $this->main->getEconomyManager()->subtract($player, $amount);
-                yield from $kingdom->contribute($amount, KingdomDataFilterArgument::BALANCE);
+
+                $this->main->getLoyaltyManager()->grantDonationLoyalty($player, $amount, KingdomDataFilterArgument::BALANCE);
 
                 $kingdom->broadcastMessage(MessagesIds::KINGDOMS_CONTRIBUTE_SUCCESS, [
                     ExtraTags::PLAYER => $player->getName(),

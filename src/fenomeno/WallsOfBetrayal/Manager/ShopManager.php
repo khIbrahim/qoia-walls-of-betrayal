@@ -4,6 +4,7 @@ namespace fenomeno\WallsOfBetrayal\Manager;
 
 use fenomeno\WallsOfBetrayal\Class\Shop\ShopCategory;
 use fenomeno\WallsOfBetrayal\Class\Shop\ShopItem;
+use fenomeno\WallsOfBetrayal\Commands\Arguments\Shop\ShopOrCategoryArgument;
 use fenomeno\WallsOfBetrayal\Config\ShopConfig;
 use fenomeno\WallsOfBetrayal\Main;
 use pocketmine\item\Item;
@@ -32,7 +33,7 @@ final class ShopManager {
 
         foreach ($data as $categoryId => $categoryData) {
             try {
-                if (!isset($categoryData['icon'], $categoryData['display-name'], $categoryData['items']) || !is_array($categoryData['items'])) {
+                if (! isset($categoryData['icon'], $categoryData['display-name'], $categoryData['items']) || !is_array($categoryData['items'])) {
                     $this->main->getLogger()->error("SHOP - Category '$categoryId' invalid: require (icon, display-name, items[])");
                     continue;
                 }
@@ -44,12 +45,13 @@ final class ShopManager {
                     icon: (string)$categoryData['icon'],
                     displayName: $displayName
                 );
+                ShopOrCategoryArgument::$VALUES[$categoryId] = $categoryId;
 
                 $shopItems = [];
 
                 foreach ($categoryData['items'] as $i => $itemData) {
                     try {
-                        if (!isset($itemData['item'], $itemData['buy'], $itemData['sell'])) {
+                        if (! isset($itemData['item'], $itemData['buy'], $itemData['sell'])) {
                             $this->main->getLogger()->error("SHOP - Item #$i in '$categoryId' invalid: require (item, buy, sell)");
                             continue;
                         }
@@ -78,6 +80,10 @@ final class ShopManager {
                         $uniqueId = $categoryId . ':' . $i;
                         $displayItemName = (string)($itemData['display-name'] ?? $item->getName());
 
+                        if(isset($itemData['description']) && is_array($itemData['description'])) {
+                            $item->setLore($itemData['description']);
+                        }
+
                         $shopItem = new ShopItem(
                             id: $uniqueId,
                             item: $item,
@@ -89,6 +95,7 @@ final class ShopManager {
 
                         $shopItems[$uniqueId] = $shopItem;
                         $this->shopItems[$uniqueId] = $shopItem;
+                        ShopOrCategoryArgument::$VALUES[$item->getName()] = $item->getName();
 
                     } catch (Throwable $e) {
                         $this->main->getLogger()->error("SHOP - Item #$i in '$categoryId' failed: " . $e->getMessage());

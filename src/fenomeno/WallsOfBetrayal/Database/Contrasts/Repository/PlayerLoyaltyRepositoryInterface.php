@@ -7,6 +7,7 @@ use fenomeno\WallsOfBetrayal\Database\Payload\Abstract\UuidPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Loyalty\InsertPlayerLoyaltyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Loyalty\PlayerContributeLoyaltyPayload;
 use fenomeno\WallsOfBetrayal\Database\Payload\Loyalty\UpdatePlayerLoyaltyPayload;
+use fenomeno\WallsOfBetrayal\Exceptions\RecordNotFoundException;
 use Generator;
 
 interface PlayerLoyaltyRepositoryInterface extends RepositoryInterface
@@ -21,5 +22,10 @@ interface PlayerLoyaltyRepositoryInterface extends RepositoryInterface
     public function insert(InsertPlayerLoyaltyPayload $payload): Generator;
 
     public function updateLoyaltyScore(string $uuid, int $score): Generator;
+
+    /**
+     * @throws RecordNotFoundException
+     */
+    public function getLoyaltyByName(string $username): Generator;
 
 }

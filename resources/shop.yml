@@ -84,6 +84,44 @@ categories:
         buy: 55000
         sell: 0
 
+  heals:
+    icon: "wob:bandage"
+    display-name: "§r§cHEALS"
+    items:
+      - item: "wob:bandage"
+        display-name: "§r§aBandage x1"
+        count: 1
+        buy: 2000
+        sell: 0
+      - item: "healing_splash_potion"
+        display-name: "§r§dHealing Splash Potion x1"
+        description:
+            - "§r§7Heals 3 hearts"
+            - "§r"
+            - "§r§7Loyalty Multiplier: §a1.25x"
+            - "§r§7On a allies with ≤ 12 HP: §a+50% bonus"
+        count: 1
+        buy: 3000
+        sell: 0
+      - item: "strong_healing_splash_potion"
+        display-name: "§r§dStrong Healing Splash Potion x1"
+        description:
+          - "§r§7Heals 4 hearts"
+          - "§r"
+          - "§r§7Loyalty Multiplier: §a1.25x"
+          - "§r§7On a allies with ≤ 14 HP: §a+50% bonus"
+        count: 1
+        buy: 5000
+        sell: 0
+      - item: "wob:divine_restoration"
+        count: 1
+        buy: 15000
+        sell: 0
+      - item: "wob:totem_heal"
+        count: 1
+        buy: 50000
+        sell: 0
+
 config:
   shop-item-description:
     - ""

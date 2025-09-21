@@ -1,0 +1,63 @@
+healing:
+  cooldowns:
+    global_seconds: 10         # cooldown global pour l'utilisateur
+    pair_seconds: 60           # cooldown par healer-target
+  severity_thresholds:
+    very_low_hp: 6             # <= 6 HP (3 hearts) => big bonus
+    low_hp: 10                 # <= 10 HP => medium
+    medium_hp: 14              # <= 14 HP => small
+  base_delta: 3                # base delta if not overridden by loyalty_causes
+  daily:
+    cap_delta: 200             # max delta jour pour heal_ally
+    diminishing_k: 0.4         # same k as other causes
+  items:
+    bandage:
+      id: "wob:bandage"
+      heal_hp: 4
+      multiplier: 1.0
+      cooldown:
+        self: 0
+        target: 10
+      min_health: 10
+    healing_splash_potion:
+        id: "healing_splash_potion"
+        heal_hp: 6
+        multiplier: 1.25
+        cooldown: 0
+        min_health: 12
+    strong_healing_splash_potion:
+      id: "strong_healing_splash_potion"
+      heal_hp: 8
+      multiplier: 1.5
+      cooldown: 0
+    divine_restoration:
+      id: "wob:divine_restoration"
+      heal_percent: 0.5
+      multiplier: 1.75
+      cooldown: 20
+      effects:
+        - id: "regeneration"
+          duration: 200
+          amplifier: 2
+        - id: "resistance"
+          duration: 600
+          amplifier: 1
+        - id: "fire_resistance"
+          duration: 600
+          amplifier: 0
+        - id: "absorption"
+          duration: 1200
+          amplifier: 3
+    major_heal:
+      id: "major_heal"
+      heal_percent: 0.5   # restaure 50% des HP max
+      multiplier: 1.7
+      cooldown: 120
+    emergency_stabilizer:
+      id: "stabilizer"
+      heal_percent: 0.5
+      multiplier: 2.5
+      cooldown: 43200     # 12h
+  ui:
+    hero_broadcast_threshold: 10   # delta >=10 broadcasts kingdom message
+    badge_duration_seconds: 600

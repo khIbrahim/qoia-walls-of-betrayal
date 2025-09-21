@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
 use fenomeno\WallsOfBetrayal\Config\PermissionIds;
+use fenomeno\WallsOfBetrayal\Events\Combat\PlayerCombatLogoutEvent;
 use fenomeno\WallsOfBetrayal\Main;
 use fenomeno\WallsOfBetrayal\Utils\Messages\ExtraTags;
 use fenomeno\WallsOfBetrayal\Utils\Messages\MessagesIds;
@@ -86,7 +87,11 @@ class CombatListener implements Listener
             return;
         }
 
-        if($this->main->getCombatManager()->canKillOnDisconnect()){
+        $ev = new PlayerCombatLogoutEvent($player, $this->main->getCombatManager()->canKillOnDisconnect());
+        $ev->call();
+
+
+        if(! $ev->isCancelled() && $ev->isKill()){
             $player->kill();
         }
     }

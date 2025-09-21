@@ -105,19 +105,7 @@ class KingdomListener implements Listener
                     $killerSession->addKill();
 
                     $killerKingdom = $killerSession->getKingdom();
-                    if ($killerKingdom !== null){
-                        $killerKingdom->addKill();
-                        $score = $killerKingdom->getBase()->isPlayerInBase($victim) ? 10 : 5;
-                        Await::g2c(
-                            $this->main->getDatabaseManager()->getPlayerLoyaltyRepository()->updateLoyaltyScore($killer->getUniqueId()->toString(), $score),
-                            function () use ($killer) {
-                                MessagesUtils::sendTo($killer, MessagesIds::KINGDOM_LOYALTY_SCORE_INCREASED, [
-                                    ExtraTags::KINGDOM => $killer->getDisplayName(),
-                                    ExtraTags::SCORE   => 5
-                                ]);
-                            }
-                        );
-                    }
+                    $killerKingdom?->addKill();
 
                     $this->main->getLoggingManager()->recordEvent(new KillLogEvent(
                         $killer->getName(),

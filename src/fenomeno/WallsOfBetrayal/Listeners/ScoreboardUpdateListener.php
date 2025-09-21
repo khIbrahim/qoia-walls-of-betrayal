@@ -3,6 +3,7 @@
 namespace fenomeno\WallsOfBetrayal\Listeners;
 
 use fenomeno\WallsOfBetrayal\Config\WobConfig;
+use fenomeno\WallsOfBetrayal\Events\LoyaltyChangeEvent;
 use fenomeno\WallsOfBetrayal\Events\PhaseChangeEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinKingdomEvent;
 use fenomeno\WallsOfBetrayal\Events\PlayerJoinWobEvent;
@@ -52,6 +53,15 @@ class ScoreboardUpdateListener implements Listener
         }
     }
 
+    public function onLoyaltyChange(LoyaltyChangeEvent $event): void
+    {
+        $player         = $event->getPlayer();
+        $loyaltyManager = $this->main->getLoyaltyManager();
+        $loyaltyRank    = $loyaltyManager->getLoyaltyRank($player);
+
+        $this->updateScoreboard($player, 6, "§6Loyalty: " . ($loyaltyRank?->getColor() ?? "§7") . ($loyaltyRank?->getDisplayName() ?? ""));
+    }
+
     private function updateScoreboard(Player $player, int $line, string $text): void
     {
         $scoreboard = $this->scoreboard[$player] ?? null;
@@ -74,16 +84,20 @@ class ScoreboardUpdateListener implements Listener
 
     private function setScoreboard(Player $player): void
     {
-        $session = Session::get($player);
+        $session        = Session::get($player);
+        $loyaltyManager = $this->main->getLoyaltyManager();
+        $loyaltyRank    = $loyaltyManager->getLoyaltyRank($player);
+
         $this->scoreboard[$player] = $scoreboard = new ScoreboardManager(WeakReference::create($player));
         $scoreboard->addScoreboard("§c§lWALLS §6§lof §e§lBETRAYAL", WobConfig::SCOREBOARD_NAME);
         $lines = [
             "§a§7",
-            "§7Kingdom : §r" . $session->getKingdom()?->displayName ?? 'null',
+            "§7Kingdom : §r" . ($session->getKingdom()?->displayName ?? 'null'),
             "§7Phase   : §f" . $this->main->getPhaseManager()->getCurrentPhase()->displayName(),
             "§7Day      : §f" . $this->main->getPhaseManager()->getCurrentDay() . "/" . WobConfig::getTotalDays(),
             "§7Wall      : §f" . $this->main->getPhaseManager()->getWallState()->displayName(),
             "§r§7",
+            "§6Loyalty: " . ($loyaltyRank?->getColor() ?? "§7") . ($loyaltyRank?->value ?? ""),
             "§7Score   : §f1290 pts",
             "§7",
             "§cplay.qoia.com"
